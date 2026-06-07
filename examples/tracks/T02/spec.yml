@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Streaming edit of dark-orbit: same musical identity as T01, generated
 # natively as a single-arc ~4:08 short form (never blind-trimmed from the
-# club arrangement). Sections follow style.yml streaming_edit_128.
+# club arrangement). This revision keeps 128 bars but shortens the entry so
+# identity arrives inside the first 8 bars.
 
 id: T02
 title: dark-orbit-edit
@@ -14,18 +15,18 @@ energy: 6
 duration_bars: 128
 
 intent:
-  summary: "Streaming/radio edit of dark-orbit: one break, one peak, concise edges."
+  summary: "Streaming/radio edit of dark-orbit: early identity, one break, one peak, concise edges."
   avoid:
     - "festival-pop drop"
     - "overcrowded bassline"
     - "DJ-tool intro/outro padding"
 
 sections:
-  intro: 16
-  groove_a: 16
+  intro: 8
+  groove_a: 8
   break_1: 16
-  drop_1: 32
-  peak: 32
+  drop_1: 40
+  peak: 40
   outro: 16
 
 palette:

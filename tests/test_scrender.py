@@ -9,6 +9,7 @@ import pytest
 from setloom.midi import PPQ, NoteEvent
 from setloom.schema import load_spec
 from setloom.scrender import (
+    LEAD_EFFECTS,
     LEAD_LAYERS,
     PATCHES,
     build_scd,
@@ -17,6 +18,7 @@ from setloom.scrender import (
     find_sclang,
     lead_bus_report,
     lead_coherence_report,
+    lead_effect_score,
     lead_layer_score,
     lead_layer_score_json,
     render_part_stem,
@@ -74,6 +76,15 @@ def test_lead_layers_define_required_roles() -> None:
         assert layer.arrangement_role and layer.rationale
 
 
+def test_lead_effects_define_required_roles() -> None:
+    effects = {effect.name: effect for effect in LEAD_EFFECTS}
+    assert set(effects) == {"lead_fx_tease", "lead_fx_throw", "lead_fx_whoop"}
+    for effect in effects.values():
+        assert effect.synth.startswith("vibe_lead_")
+        assert effect.role and effect.spectral_range and effect.phase_rule
+        assert effect.arrangement_role and effect.rationale
+
+
 def test_lead_layer_synthdefs_document_modern_roles() -> None:
     text = PATCHES.read_text(encoding="utf-8")
     for layer in LEAD_LAYERS:
@@ -109,6 +120,24 @@ def test_lead_layer_score_is_section_aware_and_deterministic() -> None:
     assert lead_layer_score_json(lead, spec) == lead_layer_score_json(list(reversed(lead)), spec)
 
 
+def test_t02_entry_profile_and_effect_source_arrive_early() -> None:
+    spec = load_spec(T02)
+    assert sum(spec.sections.values()) == 128
+    assert spec.sections["intro"] == 8
+    assert spec.sections["groove_a"] == 8
+
+    effects = lead_effect_score(spec)
+    assert effects
+    assert min(row["start"] for row in effects) <= 15.5
+    assert any(row["start"] < 69.68 for row in effects)
+    assert {row["source"] for row in effects} == {"effect"}
+    by_section = {}
+    for row in effects:
+        by_section.setdefault(row["section"], set()).add(row["effect"])
+    assert by_section["break"] != by_section["drop"]
+    assert by_section["drop"] != by_section["peak"]
+
+
 def test_lead_bus_score_covers_section_roles() -> None:
     spec = load_spec(T02)
     starts = {kind: start for start, _end, kind in section_windows(spec)}
@@ -125,13 +154,20 @@ def test_lead_bus_score_covers_section_roles() -> None:
     )
     rows = score_for_part("lead", events, spec)
     by_section = {}
-    for row in rows:
+    melodic_rows = [row for row in rows if row["source"] == "melodic"]
+    for row in melodic_rows:
         by_section.setdefault(row["section"], set()).add(row["layer"])
-    assert "intro" not in by_section
+    assert "intro" not in by_section  # intro identity now comes from effect source
     assert "outro" not in by_section
     assert by_section["break"] == {"lead_body", "lead_edge", "lead_air", "lead_shadow"}
     assert by_section["drop"] == {"lead_body", "lead_edge"}
     assert by_section["peak"] == {"lead_body", "lead_edge", "lead_air", "lead_shadow"}
+
+    effect_rows = [row for row in rows if row["source"] == "effect"]
+    assert min(row["start"] for row in effect_rows) <= 15.5
+    assert {"intro", "groove_a", "break", "drop", "peak"} <= {
+        row["section"] for row in effect_rows
+    }
 
 
 def test_build_scd_uses_layered_lead_score_and_report() -> None:
@@ -157,6 +193,14 @@ def test_build_scd_uses_layered_lead_score_and_report() -> None:
         "lead_shadow",
     }
     assert {"break", "drop", "peak"} <= set(report["sections"])
+    assert report["sources"]["counts"]["melodic"] > 0
+    assert report["sources"]["counts"]["effect"] > 0
+    assert report["sources"]["first_event_seconds"]["effect"] <= 15.5
+    assert {effect["name"] for effect in report["effects"]} == {
+        "lead_fx_tease",
+        "lead_fx_throw",
+        "lead_fx_whoop",
+    }
     assert set(report["coherence"]) == {"pad", "arp", "chords", "perc"}
 
 
@@ -194,4 +238,6 @@ def test_nrt_renders_short_lead_bus_stem(tmp_path: Path) -> None:
         "lead_air",
         "lead_shadow",
     }
-    assert report["sections"] == {"break": 4}
+    assert report["sections"]["break"] >= 4
+    assert report["sources"]["counts"]["melodic"] == 4
+    assert report["sources"]["counts"]["effect"] > 0

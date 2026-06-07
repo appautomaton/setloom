@@ -20,6 +20,7 @@ from pathlib import Path
 
 from setloom.midi import PPQ, NoteEvent, total_ticks
 from setloom.parts import ALL_PARTS, part_rng
+from setloom.parts.base import SCALES, parse_key
 from setloom.schema import TrackSpec, load_spec
 
 SC_APP_SCLANG = "/Applications/SuperCollider.app/Contents/MacOS/sclang"
@@ -100,6 +101,21 @@ class LeadLayer:
     note_stride: int = 1
 
 
+@dataclass(frozen=True)
+class LeadEffect:
+    """One phrase-aware rave/effect source row family inside the lead bus."""
+
+    name: str
+    synth: str
+    role: str
+    spectral_range: str
+    phase_rule: str
+    arrangement_role: str
+    rationale: str
+    degree: int
+    transpose: int = 0
+
+
 LEAD_LAYERS = (
     LeadLayer(
         name="lead_body",
@@ -143,6 +159,40 @@ LEAD_LAYERS = (
         section_amp={"break": 0.12, "peak": 0.18, "default": 0.0},
         transpose=-12,
         note_stride=2,
+    ),
+)
+
+LEAD_EFFECTS = (
+    LeadEffect(
+        name="lead_fx_tease",
+        synth="vibe_lead_air",
+        role="early filtered identity cue",
+        spectral_range="3-5.5 kHz filtered air/resonance",
+        phase_rule="wide only after high-pass; no low-mid smear",
+        arrangement_role="intro/groove cue before the main motif arrives",
+        rationale="The listener needs a signature before the break; a tease avoids full-hook overload.",
+        degree=0,
+    ),
+    LeadEffect(
+        name="lead_fx_throw",
+        synth="vibe_lead_edge",
+        role="dark resonant throw",
+        spectral_range="1.2-4.8 kHz short-tonal motion",
+        phase_rule="narrow transient with filtered tail",
+        arrangement_role="break/drop/peak phrase marker and response",
+        rationale="Throws create rave-functional identity without turning the lead into a plain note line.",
+        degree=4,
+    ),
+    LeadEffect(
+        name="lead_fx_whoop",
+        synth="vibe_lead_body",
+        role="semi-pitched whoop response",
+        spectral_range="500 Hz-3.5 kHz swept body",
+        phase_rule="mostly center with only high-passed width",
+        arrangement_role="drop/peak call-response, never continuous foreground",
+        rationale="A response gesture supplies stage/rave character while leaving motif space intact.",
+        degree=7,
+        transpose=12,
     ),
 )
 
@@ -238,9 +288,70 @@ def lead_layer_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
             layered["synth"] = layer.synth
             layered["layer"] = layer.name
             layered["role"] = layer.role
+            layered["source"] = "melodic"
             layered["section"] = section
             rows.append(layered)
     return sorted(rows, key=lambda r: (r["start"], r["layer"], r["note"]))
+
+
+def _lead_effect_note(spec: TrackSpec, effect: LeadEffect) -> int:
+    pitch_class, quality = parse_key(spec.key)
+    scale = SCALES[quality]
+    base = 12 * 6 + pitch_class
+    return base + effect.transpose + 12 * (effect.degree // len(scale)) + scale[effect.degree % len(scale)]
+
+
+def lead_effect_score(spec: TrackSpec) -> list[dict]:
+    """Deterministic phrase-aware lead-effect source rows.
+
+    These rows are source events, not another melodic note layer. They create
+    early identity and break/drop/peak call-response before Slice 2 assigns
+    dedicated effect SynthDefs.
+    """
+    by_kind = {kind: start for start, _end, kind in section_windows(spec)}
+    score: list[dict] = []
+    schedule = (
+        ("intro", 4.0, "lead_fx_tease", 0.18, 1.0),
+        ("intro", 7.0, "lead_fx_tease", 0.14, 0.75),
+        ("groove_a", 0.0, "lead_fx_throw", 0.16, 0.50),
+        ("groove_a", 4.0, "lead_fx_tease", 0.12, 0.75),
+        ("break", 0.0, "lead_fx_throw", 0.22, 1.0),
+        ("break", 8.0, "lead_fx_tease", 0.16, 1.25),
+        ("drop", 0.0, "lead_fx_throw", 0.20, 0.45),
+        ("drop", 8.0, "lead_fx_whoop", 0.17, 0.70),
+        ("drop", 16.0, "lead_fx_throw", 0.18, 0.45),
+        ("drop", 24.0, "lead_fx_whoop", 0.18, 0.70),
+        ("peak", 0.0, "lead_fx_throw", 0.24, 0.55),
+        ("peak", 8.0, "lead_fx_whoop", 0.22, 0.80),
+        ("peak", 16.0, "lead_fx_tease", 0.18, 1.0),
+        ("peak", 24.0, "lead_fx_whoop", 0.22, 0.80),
+        ("peak", 32.0, "lead_fx_throw", 0.24, 0.55),
+    )
+    effects = {effect.name: effect for effect in LEAD_EFFECTS}
+    for section, bar_offset, name, amp, dur_bars in schedule:
+        if section not in by_kind:
+            continue
+        effect = effects[name]
+        start_tick = by_kind[section] + round(bar_offset * 4 * PPQ)
+        row = {
+            "note": _lead_effect_note(spec, effect),
+            "amp": amp,
+            "start": round(ticks_to_seconds(start_tick, spec.bpm), 6),
+            "dur": round(ticks_to_seconds(round(dur_bars * 4 * PPQ), spec.bpm), 6),
+            "synth": effect.synth,
+            "effect": effect.name,
+            "role": effect.role,
+            "source": "effect",
+            "section": section,
+        }
+        score.append(row)
+    return sorted(score, key=lambda r: (r["start"], r["effect"], r["note"]))
+
+
+def lead_bus_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
+    """Combined lead bus source score: melodic motif layers plus effect gestures."""
+    rows = lead_layer_score(events, spec) + lead_effect_score(spec)
+    return sorted(rows, key=lambda r: (r["start"], r.get("source", ""), r.get("layer", ""), r["note"]))
 
 
 def lead_layer_score_json(events: list[NoteEvent], spec: TrackSpec) -> str:
@@ -256,12 +367,24 @@ def lead_coherence_report() -> dict[str, dict[str, str]]:
 def lead_bus_report(score: list[dict]) -> dict:
     """Inspectable lead-bus report for render logs and listening handoff."""
     layer_counts = {layer.name: 0 for layer in LEAD_LAYERS}
+    effect_counts = {effect.name: 0 for effect in LEAD_EFFECTS}
+    source_counts: dict[str, int] = {}
+    source_first_event_seconds: dict[str, float] = {}
     section_counts: dict[str, int] = {}
     for row in score:
         layer = row.get("layer")
+        effect = row.get("effect")
+        source = row.get("source", "unknown")
         section = row.get("section")
         if layer in layer_counts:
             layer_counts[layer] += 1
+        if effect in effect_counts:
+            effect_counts[effect] += 1
+        if isinstance(source, str):
+            source_counts[source] = source_counts.get(source, 0) + 1
+            start = float(row["start"])
+            if source not in source_first_event_seconds or start < source_first_event_seconds[source]:
+                source_first_event_seconds[source] = start
         if isinstance(section, str):
             section_counts[section] = section_counts.get(section, 0) + 1
     return {
@@ -277,6 +400,22 @@ def lead_bus_report(score: list[dict]) -> dict:
             }
             for layer in LEAD_LAYERS
         ],
+        "effects": [
+            {
+                "name": effect.name,
+                "synth": effect.synth,
+                "role": effect.role,
+                "spectral_range": effect.spectral_range,
+                "phase_rule": effect.phase_rule,
+                "arrangement_role": effect.arrangement_role,
+                "events": effect_counts[effect.name],
+            }
+            for effect in LEAD_EFFECTS
+        ],
+        "sources": {
+            "counts": dict(sorted(source_counts.items())),
+            "first_event_seconds": dict(sorted(source_first_event_seconds.items())),
+        },
         "sections": dict(sorted(section_counts.items())),
         "coherence": lead_coherence_report(),
     }
@@ -308,7 +447,7 @@ def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[Note
 def score_for_part(part: str, events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
     """Part-specific NRT score rows, including routed buses."""
     if part == "lead":
-        return lead_layer_score(events, spec)
+        return lead_bus_score(events, spec)
     score = export_score(events, spec.bpm)
     if part == "perc":  # route each note to its kit synth, pre-scaled per role
         by_tick = {(e.start_tick, e.note): e for e in events}

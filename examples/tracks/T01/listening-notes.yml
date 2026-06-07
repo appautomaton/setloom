@@ -120,16 +120,16 @@ routing:
 ---
 # Take 10: T02 modern lead-bus render handoff, 2026-06-07
 
-take: T02 seed-1001 modern lead-bus render (/tmp/setloom-modern-lead-check)
+take: T02 seed-1001 modern lead-bus candidate (candidates/T02/seed-1001/variant-01)
 decision: pending_human_listening
 
 render:
-  stem_lead: "/tmp/setloom-modern-lead-check/stem-lead.wav"
-  mix: "/tmp/setloom-modern-lead-check/vibe_mix.wav"
-  lead_bus_report: "/tmp/setloom-modern-lead-check/lead-bus-report.json"
+  stem_lead: "candidates/T02/seed-1001/variant-01/stem-lead.wav"
+  mix: "candidates/T02/seed-1001/variant-01/vibe_mix.wav"
+  lead_bus_report: "candidates/T02/seed-1001/variant-01/lead-bus-report.json"
 
 notes:
-  automation: "End-to-end T02 render completed with the new lead bus; automated checks prove structure/renderability only."
+  automation: "End-to-end T02 render completed with the new lead bus and copied into candidates for listening; automated checks prove structure/renderability only."
   lead_bus: "stem-lead.wav now renders from lead_body, lead_edge, lead_air, and lead_shadow instead of one monolithic lead patch."
   coherence: "lead-bus-report.json records neighboring-part rules for pad, arp, chords, and percussion."
   gate: "Taste owner listening is required before this render can be accepted as musically successful."
