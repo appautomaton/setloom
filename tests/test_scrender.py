@@ -27,6 +27,7 @@ from setloom.scrender import (
     lead_atmos_score,
     lead_coherence_report,
     lead_effect_score,
+    lead_family_score_groups,
     lead_layer_score,
     lead_layer_score_json,
     loudness_proof_command,
@@ -114,16 +115,19 @@ def test_lead_layer_synthdefs_document_modern_roles() -> None:
         assert f"SynthDef(\\{layer.synth}" in text
     for effect in LEAD_EFFECTS:
         assert f"SynthDef(\\{effect.synth}" in text
+    for atmosphere in LEAD_ATMOSPHERES:
+        assert f"SynthDef(\\{atmosphere.synth}" in text
     for phrase in (
-        "role-separated layers",
+        "Lead-family bus",
         "dark rave function, not MIDI-note patches",
         "Anti-EDM safeguards",
         "no static single saw/pulse disco lead",
         "no bright",
+        "no dry MIDI-note playback",
         "no equal-status octave/unison doubling",
         "Spectral allocation",
-        "Stereo/phase",
-        "Psychoacoustic role",
+        "atmosphere-family",
+        "row-level cutoff",
         "Temporal rule",
     ):
         assert phrase in text
@@ -197,6 +201,9 @@ def test_lead_bus_score_covers_section_roles() -> None:
         + section_burst("outro")
     )
     rows = score_for_part("lead", events, spec)
+    groups = lead_family_score_groups(rows)
+    assert set(groups) == {"main", "fx", "atmos"}
+    assert all(groups[family] for family in groups)
     by_section = {}
     melodic_rows = [row for row in rows if row["source"] == "melodic"]
     for row in melodic_rows:
@@ -235,6 +242,9 @@ def test_build_scd_uses_layered_lead_score_and_report() -> None:
         assert f"'{effect.synth}'" in scd
     for atmosphere in LEAD_ATMOSPHERES:
         assert f"'{atmosphere.synth}'" in scd
+    assert "'cutoff', n[5]" in scd
+    assert "'drive', n[6]" in scd
+    assert "'accent', n[11]" in scd
     assert "'vibe_lead'" not in scd
     assert scd == build_scd("lead", list(score), spec.bpm, 247.7, "/tmp/lead.wav")
 
@@ -318,6 +328,9 @@ def test_nrt_renders_short_lead_bus_stem(tmp_path: Path) -> None:
     render_part_stem("lead", events, spec, out, find_sclang(), tmp_path)
     report = json.loads((tmp_path / "lead-bus-report.json").read_text(encoding="utf-8"))
     assert out.exists() and out.stat().st_size > 44100
+    for stem in LEAD_FAMILY_STEMS.values():
+        assert (tmp_path / stem).exists()
+        assert (tmp_path / stem).stat().st_size > 44100
     assert {layer["name"] for layer in report["layers"]} == {
         "lead_body",
         "lead_edge",
