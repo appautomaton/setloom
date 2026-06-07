@@ -9,7 +9,10 @@ import pytest
 from setloom.midi import PPQ, NoteEvent
 from setloom.schema import load_spec
 from setloom.scrender import (
+    LEAD_ATMOSPHERES,
     LEAD_EFFECTS,
+    LEAD_EXPRESSION_KEYS,
+    LEAD_FAMILY_STEMS,
     LEAD_LAYERS,
     LOUDNESS_TARGET_LUFS,
     MASTER_CHAIN,
@@ -21,6 +24,7 @@ from setloom.scrender import (
     export_score_json,
     find_sclang,
     lead_bus_report,
+    lead_atmos_score,
     lead_coherence_report,
     lead_effect_score,
     lead_layer_score,
@@ -78,8 +82,10 @@ def test_lead_layers_define_required_roles() -> None:
     assert set(layers) == {"lead_body", "lead_edge", "lead_air", "lead_shadow"}
     for layer in layers.values():
         assert layer.synth.startswith("vibe_lead_")
+        assert layer.family in LEAD_FAMILY_STEMS
         assert layer.role and layer.spectral_range and layer.phase_rule
         assert layer.arrangement_role and layer.rationale
+    assert {layer.family for layer in layers.values()} == {"main", "atmos"}
 
 
 def test_lead_effects_define_required_roles() -> None:
@@ -87,8 +93,19 @@ def test_lead_effects_define_required_roles() -> None:
     assert set(effects) == {"lead_fx_tease", "lead_fx_throw", "lead_fx_whoop"}
     for effect in effects.values():
         assert effect.synth.startswith("vibe_lead_fx_")
+        assert effect.family == "fx"
         assert effect.role and effect.spectral_range and effect.phase_rule
         assert effect.arrangement_role and effect.rationale
+
+
+def test_lead_atmospheres_define_required_roles() -> None:
+    atmospheres = {atmosphere.name: atmosphere for atmosphere in LEAD_ATMOSPHERES}
+    assert set(atmospheres) == {"lead_atmos_bloom", "lead_atmos_pulse"}
+    for atmosphere in atmospheres.values():
+        assert atmosphere.synth.startswith("vibe_lead_atmos_")
+        assert atmosphere.family == "atmos"
+        assert atmosphere.role and atmosphere.spectral_range and atmosphere.phase_rule
+        assert atmosphere.arrangement_role and atmosphere.rationale
 
 
 def test_lead_layer_synthdefs_document_modern_roles() -> None:
@@ -123,10 +140,14 @@ def test_lead_layer_score_is_section_aware_and_deterministic() -> None:
         "lead_shadow",
     }
     assert {"break", "peak"} <= {row["section"] for row in rows}
+    assert {"main", "atmos"} <= {row["family"] for row in rows}
+    assert all(key in rows[0] for key in LEAD_EXPRESSION_KEYS)
     break_body = [row["amp"] for row in rows if row["layer"] == "lead_body" and row["section"] == "break"]
     peak_body = [row["amp"] for row in rows if row["layer"] == "lead_body" and row["section"] == "peak"]
     assert max(break_body) > max(peak_body)
     assert any(row["note"] < 72 for row in rows if row["layer"] == "lead_shadow")
+    assert len({row["cutoff"] for row in rows if row["layer"] == "lead_body"}) > 2
+    assert len({row["motion"] for row in rows if row["section"] == "peak"}) > 2
     assert lead_layer_score_json(lead, spec) == lead_layer_score_json(list(reversed(lead)), spec)
 
 
@@ -141,11 +162,24 @@ def test_t02_entry_profile_and_effect_source_arrive_early() -> None:
     assert min(row["start"] for row in effects) <= 15.5
     assert any(row["start"] < 69.68 for row in effects)
     assert {row["source"] for row in effects} == {"effect"}
+    assert {row["family"] for row in effects} == {"fx"}
     by_section = {}
     for row in effects:
         by_section.setdefault(row["section"], set()).add(row["effect"])
     assert by_section["break"] != by_section["drop"]
     assert by_section["drop"] != by_section["peak"]
+
+
+def test_lead_atmosphere_source_supports_family_motion() -> None:
+    spec = load_spec(T02)
+    atmos = lead_atmos_score(spec)
+    assert atmos
+    assert {row["source"] for row in atmos} == {"atmos"}
+    assert {row["family"] for row in atmos} == {"atmos"}
+    assert {row["atmos"] for row in atmos} == {"lead_atmos_bloom", "lead_atmos_pulse"}
+    assert min(row["start"] for row in atmos) < 16.0
+    assert {"intro", "groove_a", "break", "drop", "peak"} <= {row["section"] for row in atmos}
+    assert len({row["motion"] for row in atmos}) > 3
 
 
 def test_lead_bus_score_covers_section_roles() -> None:
@@ -178,6 +212,11 @@ def test_lead_bus_score_covers_section_roles() -> None:
     assert {"intro", "groove_a", "break", "drop", "peak"} <= {
         row["section"] for row in effect_rows
     }
+    atmos_rows = [row for row in rows if row["source"] == "atmos"]
+    assert atmos_rows
+    assert min(row["start"] for row in atmos_rows) < min(row["start"] for row in melodic_rows)
+    assert {"main", "fx", "atmos"} == {row["family"] for row in rows}
+    assert len({row["accent"] for row in rows}) > 4
 
 
 def test_build_scd_uses_layered_lead_score_and_report() -> None:
@@ -194,6 +233,8 @@ def test_build_scd_uses_layered_lead_score_and_report() -> None:
         assert f"'{layer.synth}'" in scd
     for effect in LEAD_EFFECTS:
         assert f"'{effect.synth}'" in scd
+    for atmosphere in LEAD_ATMOSPHERES:
+        assert f"'{atmosphere.synth}'" in scd
     assert "'vibe_lead'" not in scd
     assert scd == build_scd("lead", list(score), spec.bpm, 247.7, "/tmp/lead.wav")
 
@@ -207,11 +248,21 @@ def test_build_scd_uses_layered_lead_score_and_report() -> None:
     assert {"break", "drop", "peak"} <= set(report["sections"])
     assert report["sources"]["counts"]["melodic"] > 0
     assert report["sources"]["counts"]["effect"] > 0
+    assert report["sources"]["counts"]["atmos"] > 0
     assert report["sources"]["first_event_seconds"]["effect"] <= 15.5
+    assert set(report["families"]["counts"]) == {"main", "fx", "atmos"}
+    assert all(report["families"]["counts"][family] > 0 for family in LEAD_FAMILY_STEMS)
+    assert set(report["families"]["stems"]) == {"main", "fx", "atmos"}
+    assert report["expression"]["cutoff"]["distinct"] > 4
+    assert report["expression"]["motion"]["distinct"] > 4
     assert {effect["name"] for effect in report["effects"]} == {
         "lead_fx_tease",
         "lead_fx_throw",
         "lead_fx_whoop",
+    }
+    assert {atmosphere["name"] for atmosphere in report["atmospheres"]} == {
+        "lead_atmos_bloom",
+        "lead_atmos_pulse",
     }
     assert set(report["coherence"]) == {"pad", "arp", "chords", "perc"}
 

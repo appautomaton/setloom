@@ -76,6 +76,17 @@ MIX_GAINS = {
 
 LOUDNESS_TARGET_LUFS = (-8.0, -7.0)
 PEAK_TARGET_DBFS = -1.0
+LEAD_EXPRESSION_KEYS = ("cutoff", "drive", "tone", "motion", "width", "space", "accent")
+LEAD_FAMILY_STEMS = {
+    "main": "stem-lead-main.wav",
+    "fx": "stem-lead-fx.wav",
+    "atmos": "stem-lead-atmos.wav",
+}
+LEAD_FAMILY_MIX_GAINS = {
+    "main": 1.00,
+    "fx": 0.90,
+    "atmos": 0.85,
+}
 MASTER_CHAIN = (
     "highpass", "28",
     "compand", "0.003,0.090",
@@ -104,6 +115,7 @@ class LeadLayer:
 
     name: str
     synth: str
+    family: str
     role: str
     spectral_range: str
     phase_rule: str
@@ -120,6 +132,23 @@ class LeadEffect:
 
     name: str
     synth: str
+    family: str
+    role: str
+    spectral_range: str
+    phase_rule: str
+    arrangement_role: str
+    rationale: str
+    degree: int
+    transpose: int = 0
+
+
+@dataclass(frozen=True)
+class LeadAtmosphere:
+    """One long-form atmosphere or motion source inside the lead family."""
+
+    name: str
+    synth: str
+    family: str
     role: str
     spectral_range: str
     phase_rule: str
@@ -133,6 +162,7 @@ LEAD_LAYERS = (
     LeadLayer(
         name="lead_body",
         synth="vibe_lead_body",
+        family="main",
         role="center identity/body",
         spectral_range="400 Hz-3.5 kHz",
         phase_rule="mostly center; width only above 350 Hz",
@@ -143,6 +173,7 @@ LEAD_LAYERS = (
     LeadLayer(
         name="lead_edge",
         synth="vibe_lead_edge",
+        family="main",
         role="transient/attack bite",
         spectral_range="1.2-4.8 kHz",
         phase_rule="narrow transient; no sustained wide brass",
@@ -153,6 +184,7 @@ LEAD_LAYERS = (
     LeadLayer(
         name="lead_air",
         synth="vibe_lead_air",
+        family="atmos",
         role="filtered air/grain space",
         spectral_range="3-5.5 kHz, low-passed below hat band",
         phase_rule="wide only after high-pass; never owns >6 kHz brightness",
@@ -164,6 +196,7 @@ LEAD_LAYERS = (
     LeadLayer(
         name="lead_shadow",
         synth="vibe_lead_shadow",
+        family="main",
         role="quiet octave/response support",
         spectral_range="160-900 Hz, high-passed chest support",
         phase_rule="mono/narrow; no phase damage in body range",
@@ -179,6 +212,7 @@ LEAD_EFFECTS = (
     LeadEffect(
         name="lead_fx_tease",
         synth="vibe_lead_fx_tease",
+        family="fx",
         role="early filtered identity cue",
         spectral_range="3-5.5 kHz filtered air/resonance",
         phase_rule="wide only after high-pass; no low-mid smear",
@@ -189,6 +223,7 @@ LEAD_EFFECTS = (
     LeadEffect(
         name="lead_fx_throw",
         synth="vibe_lead_fx_throw",
+        family="fx",
         role="dark resonant throw",
         spectral_range="1.2-4.8 kHz short-tonal motion",
         phase_rule="narrow transient with filtered tail",
@@ -199,12 +234,39 @@ LEAD_EFFECTS = (
     LeadEffect(
         name="lead_fx_whoop",
         synth="vibe_lead_fx_whoop",
+        family="fx",
         role="semi-pitched whoop response",
         spectral_range="500 Hz-3.5 kHz swept body",
         phase_rule="mostly center with only high-passed width",
         arrangement_role="drop/peak call-response, never continuous foreground",
         rationale="A response gesture supplies stage/rave character while leaving motif space intact.",
         degree=7,
+        transpose=12,
+    ),
+)
+
+LEAD_ATMOSPHERES = (
+    LeadAtmosphere(
+        name="lead_atmos_bloom",
+        synth="vibe_lead_atmos_bloom",
+        family="atmos",
+        role="wide filtered lead atmosphere",
+        spectral_range="650 Hz-4.8 kHz dark breath and harmonic motion",
+        phase_rule="wide after high-pass; no low-mid phase smear",
+        arrangement_role="prepares break and peak without becoming the hook",
+        rationale="A professional lead often has a support atmosphere that makes the main line feel staged.",
+        degree=2,
+    ),
+    LeadAtmosphere(
+        name="lead_atmos_pulse",
+        synth="vibe_lead_atmos_pulse",
+        family="atmos",
+        role="rhythmic shimmer/tension support",
+        spectral_range="1.1-5 kHz filtered rhythmic grain",
+        phase_rule="stereo texture only above the body band",
+        arrangement_role="adds phrase motion around drop and peak responses",
+        rationale="Subtle pulsed texture prevents the stem from reading as dry note playback.",
+        degree=5,
         transpose=12,
     ),
 )
@@ -276,10 +338,93 @@ def section_windows(spec: TrackSpec) -> list[tuple[int, int, str]]:
 
 def section_kind_at_tick(tick: int, windows: list[tuple[int, int, str]]) -> str:
     """Return the collapsed section type containing ``tick``."""
+    kind, _start, _end = section_info_at_tick(tick, windows)
+    return kind
+
+
+def section_info_at_tick(tick: int, windows: list[tuple[int, int, str]]) -> tuple[str, int, int]:
+    """Return the collapsed section type and absolute tick window for ``tick``."""
     for start, end, kind in windows:
         if start <= tick < end:
-            return kind
-    return "unknown"
+            return kind, start, end
+    return "unknown", 0, 0
+
+
+def _lead_expression(
+    section: str,
+    tick: int,
+    section_start: int,
+    family: str,
+    role_name: str,
+) -> dict[str, float]:
+    """Deterministic row-level expression for lead-family sound design."""
+    profiles = {
+        "intro": (1850.0, 1.35, 0.30, 0.34, 0.30, 0.42, 0.90),
+        "groove_a": (2100.0, 1.55, 0.38, 0.44, 0.30, 0.36, 0.95),
+        "break": (2650.0, 1.85, 0.58, 0.54, 0.34, 0.50, 1.06),
+        "drop": (2150.0, 2.00, 0.48, 0.66, 0.26, 0.32, 0.92),
+        "peak": (3300.0, 2.25, 0.72, 0.86, 0.42, 0.58, 1.14),
+        "outro": (1700.0, 1.30, 0.28, 0.28, 0.20, 0.30, 0.75),
+    }
+    cutoff, drive, tone, motion, width, space, accent = profiles.get(section, profiles["drop"])
+    ticks_per_bar = 4 * PPQ
+    bar_in_section = max(0.0, (tick - section_start) / ticks_per_bar) if section_start else 0.0
+    slot = int(bar_in_section // 2) % 8
+    phrase = int(bar_in_section // 16)
+    slot_lift = (0.00, 0.05, 0.10, 0.03, 0.00, 0.08, 0.12, 0.06)[slot]
+    phrase_lift = 0.04 if phrase % 2 else 0.0
+
+    cutoff *= 1.0 + slot_lift + phrase_lift
+    tone = min(0.95, tone + slot_lift * 0.55)
+    motion = min(0.98, motion + slot_lift * 0.70 + phrase_lift)
+    accent = min(1.35, accent + slot_lift * 0.45)
+
+    if family == "fx":
+        cutoff *= 1.12
+        drive += 0.20
+        tone = min(0.98, tone + 0.12)
+        motion = min(0.98, motion + 0.14)
+        space = min(0.95, space + 0.22)
+        accent = min(1.35, accent + 0.05)
+    elif family == "atmos":
+        cutoff *= 1.18
+        drive = max(1.25, drive - 0.20)
+        tone = min(0.90, tone + 0.06)
+        motion = min(0.98, motion + 0.18)
+        width = min(0.95, width + 0.30)
+        space = min(0.98, space + 0.30)
+        accent = min(1.15, accent)
+
+    if role_name == "lead_edge":
+        cutoff = max(cutoff, 4300.0)
+        drive += 0.35
+        tone = min(1.0, tone + 0.16)
+        width = min(width, 0.18)
+        space *= 0.55
+    elif role_name == "lead_air":
+        cutoff = max(cutoff, 4800.0)
+        drive = 1.20
+        motion = min(1.0, motion + 0.18)
+        width = min(1.0, width + 0.22)
+        space = min(1.0, space + 0.24)
+    elif role_name == "lead_shadow":
+        cutoff = 880.0 + slot * 24
+        drive = 1.60
+        tone = 0.22
+        motion = min(0.55, motion)
+        width = 0.08
+        space = 0.14
+        accent *= 0.88
+
+    return {
+        "cutoff": round(cutoff, 3),
+        "drive": round(drive, 3),
+        "tone": round(tone, 3),
+        "motion": round(motion, 3),
+        "width": round(width, 3),
+        "space": round(space, 3),
+        "accent": round(accent, 3),
+    }
 
 
 def lead_layer_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
@@ -288,7 +433,7 @@ def lead_layer_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
     rows: list[dict] = []
     for index, row in enumerate(export_score(events, spec.bpm)):
         tick = round(row["start"] * spec.bpm * PPQ / 60)
-        section = section_kind_at_tick(tick, windows)
+        section, section_start, _section_end = section_info_at_tick(tick, windows)
         for layer in LEAD_LAYERS:
             if index % layer.note_stride != 0:
                 continue
@@ -302,16 +447,26 @@ def lead_layer_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
             layered["layer"] = layer.name
             layered["role"] = layer.role
             layered["source"] = "melodic"
+            layered["family"] = layer.family
             layered["section"] = section
+            layered.update(_lead_expression(section, tick, section_start, layer.family, layer.name))
             rows.append(layered)
     return sorted(rows, key=lambda r: (r["start"], r["layer"], r["note"]))
 
 
-def _lead_effect_note(spec: TrackSpec, effect: LeadEffect) -> int:
+def _lead_degree_note(spec: TrackSpec, degree: int, transpose: int = 0) -> int:
     pitch_class, quality = parse_key(spec.key)
     scale = SCALES[quality]
     base = 12 * 6 + pitch_class
-    return base + effect.transpose + 12 * (effect.degree // len(scale)) + scale[effect.degree % len(scale)]
+    return base + transpose + 12 * (degree // len(scale)) + scale[degree % len(scale)]
+
+
+def _lead_effect_note(spec: TrackSpec, effect: LeadEffect) -> int:
+    return _lead_degree_note(spec, effect.degree, effect.transpose)
+
+
+def _lead_atmos_note(spec: TrackSpec, atmosphere: LeadAtmosphere) -> int:
+    return _lead_degree_note(spec, atmosphere.degree, atmosphere.transpose)
 
 
 def lead_effect_score(spec: TrackSpec) -> list[dict]:
@@ -355,16 +510,67 @@ def lead_effect_score(spec: TrackSpec) -> list[dict]:
             "effect": effect.name,
             "role": effect.role,
             "source": "effect",
+            "family": effect.family,
             "section": section,
         }
+        row.update(_lead_expression(section, start_tick, by_kind[section], effect.family, effect.name))
         score.append(row)
     return sorted(score, key=lambda r: (r["start"], r["effect"], r["note"]))
 
 
+def lead_atmos_score(spec: TrackSpec) -> list[dict]:
+    """Longer lead-family atmosphere rows that support the main motif."""
+    by_kind = {kind: start for start, _end, kind in section_windows(spec)}
+    schedule = (
+        ("intro", 6.0, "lead_atmos_bloom", 0.10, 2.0),
+        ("groove_a", 4.0, "lead_atmos_pulse", 0.09, 1.5),
+        ("break", 0.0, "lead_atmos_bloom", 0.16, 8.0),
+        ("break", 8.0, "lead_atmos_bloom", 0.14, 8.0),
+        ("drop", 8.0, "lead_atmos_pulse", 0.11, 2.0),
+        ("drop", 24.0, "lead_atmos_pulse", 0.12, 2.0),
+        ("peak", 0.0, "lead_atmos_bloom", 0.18, 8.0),
+        ("peak", 8.0, "lead_atmos_pulse", 0.14, 2.0),
+        ("peak", 16.0, "lead_atmos_bloom", 0.17, 8.0),
+        ("peak", 24.0, "lead_atmos_pulse", 0.15, 2.0),
+        ("peak", 32.0, "lead_atmos_bloom", 0.18, 8.0),
+    )
+    atmospheres = {atmosphere.name: atmosphere for atmosphere in LEAD_ATMOSPHERES}
+    score: list[dict] = []
+    for section, bar_offset, name, amp, dur_bars in schedule:
+        if section not in by_kind:
+            continue
+        atmosphere = atmospheres[name]
+        start_tick = by_kind[section] + round(bar_offset * 4 * PPQ)
+        row = {
+            "note": _lead_atmos_note(spec, atmosphere),
+            "amp": amp,
+            "start": round(ticks_to_seconds(start_tick, spec.bpm), 6),
+            "dur": round(ticks_to_seconds(round(dur_bars * 4 * PPQ), spec.bpm), 6),
+            "synth": atmosphere.synth,
+            "atmos": atmosphere.name,
+            "role": atmosphere.role,
+            "source": "atmos",
+            "family": atmosphere.family,
+            "section": section,
+        }
+        row.update(_lead_expression(section, start_tick, by_kind[section], atmosphere.family, name))
+        score.append(row)
+    return sorted(score, key=lambda r: (r["start"], r["atmos"], r["note"]))
+
+
 def lead_bus_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
     """Combined lead bus source score: melodic motif layers plus effect gestures."""
-    rows = lead_layer_score(events, spec) + lead_effect_score(spec)
-    return sorted(rows, key=lambda r: (r["start"], r.get("source", ""), r.get("layer", ""), r["note"]))
+    rows = lead_layer_score(events, spec) + lead_effect_score(spec) + lead_atmos_score(spec)
+    return sorted(
+        rows,
+        key=lambda r: (
+            r["start"],
+            r.get("family", ""),
+            r.get("source", ""),
+            r.get("layer", r.get("effect", r.get("atmos", ""))),
+            r["note"],
+        ),
+    )
 
 
 def lead_layer_score_json(events: list[NoteEvent], spec: TrackSpec) -> str:
@@ -381,18 +587,31 @@ def lead_bus_report(score: list[dict]) -> dict:
     """Inspectable lead-bus report for render logs and listening handoff."""
     layer_counts = {layer.name: 0 for layer in LEAD_LAYERS}
     effect_counts = {effect.name: 0 for effect in LEAD_EFFECTS}
+    atmos_counts = {atmosphere.name: 0 for atmosphere in LEAD_ATMOSPHERES}
+    family_counts = {family: 0 for family in LEAD_FAMILY_STEMS}
+    family_first_event_seconds: dict[str, float] = {}
     source_counts: dict[str, int] = {}
     source_first_event_seconds: dict[str, float] = {}
     section_counts: dict[str, int] = {}
+    expression_values: dict[str, set[float]] = {key: set() for key in LEAD_EXPRESSION_KEYS}
     for row in score:
         layer = row.get("layer")
         effect = row.get("effect")
+        atmos = row.get("atmos")
+        family = row.get("family")
         source = row.get("source", "unknown")
         section = row.get("section")
         if layer in layer_counts:
             layer_counts[layer] += 1
         if effect in effect_counts:
             effect_counts[effect] += 1
+        if atmos in atmos_counts:
+            atmos_counts[atmos] += 1
+        if isinstance(family, str):
+            family_counts[family] = family_counts.get(family, 0) + 1
+            start = float(row["start"])
+            if family not in family_first_event_seconds or start < family_first_event_seconds[family]:
+                family_first_event_seconds[family] = start
         if isinstance(source, str):
             source_counts[source] = source_counts.get(source, 0) + 1
             start = float(row["start"])
@@ -400,11 +619,15 @@ def lead_bus_report(score: list[dict]) -> dict:
                 source_first_event_seconds[source] = start
         if isinstance(section, str):
             section_counts[section] = section_counts.get(section, 0) + 1
+        for key in LEAD_EXPRESSION_KEYS:
+            if key in row:
+                expression_values[key].add(float(row[key]))
     return {
         "layers": [
             {
                 "name": layer.name,
                 "synth": layer.synth,
+                "family": layer.family,
                 "role": layer.role,
                 "spectral_range": layer.spectral_range,
                 "phase_rule": layer.phase_rule,
@@ -417,6 +640,7 @@ def lead_bus_report(score: list[dict]) -> dict:
             {
                 "name": effect.name,
                 "synth": effect.synth,
+                "family": effect.family,
                 "role": effect.role,
                 "spectral_range": effect.spectral_range,
                 "phase_rule": effect.phase_rule,
@@ -425,9 +649,35 @@ def lead_bus_report(score: list[dict]) -> dict:
             }
             for effect in LEAD_EFFECTS
         ],
+        "atmospheres": [
+            {
+                "name": atmosphere.name,
+                "synth": atmosphere.synth,
+                "family": atmosphere.family,
+                "role": atmosphere.role,
+                "spectral_range": atmosphere.spectral_range,
+                "phase_rule": atmosphere.phase_rule,
+                "arrangement_role": atmosphere.arrangement_role,
+                "events": atmos_counts[atmosphere.name],
+            }
+            for atmosphere in LEAD_ATMOSPHERES
+        ],
+        "families": {
+            "counts": dict(sorted(family_counts.items())),
+            "first_event_seconds": dict(sorted(family_first_event_seconds.items())),
+            "stems": dict(sorted(LEAD_FAMILY_STEMS.items())),
+        },
         "sources": {
             "counts": dict(sorted(source_counts.items())),
             "first_event_seconds": dict(sorted(source_first_event_seconds.items())),
+        },
+        "expression": {
+            key: {
+                "distinct": len(values),
+                "min": min(values) if values else None,
+                "max": max(values) if values else None,
+            }
+            for key, values in sorted(expression_values.items())
         },
         "sections": dict(sorted(section_counts.items())),
         "coherence": lead_coherence_report(),
