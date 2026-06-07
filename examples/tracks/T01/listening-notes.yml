@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+
+track_id: T01
+take: take-001
+decision: revise
+
+notes:
+  groove: "Kick works. Bass should be simpler in the first 32 bars."
+  melody: "Motif direction is useful, but the break is too sentimental."
+  energy: "Drop needs more lift without becoming too EDM."
+  mix: "Low end needs a technical check before approval."
+
+requests:
+  - "Simplify bass before the first break."
+  - "Make the arp darker and less bright."
+  - "Shorten the first break by 16 bars."
+  - "Render four new variants with the same seed family."
+

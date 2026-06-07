@@ -1,0 +1,82 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+
+id: melodic-progressive-techno
+status: draft
+summary: >
+  Dark, melodic, progressive, club-functional techno with patient arrangement,
+  controlled low end, hypnotic groove, cinematic tension, and DJ-set-aware flow.
+
+reference_anchors:
+  starting:
+    - Innellea
+    - Colyn
+    - 8Kays
+    - Marino Canal
+    - ENAI
+    - Jono Stephenson
+    - Miss Monique
+  expansion:
+    - WhoMadeWho
+    - Arodes
+    - Massano
+    - Jan Blomqvist
+    - Adriatique
+
+style_vector_defaults:
+  darkness: 8
+  melodic_emotion: 7
+  groove_hypnosis: 8
+  cinematic_tension: 7
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 5
+  vocal_presence: 1
+  organic_texture: 2
+  peak_time_pressure: 6
+
+generation_defaults:
+  bpm_range: [122, 126]
+  meter: "4/4"
+  phrase_lengths_bars: [16, 32]
+  section_model:
+    intro: 32
+    groove_a: 32
+    break_1: 32
+    drop_1: 64
+    break_2: 32
+    peak: 64
+    outro: 32
+
+rules:
+  kick:
+    - "Use stable four-on-the-floor timing."
+    - "Keep the kick controlled and mixable."
+    - "Do not generate chaotic kick timing."
+  bass:
+    - "Keep bass mono-aware and rhythmically locked."
+    - "Protect kick/bass separation in timing, note length, and register."
+    - "Prefer hypnotic drive over unnecessary note density."
+  melody:
+    - "Use motif-based writing."
+    - "Keep hooks sparse enough to survive repetition."
+    - "Use GenAI for melodic variants, not final approval."
+  arrangement:
+    - "Preserve mixable intro and outro sections."
+    - "Use long-form energy movement."
+    - "Breakdowns may be emotional but should not collapse dancefloor motion."
+
+review_vocabulary:
+  too_busy: "Too many events compete for attention."
+  too_flat: "Energy does not lift across sections."
+  too_edm: "Drop or hook feels over-signaled, obvious, or festival-pop."
+  too_static: "Loop works but does not evolve."
+  not_club_functional: "Track is hard to mix, weak on low end, or lacks phrase clarity."
+  low_end_conflict: "Kick and bass compete in timing, tuning, length, or spectral space."
+
+approval:
+  human_listening_required: true
+  final_states:
+    - keep
+    - revise
+    - reject
+

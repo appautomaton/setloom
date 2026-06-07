@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+
+id: T01
+title: dark-orbit-draft
+style_pack: melodic-progressive-techno
+seed: 1001
+bpm: 124
+key: D minor
+energy: 6
+duration_bars: 256
+
+intent:
+  summary: "Dark, patient, hypnotic, melodic club track for early-to-mid set lift."
+  avoid:
+    - "festival-pop drop"
+    - "overcrowded bassline"
+    - "long break that loses dancefloor motion"
+
+sections:
+  intro: 32
+  groove_a: 32
+  break_1: 32
+  drop_1: 64
+  break_2: 32
+  peak: 64
+  outro: 32
+
+palette:
+  kick: "deep short saturated"
+  bass: "rolling mono-aware offbeat drive"
+  drums: "tight hats, restrained percussion, phrase-aware fills"
+  chords: "minor stabs with controlled reverb"
+  pad: "wide dark evolving atmosphere"
+  lead: "delayed pluck motif, sparse and emotional"
+  fx: "noise risers, impacts, reverse swells"
+
+style_vector:
+  darkness: 8
+  melodic_emotion: 7
+  groove_hypnosis: 8
+  cinematic_tension: 7
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 5
+  vocal_presence: 0
+  organic_texture: 1
+  peak_time_pressure: 6
+
+render_targets:
+  midi:
+    - drums
+    - bass
+    - chords
+    - arp
+    - lead
+    - fills
+  stems:
+    - kick
+    - bass
+    - drums
+    - chords
+    - pad
+    - lead
+    - fx
+  demo_mix: true
+
+human_gate:
+  required: true
+
