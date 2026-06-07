@@ -36,8 +36,8 @@ MOTIF_FAMILIES = (
 Motif = tuple[tuple[int, int, int], ...]
 
 # Phrase plans over eight 2-bar slots: "M" states the motif, "V" plays the
-# phrase's variation, None rests. Breaks open with a 4-bar reveal delay.
-BREAK_FIRST_PLAN = (None, None, "M", "M", "V", "M", "M", "V")
+# phrase's variation, None rests. Breaks open with the reveal delay.
+BREAK_FIRST_PLAN = (None,) * REVEAL_DELAY_SLOTS + ("M", "M", "V", "M", "M", "V")
 BREAK_PLAN = ("M", "M", "V", "M", "M", "V", "M", "V")
 PEAK_PLAN = ("M", "M", None, "V", "M", "M", None, "V")
 

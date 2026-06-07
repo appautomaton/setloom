@@ -39,11 +39,16 @@ PROGRESSIONS = {
     ),
 }
 
-# Chord colors from style.yml harmony_and_melody.chord_colors (assumption:
-# model-knowledge, cross-model review 2026-06-07); built from scale intervals.
+# Chord colors after style.yml harmony_and_melody.chord_colors (assumption:
+# model-knowledge, cross-model review 2026-06-07). Deliberate divergences:
+# "minor_triad" is generalized to "triad" (diatonic quality comes from the
+# scale degree) and "no_third_power_stack" is deferred to a later pass.
 COLORS = ("triad", "sus2", "sus4", "add9")
 
-# Harmonic rhythm options in bars per full 4-chord cycle.
+# Harmonic rhythm options in bars per full PROGRESSION cycle — note the unit:
+# style.yml harmony_and_melody.harmonic_rhythm_bars [4, 8, 16] reads as
+# bars-per-cycle here; 16 is dropped because a 16-bar cycle over 4 chords
+# (4 bars per chord) exceeds the drop/peak density this v1 targets.
 HARMONIC_RHYTHM_BARS = (4, 8)
 
 
@@ -75,6 +80,8 @@ class ChordsGenerator:
         base = 12 * (CHORD_OCTAVE + 1) + pitch_class
         # Exactly three rng draws per run keeps draw counts structural.
         progression = rng.choice(PROGRESSIONS[quality])
+        if len(progression) != 4:  # HARMONIC_RHYTHM_BARS semantics assume 4-chord cycles
+            raise ValueError(f"progressions must have 4 chords, got {len(progression)}")
         color = rng.choice(COLORS)
         bars_per_chord = rng.choice(HARMONIC_RHYTHM_BARS) // len(progression)
         events: list[NoteEvent] = []
