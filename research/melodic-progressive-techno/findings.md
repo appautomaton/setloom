@@ -2,7 +2,7 @@
 
 # Findings: Melodic/Progressive Techno Reference Survey
 
-Synthesis of the corpus under `corpus/` (12 anchors, 34 tracks, 13 sets; surveyed 2026-06-07).
+Synthesis of the corpus under `corpus/` (12 anchors, 34 track entries — **33 unique records**, since "Home" appears under both `marino-canal.yml` and `adriatique.yml` and is marked `duplicate_of`; 13 sets; surveyed 2026-06-07).
 Constraint-like statements only; every claim cites corpus files. Values the metadata cannot settle are routed to `listening-worksheet.md`.
 
 ## Method and Confidence
@@ -51,6 +51,17 @@ Encoded machine-readable in `style-packs/melodic-progressive-techno/style.yml` `
 3. **no-listening-no-approval** (policy): `docs/workflow.md` listening gate.
 4. **low-end-conflict** (assumption): kick/bass register-and-timing overlap; thresholds need listening-derived data.
 5. **unmixable-edges** (assumption): no mixable intro/outro; anchor intro/outro lengths unmeasured pending listening.
+
+## Cross-Model Knowledge Layer (added 2026-06-07)
+
+A Codex (GPT-5.5) domain review (`reviews/codex-cross-model-review-2026-06-07.md`) contributed
+a `model-knowledge` evidence tier — between bare assumption and corpus evidence — now folded
+into `style.yml`: section_model_presets (replacing the 288-bar draft that violated the pack's
+own club-length rule), bass articulation weights, sidechain-as-rhythm, percussion character,
+harmony/motif policy, tension devices, five lane-specific review-vocabulary terms, and three
+rejection rules. All carry `model-knowledge` tags and route to the listening worksheet for
+final confirmation. Two of its corpus flags were web-verified same day (Arodes Beyond
+corroboration stands; Euphoria = 2024-11-01, [PIAS] Électronique).
 
 ## Audit Question Status
 

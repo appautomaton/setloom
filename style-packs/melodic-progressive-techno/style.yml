@@ -3,6 +3,10 @@
 # Annotation contract: every grammar value carries either
 #   # evidence: <corpus-backed, see research/melodic-progressive-techno/>
 #   # assumption: <design choice or value pending the listening gate>
+# model-knowledge assumptions come from the cross-model review
+# (research/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md)
+# and rank between bare assumptions and corpus evidence: domain-expert priors
+# awaiting listening confirmation.
 
 id: melodic-progressive-techno
 status: surveyed
@@ -10,6 +14,7 @@ provenance:
   surveyed: 2026-06-07
   corpus: research/melodic-progressive-techno/corpus/
   findings: research/melodic-progressive-techno/findings.md
+  cross_model_review: research/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md
 
 summary: >
   Dark, melodic, progressive, club-functional techno with patient arrangement,
@@ -34,32 +39,106 @@ reference_anchors:
 style_vector_defaults:
   # Style-vector values are taste-level judgments that metadata cannot settle;
   # all remain assumptions until the listening worksheet returns.
-  darkness: 8              # assumption: pending listening
-  melodic_emotion: 7       # assumption: pending listening
-  groove_hypnosis: 8       # assumption: pending listening
-  cinematic_tension: 7     # assumption: pending listening
+  darkness: 8              # assumption: pending listening; model-knowledge endorses for Afterlife-adjacent center
+  melodic_emotion: 7       # assumption: pending listening; model-knowledge endorses
+  groove_hypnosis: 8       # assumption: pending listening; model-knowledge endorses
+  cinematic_tension: 7     # assumption: pending listening; model-knowledge endorses
   bass_aggression: 6       # assumption: pending listening
-  arrangement_patience: 9  # assumption: pending listening
+  arrangement_patience: 9  # assumption: pending listening; model-knowledge flags as high unless extended-mix profile
   hook_density: 5          # assumption: pending listening
-  vocal_presence: 1        # assumption: pending listening; corpus shows guest vocals are common in anchor catalogs (findings.md), value may be understated
-  organic_texture: 2       # assumption: pending listening
-  peak_time_pressure: 6    # assumption: pending listening
+  vocal_presence: 1        # assumption: pending listening; corpus + model-knowledge both suggest understated for expansion anchors
+  organic_texture: 2       # assumption: pending listening; model-knowledge flags as understated for expansion anchors
+  peak_time_pressure: 6    # assumption: pending listening; model-knowledge flags as conservative for peak-time side
 
 generation_defaults:
+  default_bpm: 123         # evidence: corpus median ~123 (findings.md "BPM"); model-knowledge concurs
   bpm_range: [120, 125]    # evidence: corroborated anchor tracks span 120-125, median ~123 (findings.md "BPM"); draft [122,126] corrected
   bpm_outliers_observed: [118, 128]  # evidence: single-source extremes (whomadewho.yml 118, innellea.yml Euphoria 128)
-  key_mode_bias: minor     # evidence: ~2:1 minor:major across 34 sourced corpus keys (findings.md "Key practice")
+  bpm_soft_outliers: [118, 128]      # assumption: model-knowledge (cross-model review 2026-06-07) — allow for organic/vocal and peak-time variants
+  key_mode_bias: minor     # evidence: ~2:1 minor:major across sourced corpus keys (findings.md "Key practice")
+  key_mode_weights:        # assumption: model-knowledge (cross-model review 2026-06-07); minor share matches corpus 2:1
+    minor: 0.67
+    major: 0.25
+    ambiguous_or_suspended: 0.08
   club_edit_duration_minutes: [5.5, 8.5]  # evidence: 16 sourced durations 5:37-8:35, median ~6:38 (findings.md "Duration")
   meter: "4/4"             # assumption: genre norm, not verified per-track
   phrase_lengths_bars: [16, 32]  # assumption: pending listening; no structure evidence in corpus
-  section_model:           # assumption: pending listening; structure_notes unknown for all 34 corpus tracks
-    intro: 32
-    groove_a: 32
-    break_1: 32
-    drop_1: 64
-    break_2: 32
-    peak: 64
-    outro: 32
+  section_model_default: club_default_224  # assumption: model-knowledge (cross-model review 2026-06-07)
+  section_model_presets:
+    # assumption: model-knowledge (cross-model review 2026-06-07). Supersedes the
+    # draft 288-bar section_model, which exceeded the pack's own club-length rule
+    # (validator + cross-model review converged on this). 224 bars @123 ~ 7:17,
+    # 256 bars @123 ~ 8:20 — both inside the club window with 16/32-bar phrasing.
+    club_default_224:
+      intro: 32
+      groove_a: 32
+      break_1: 16
+      drop_1: 48
+      break_2: 16
+      peak: 48
+      outro: 32
+    extended_peak_256:
+      intro: 32
+      groove_a: 32
+      break_1: 32
+      drop_1: 64
+      break_2: 32
+      peak: 32
+      outro: 32
+
+groove:
+  # assumption: model-knowledge (cross-model review 2026-06-07) — the lane's drive
+  # comes from controlled bass/pump/top-loop interaction; pending listening.
+  bass_articulation_weights:
+    rolling_16th_sub: 0.45
+    offbeat_eighth_pulse: 0.35
+    syncopated_pedal: 0.20
+  sidechain:
+    required: true
+    duck_on_kick_beats: true
+    recovery_shape: medium_slow
+  percussion:
+    offbeat_open_hat: optional
+    closed_hat_16th_bed: section_dependent
+    random_percussion: phrase_patterned_only
+    swing_amount: [0.00, 0.06]
+
+harmony_and_melody:
+  # assumption: model-knowledge (cross-model review 2026-06-07) — hooks work through
+  # repetition, restraint, modal color, gradual variation; pending listening.
+  harmonic_rhythm_bars: [4, 8, 16]
+  chord_colors:
+    - minor_triad
+    - sus2
+    - sus4
+    - add9
+    - no_third_power_stack
+  lead_density:
+    break: sparse_to_medium
+    drop: sparse
+    peak: medium_with_repetition
+  motif_policy:
+    repeat_then_vary: true
+    max_competing_melodic_layers: 2
+
+arrangement_tension:
+  # assumption: model-knowledge (cross-model review 2026-06-07) — breakdown/drop
+  # identity is mostly automation, density, and tension management; pending listening.
+  breakdown_devices:
+    - filtered_pad_swell
+    - motif_reveal
+    - kick_drop_or_kick_under
+    - noise_riser
+    - false_drop
+  drop_entry_devices:
+    - bass_return
+    - arp_density_lift
+    - cymbal_or_noise_impact
+  automation_lanes_required:
+    - filter_cutoff
+    - reverb_send
+    - delay_feedback
+    - arp_density
 
 rules:
   # Normative design rules. Corpus structure evidence is pending (findings.md);
@@ -72,14 +151,17 @@ rules:
     - "Keep bass mono-aware and rhythmically locked."
     - "Protect kick/bass separation in timing, note length, and register."
     - "Prefer hypnotic drive over unnecessary note density."
+    - "Leave sidechain-shaped space around kick onsets."  # assumption: model-knowledge (cross-model review 2026-06-07)
   melody:
     - "Use motif-based writing."
     - "Keep hooks sparse enough to survive repetition."
     - "Use GenAI for melodic variants, not final approval."
+    - "Repeat, then vary; never stack more than two foreground melodic layers."  # assumption: model-knowledge (cross-model review 2026-06-07)
   arrangement:
     - "Preserve mixable intro and outro sections."
     - "Use long-form energy movement."
     - "Breakdowns may be emotional but should not collapse dancefloor motion."
+    - "Fills exist to mark phrase and section transitions, not to fire on a timer."  # assumption: model-knowledge (cross-model review 2026-06-07)
 
 review_vocabulary:
   # Definitional reviewer vocabulary; calibration examples route through listening.
@@ -89,9 +171,16 @@ review_vocabulary:
   too_static: "Loop works but does not evolve."                 # assumption: definitional
   not_club_functional: "Track is hard to mix, weak on low end, or lacks phrase clarity."  # assumption: definitional
   low_end_conflict: "Kick and bass compete in timing, tuning, length, or spectral space."  # assumption: definitional
+  weak_pump: "Kick and bass do not breathe as one groove."      # assumption: model-knowledge (cross-model review 2026-06-07)
+  overfilled_low_mids: "Pads, bass, and toms crowd the 120-400 Hz body."  # assumption: model-knowledge (cross-model review 2026-06-07)
+  too_preset_arp: "Arp is continuous, literal, or lacks phrase-level motion."  # assumption: model-knowledge (cross-model review 2026-06-07)
+  break_loses_floor: "Breakdown removes too much pulse or takes too long to re-enter."  # assumption: model-knowledge (cross-model review 2026-06-07)
+  no_phrase_payoff: "Energy changes do not land on clear 16/32-bar boundaries."  # assumption: model-knowledge (cross-model review 2026-06-07)
 
 rejection_rules:
   # Candidate auto-reject conditions for the Spec 6 review gate (rationale: findings.md).
+  # The generation gate evaluates spec-evaluable rules; the rest guide review and
+  # generator construction.
   - id: bpm-out-of-lane
     rule: "Reject candidates outside bpm_range unless the track spec explicitly overrides."
     basis: evidence
@@ -107,6 +196,15 @@ rejection_rules:
   - id: unmixable-edges
     rule: "Reject arrangements without mixable intro and outro sections."
     basis: assumption
+  - id: melodic-layer-overload
+    rule: "Reject candidates with more than two foreground melodic layers in a drop or peak."
+    basis: assumption  # model-knowledge (cross-model review 2026-06-07)
+  - id: weak-pump
+    rule: "Reject candidates whose bass note length or onset pattern leaves no kick-duck space."
+    basis: assumption  # model-knowledge (cross-model review 2026-06-07)
+  - id: unphrased-fills
+    rule: "Reject fills that occur mechanically without section or phrase-transition purpose."
+    basis: assumption  # model-knowledge (cross-model review 2026-06-07)
 
 approval:
   human_listening_required: true
