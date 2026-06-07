@@ -116,3 +116,32 @@ notes:
 routing:
   - "Lead: await Codex anatomy verdict (layers/unison/saturation/octave support), then rebuild vibe_lead."
   - "Pad: follow-up Codex consult same session — saturation placement + harmonic excitement for vibe_pad while keeping the dark spectrum fence (<=5.5k melodic LPF)."
+
+---
+# Take 10: T02 modern lead-bus render handoff, 2026-06-07
+
+take: T02 seed-1001 modern lead-bus render (/tmp/setloom-modern-lead-check)
+decision: pending_human_listening
+
+render:
+  stem_lead: "/tmp/setloom-modern-lead-check/stem-lead.wav"
+  mix: "/tmp/setloom-modern-lead-check/vibe_mix.wav"
+  lead_bus_report: "/tmp/setloom-modern-lead-check/lead-bus-report.json"
+
+notes:
+  automation: "End-to-end T02 render completed with the new lead bus; automated checks prove structure/renderability only."
+  lead_bus: "stem-lead.wav now renders from lead_body, lead_edge, lead_air, and lead_shadow instead of one monolithic lead patch."
+  coherence: "lead-bus-report.json records neighboring-part rules for pad, arp, chords, and percussion."
+  gate: "Taste owner listening is required before this render can be accepted as musically successful."
+
+questions:
+  - "Does stem-lead.wav still sound tacky?"
+  - "Does the lead read as contemporary melodic techno rather than 1980s/disco?"
+  - "Does the lead bus feel like multiple professional layers, or still like one patch?"
+  - "Does the lead arrangement support the track instead of dominating it?"
+  - "Do the lead, pad, arp, chords, and percussion sound like one coherent production, or modern pieces pasted together?"
+
+routing:
+  - "If still tacky: revise layer timbre, not loudness or brightness alone."
+  - "If layered but incoherent: revise lead/pad/arp/chord/percussion role rules before adding new patches."
+  - "If acceptable: treat this as the baseline lead-bus architecture for the melodic/progressive techno style grammar."
