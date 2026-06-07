@@ -60,3 +60,44 @@ def test_missing_outro_fails_unmixable_edges(pack) -> None:
 def test_unknown_override_rejected(pack) -> None:
     with pytest.raises(ValueError, match="unknown override"):
         evaluate_gate(load_spec(T01), pack, allow_overrides={"not-a-rule"})
+
+
+# --- Duration profiles (change 2026-06-07-duration-profiles) ---
+
+STREAMING_SECTIONS = {
+    "intro": 16, "groove_a": 16, "break_1": 16, "drop_1": 32, "peak": 32, "outro": 16,
+}
+
+
+def test_streaming_edit_passes_gate(pack) -> None:
+    spec = _spec_with(
+        duration_profile="streaming_edit", duration_bars=128, sections=STREAMING_SECTIONS
+    )
+    result = evaluate_gate(spec, pack)
+    assert result.passed, result.blocking
+
+
+def test_streaming_edit_without_break_fails_identity(pack) -> None:
+    sections = {"intro": 16, "groove_a": 32, "drop_1": 32, "peak": 32, "outro": 16}
+    spec = _spec_with(duration_profile="streaming_edit", duration_bars=128, sections=sections)
+    result = evaluate_gate(spec, pack)
+    assert [v.rule_id for v in result.blocking] == ["short-edit-identity"]
+
+
+def test_128_bars_under_club_profile_fails_length(pack) -> None:
+    spec = _spec_with(duration_bars=128, sections=STREAMING_SECTIONS)  # default club profile
+    result = evaluate_gate(spec, pack)
+    assert "club-length" in [v.rule_id for v in result.blocking]
+
+
+def test_streaming_edit_skips_mixable_edges(pack) -> None:
+    sections = {"groove_a": 32, "break_1": 16, "drop_1": 32, "peak": 48}  # no intro/outro
+    spec = _spec_with(duration_profile="streaming_edit", duration_bars=128, sections=sections)
+    result = evaluate_gate(spec, pack)
+    assert "unmixable-edges" not in [v.rule_id for v in result.blocking]
+
+
+def test_unknown_duration_profile_raises(pack) -> None:
+    spec = _spec_with(duration_profile="vinyl_edit")
+    with pytest.raises(ValueError, match="unknown duration_profile"):
+        evaluate_gate(spec, pack)

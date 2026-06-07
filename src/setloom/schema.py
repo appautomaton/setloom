@@ -54,6 +54,7 @@ class TrackSpec(BaseModel):
     id: str
     title: str
     style_pack: str
+    duration_profile: str = "club_extended"  # product form; windows live in the style pack
     seed: int = Field(ge=0)
     bpm: float = Field(gt=0)
     key: str

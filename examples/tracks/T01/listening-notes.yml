@@ -36,3 +36,20 @@ requests:
 routing:
   - "melodic-layer-overload rule: first ears datapoint says 3 layers at peak is fine — annotate in style.yml, do not tighten generation."
   - "Peak richness folds into the part-roster expansion change (pad bed) + peak-specific chord/lead behavior."
+
+---
+# Take 3: 10-part roster WAV audition, 2026-06-07
+
+take: seed-1001 generator-v2 + 10-part roster (WAV audition)
+decision: revise
+
+notes:
+  vibe: "Fine now; peak/density complaints resolved at the rhythm-preview level."
+  completeness: "Sounds complete for a notes-layer preview (sound design understood as not-yet, Spec 5)."
+  duration: "Too long — target should be around 4 minutes (current T01 = 256 bars ~ 8:15)."
+
+requests:
+  - "A ~4-minute arrangement target."
+
+routing:
+  - "Tension with corpus evidence: club edits measured 5:37-8:35 and rejection rule floors at 5:00. Likely resolution: duration PROFILES (club_edit vs radio/streaming edit), not a single target — consult Codex (user request) then encode."

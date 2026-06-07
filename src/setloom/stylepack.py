@@ -15,8 +15,14 @@ import yaml
 
 from setloom.schema import TrackSpec
 
-SPEC_EVALUABLE_RULES = ("bpm-out-of-lane", "club-length", "unmixable-edges")
+SPEC_EVALUABLE_RULES = (
+    "bpm-out-of-lane",
+    "club-length",
+    "unmixable-edges",
+    "short-edit-identity",
+)
 
+# Fallback window when a pack predates duration_profiles.
 CLUB_LENGTH_MIN_SECONDS = 5 * 60
 CLUB_LENGTH_MAX_SECONDS = 9 * 60
 
@@ -78,18 +84,39 @@ def _check_bpm_out_of_lane(spec: TrackSpec, pack: StylePack) -> GateViolation | 
     return None
 
 
+def duration_profile(spec: TrackSpec, pack: StylePack) -> dict:
+    """The spec's duration profile from the pack; ValueError on unknown ids."""
+    profiles = pack.generation_defaults.get("duration_profiles") or {}
+    if not profiles:
+        # Pack predates duration_profiles: behave like the original club gate.
+        return {
+            "duration_minutes": [CLUB_LENGTH_MIN_SECONDS / 60, CLUB_LENGTH_MAX_SECONDS / 60],
+            "mixable_edges": "required",
+        }
+    profile = profiles.get(spec.duration_profile)
+    if profile is None:
+        raise ValueError(
+            f"unknown duration_profile {spec.duration_profile!r} "
+            f"(known: {sorted(profiles)})"
+        )
+    return profile
+
+
 def _check_club_length(spec: TrackSpec, pack: StylePack) -> GateViolation | None:
-    seconds = spec_duration_seconds(spec)
-    if seconds < CLUB_LENGTH_MIN_SECONDS or seconds > CLUB_LENGTH_MAX_SECONDS:
+    window = duration_profile(spec, pack)["duration_minutes"]
+    minutes = spec_duration_seconds(spec) / 60
+    if minutes < window[0] or minutes > window[1]:
         return GateViolation(
             "club-length",
-            f"duration {seconds / 60:.2f} min outside club window "
-            f"[{CLUB_LENGTH_MIN_SECONDS // 60}:00, {CLUB_LENGTH_MAX_SECONDS // 60}:00]",
+            f"duration {minutes:.2f} min outside {spec.duration_profile} window "
+            f"[{window[0]:g}, {window[1]:g}] min",
         )
     return None
 
 
 def _check_unmixable_edges(spec: TrackSpec, pack: StylePack) -> GateViolation | None:
+    if duration_profile(spec, pack).get("mixable_edges") != "required":
+        return None  # profile-scoped: streaming edits run reduced edges
     names = list(spec.sections)
     has_intro = bool(names) and names[0].startswith("intro")
     has_outro = bool(names) and names[-1].startswith("outro")
@@ -101,10 +128,24 @@ def _check_unmixable_edges(spec: TrackSpec, pack: StylePack) -> GateViolation | 
     return None
 
 
+def _check_short_edit_identity(spec: TrackSpec, pack: StylePack) -> GateViolation | None:
+    if spec.duration_profile != "streaming_edit":
+        return None
+    has_break = any(name.startswith("break") for name in spec.sections)
+    has_peak = any(name.startswith("peak") for name in spec.sections)
+    if not (has_break and has_peak):
+        return GateViolation(
+            "short-edit-identity",
+            "a streaming edit must keep at least one break and one peak section",
+        )
+    return None
+
+
 _CHECKS = {
     "bpm-out-of-lane": _check_bpm_out_of_lane,
     "club-length": _check_club_length,
     "unmixable-edges": _check_unmixable_edges,
+    "short-edit-identity": _check_short_edit_identity,
 }
 
 

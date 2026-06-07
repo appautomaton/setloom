@@ -85,6 +85,31 @@ generation_defaults:
       break_2: 32
       peak: 32
       outro: 32
+    streaming_edit_128:
+      # assumption: model-knowledge (cross-model consult 2026-06-07); user take-3
+      # requested ~4 minutes. Single-arc short edit: one break, one drop/peak,
+      # reduced edges. 128 bars ~ 4:08 at 124 BPM — phrase-clean beats exact 4:00.
+      intro: 16
+      groove_a: 16
+      break_1: 16
+      drop_1: 32
+      peak: 32
+      outro: 16
+
+  duration_profiles:
+    # assumption: model-knowledge (cross-model consult 2026-06-07). Two product
+    # forms, not one rule change: club evidence (5:37-8:35 corpus, Beatport
+    # sampling = DJ tools) stays intact; the short form is a streaming/radio
+    # edit, a different artifact generated natively (never blind-trimmed).
+    club_extended:
+      duration_minutes: [5.0, 9.0]   # evidence: corpus duration span + club-length rule
+      mixable_edges: required
+      section_model_preset: club_default_224
+    streaming_edit:
+      duration_minutes: [3.75, 4.35]
+      mixable_edges: reduced
+      section_model_preset: streaming_edit_128
+      product_label: "streaming/radio edit, not a club extended mix"
 
 groove:
   # assumption: model-knowledge (cross-model review 2026-06-07) — the lane's drive
@@ -185,8 +210,8 @@ rejection_rules:
     rule: "Reject candidates outside bpm_range unless the track spec explicitly overrides."
     basis: evidence
   - id: club-length
-    rule: "Reject final club edits shorter than 5:00 or longer than 9:00."
-    basis: evidence
+    rule: "Reject candidates outside their duration profile's window (club_extended: 5:00-9:00)."
+    basis: evidence  # profile-scoped since 2026-06-07; streaming window is assumption-basis
   - id: no-listening-no-approval
     rule: "Reject any final-approval request that lacks human listening notes."
     basis: policy
@@ -195,7 +220,10 @@ rejection_rules:
     basis: assumption
   - id: unmixable-edges
     rule: "Reject arrangements without mixable intro and outro sections."
-    basis: assumption
+    basis: assumption  # profile-scoped: enforced only where mixable_edges is required
+  - id: short-edit-identity
+    rule: "For streaming_edit, reject arrangements without at least one break and one peak section."
+    basis: assumption  # model-knowledge (cross-model consult 2026-06-07)
   - id: melodic-layer-overload
     rule: "Reject candidates with more than two foreground melodic layers in a drop or peak."
     basis: assumption  # model-knowledge (cross-model review 2026-06-07)
