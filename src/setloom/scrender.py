@@ -15,6 +15,7 @@ import json
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 
 from setloom.midi import PPQ, NoteEvent, total_ticks
@@ -82,6 +83,92 @@ SYNTH_FOR_PART = {
     "fx": "vibe_fx",
 }
 
+
+@dataclass(frozen=True)
+class LeadLayer:
+    """One role inside the lead bus: musical intent plus deterministic render rules."""
+
+    name: str
+    synth: str
+    role: str
+    spectral_range: str
+    phase_rule: str
+    arrangement_role: str
+    rationale: str
+    section_amp: dict[str, float]
+    transpose: int = 0
+    note_stride: int = 1
+
+
+LEAD_LAYERS = (
+    LeadLayer(
+        name="lead_body",
+        synth="vibe_lead_body",
+        role="center identity/body",
+        spectral_range="400 Hz-3.5 kHz",
+        phase_rule="mostly center; width only above 350 Hz",
+        arrangement_role="foreground in break/peak, reduced in drop",
+        rationale="The ear needs one stable mid-band identity before edge or air can read.",
+        section_amp={"break": 0.95, "drop": 0.45, "peak": 0.85, "default": 0.0},
+    ),
+    LeadLayer(
+        name="lead_edge",
+        synth="vibe_lead_edge",
+        role="transient/attack bite",
+        spectral_range="1.2-4.8 kHz",
+        phase_rule="narrow transient; no sustained wide brass",
+        arrangement_role="short attack layer, stronger in peak than drop",
+        rationale="Attack defines presence without making the whole lead bright or retro.",
+        section_amp={"break": 0.24, "drop": 0.12, "peak": 0.32, "default": 0.0},
+    ),
+    LeadLayer(
+        name="lead_air",
+        synth="vibe_lead_air",
+        role="filtered air/grain space",
+        spectral_range="3-5.5 kHz, low-passed below hat band",
+        phase_rule="wide only after high-pass; never owns >6 kHz brightness",
+        arrangement_role="sparse motion around emotional sections",
+        rationale="Air creates contemporary texture while leaving hats/shakers as the top band.",
+        section_amp={"break": 0.10, "peak": 0.18, "default": 0.0},
+        note_stride=3,
+    ),
+    LeadLayer(
+        name="lead_shadow",
+        synth="vibe_lead_shadow",
+        role="quiet octave/response support",
+        spectral_range="160-900 Hz, high-passed chest support",
+        phase_rule="mono/narrow; no phase damage in body range",
+        arrangement_role="response/support only, never every note at equal status",
+        rationale="A shadow layer gives weight without turning into a second foreground lead.",
+        section_amp={"break": 0.12, "peak": 0.18, "default": 0.0},
+        transpose=-12,
+        note_stride=2,
+    ),
+)
+
+LEAD_COHERENCE = {
+    "pad": {
+        "shares": "dark saturation family and slow filter motion",
+        "avoids": "420 Hz body collision and full-bright pad under foreground lead",
+        "rule": "pad stays warm/wide; lead body owns focused identity when foreground",
+    },
+    "arp": {
+        "shares": "filtered pluck language and delay grid",
+        "avoids": "equal foreground 1-5 kHz motion",
+        "rule": "arp is texture/support when lead body is foreground",
+    },
+    "chords": {
+        "shares": "minor/suspended harmonic color and dark room",
+        "avoids": "break-body wash competing with pad plus lead",
+        "rule": "break chords step back when pad/lead carry body",
+    },
+    "perc": {
+        "shares": "dark spectral ceiling and phrase-aware restraint",
+        "avoids": "lead air stealing the open >6 kHz hat/shaker band",
+        "rule": "lead air is filtered below the percussion brightness zone",
+    },
+}
+
 # Section-aware level scaling (cross-model lead consult, 2026-06-07): a fixed
 # lead fader is too blunt for this lane. Factors multiply the note amp relative
 # to the part's base mix gain (lead base = -8 dB vs kick at peak foreground).
@@ -111,6 +198,59 @@ def export_score(events: list[NoteEvent], bpm: float) -> list[dict]:
         for e in events
     ]
     return sorted(rows, key=lambda r: (r["start"], r["note"]))
+
+
+def section_windows(spec: TrackSpec) -> list[tuple[int, int, str]]:
+    """Absolute tick windows with collapsed section type names."""
+    windows: list[tuple[int, int, str]] = []
+    cursor = 0
+    for name, bars in spec.sections.items():
+        end = cursor + bars * 4 * PPQ
+        windows.append((cursor, end, name.rstrip("0123456789_")))
+        cursor = end
+    return windows
+
+
+def section_kind_at_tick(tick: int, windows: list[tuple[int, int, str]]) -> str:
+    """Return the collapsed section type containing ``tick``."""
+    for start, end, kind in windows:
+        if start <= tick < end:
+            return kind
+    return "unknown"
+
+
+def lead_layer_score(events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
+    """Fan logical lead notes into role-specific lead-bus score rows."""
+    windows = section_windows(spec)
+    rows: list[dict] = []
+    for index, row in enumerate(export_score(events, spec.bpm)):
+        tick = round(row["start"] * spec.bpm * PPQ / 60)
+        section = section_kind_at_tick(tick, windows)
+        for layer in LEAD_LAYERS:
+            if index % layer.note_stride != 0:
+                continue
+            scale = layer.section_amp.get(section, layer.section_amp.get("default", 0.0))
+            if scale <= 0:
+                continue
+            layered = dict(row)
+            layered["note"] = row["note"] + layer.transpose
+            layered["amp"] = round(row["amp"] * scale, 4)
+            layered["synth"] = layer.synth
+            layered["layer"] = layer.name
+            layered["role"] = layer.role
+            layered["section"] = section
+            rows.append(layered)
+    return sorted(rows, key=lambda r: (r["start"], r["layer"], r["note"]))
+
+
+def lead_layer_score_json(events: list[NoteEvent], spec: TrackSpec) -> str:
+    """Stable JSON representation for tests and report plumbing."""
+    return json.dumps(lead_layer_score(events, spec), sort_keys=True)
+
+
+def lead_coherence_report() -> dict[str, dict[str, str]]:
+    """Neighboring-part rules that prevent patch-over-patch accumulation."""
+    return {part: dict(rules) for part, rules in LEAD_COHERENCE.items()}
 
 
 def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[NoteEvent]]:
@@ -193,12 +333,7 @@ def render_part_stem(
             row["amp"] = round(row["amp"] * PERC_ROLE_SCALE[synth], 4)
     if part in SECTION_AMP_SCALE:
         scales = SECTION_AMP_SCALE[part]
-        windows = []  # (start_tick, end_tick, section_type)
-        cursor = 0
-        for name, bars in spec.sections.items():
-            end = cursor + bars * 4 * PPQ
-            windows.append((cursor, end, name.rstrip("0123456789_")))
-            cursor = end
+        windows = section_windows(spec)
         for row in score:
             tick = round(row["start"] * spec.bpm * PPQ / 60)
             for lo, hi, kind in windows:

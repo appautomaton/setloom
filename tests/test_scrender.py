@@ -8,10 +8,14 @@ import pytest
 from setloom.midi import NoteEvent
 from setloom.schema import load_spec
 from setloom.scrender import (
+    LEAD_LAYERS,
     build_scd,
     export_score,
     export_score_json,
     find_sclang,
+    lead_coherence_report,
+    lead_layer_score,
+    lead_layer_score_json,
     render_part_stem,
     ticks_to_seconds,
     vibe_events,
@@ -54,6 +58,41 @@ def test_build_scd_contains_patch_and_score() -> None:
     assert scd == build_scd(
         "bass", export_score(events["bass"], spec.bpm), spec.bpm, 247.7, "/tmp/x.wav"
     )
+
+
+def test_lead_layers_define_required_roles() -> None:
+    layers = {layer.name: layer for layer in LEAD_LAYERS}
+    assert set(layers) == {"lead_body", "lead_edge", "lead_air", "lead_shadow"}
+    for layer in layers.values():
+        assert layer.synth.startswith("vibe_lead_")
+        assert layer.role and layer.spectral_range and layer.phase_rule
+        assert layer.arrangement_role and layer.rationale
+
+
+def test_lead_layer_score_is_section_aware_and_deterministic() -> None:
+    spec = load_spec(T02)
+    lead = vibe_events(spec, spec.seed, 1)["lead"]
+    rows = lead_layer_score(lead, spec)
+    assert {row["layer"] for row in rows} == {
+        "lead_body",
+        "lead_edge",
+        "lead_air",
+        "lead_shadow",
+    }
+    assert {"break", "peak"} <= {row["section"] for row in rows}
+    break_body = [row["amp"] for row in rows if row["layer"] == "lead_body" and row["section"] == "break"]
+    peak_body = [row["amp"] for row in rows if row["layer"] == "lead_body" and row["section"] == "peak"]
+    assert max(break_body) > max(peak_body)
+    assert any(row["note"] < 72 for row in rows if row["layer"] == "lead_shadow")
+    assert lead_layer_score_json(lead, spec) == lead_layer_score_json(list(reversed(lead)), spec)
+
+
+def test_lead_coherence_report_names_neighboring_parts() -> None:
+    report = lead_coherence_report()
+    assert set(report) == {"pad", "arp", "chords", "perc"}
+    for rules in report.values():
+        assert set(rules) == {"shares", "avoids", "rule"}
+        assert all(rules.values())
 
 
 @pytest.mark.skipif(find_sclang() is None, reason="SuperCollider not installed")
