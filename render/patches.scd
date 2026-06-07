@@ -18,12 +18,15 @@
 //   drive:        tanh saturation amount; more = denser/darker
 SynthDef(\vibe_kick, { |out=0, freq=50, amp=0.9, sustain=0.3,
                         bodyHi=108, bodyLo=46, bodyTime=0.085, drive=2.2|
-    var pitch = EnvGen.kr(Env([bodyHi, bodyLo], [bodyTime], -7));
-    var body = SinOsc.ar(pitch);
-    var click = HPF.ar(Impulse.ar(0) + (PinkNoise.ar(0.4) *
+    var pitch, body, click, env, sig;
+    // Fixed noise seed: PinkNoise must render byte-identically across runs.
+    RandSeed.ir(1, 47);
+    pitch = EnvGen.kr(Env([bodyHi, bodyLo], [bodyTime], -7));
+    body = SinOsc.ar(pitch);
+    click = HPF.ar(Impulse.ar(0) + (PinkNoise.ar(0.4) *
         EnvGen.kr(Env.perc(0.0005, 0.012))), 900) * 0.5;
-    var env = EnvGen.kr(Env.perc(0.0015, sustain.min(0.4), 1, -6), doneAction: 2);
-    var sig = ((body + click) * drive).tanh * env * amp;
+    env = EnvGen.kr(Env.perc(0.0015, sustain.min(0.4), 1, -6), doneAction: 2);
+    sig = ((body + click) * drive).tanh * env * amp;
     Out.ar(out, sig ! 2);
 }),
 
