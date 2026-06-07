@@ -408,3 +408,46 @@ def test_new_part_seed_divergence(spec) -> None:
         for offset in range(1, 6)
     )
     assert diverged, "pad length, shaker contour, and fx speed all identical across seeds"
+
+
+# --- Slice 2: peak richness (change 2026-06-07-part-roster-peak-richness) ---
+
+
+def test_peak_chords_have_bed_and_stabs(spec) -> None:
+    """At peak, chords carry both a sustained bed and offbeat stabs (dual texture)."""
+    events = _events(spec, "chords")
+    for start_tick, end_tick in _section_windows(spec, ("peak",)):
+        in_peak = [e for e in events if start_tick <= e.start_tick < end_tick]
+        sustained = [e for e in in_peak if e.duration_ticks >= midi.TICKS_PER_BAR]
+        stabs = [e for e in in_peak if e.duration_ticks < midi.TICKS_PER_BAR]
+        assert sustained, "peak lost its sustained harmonic bed"
+        assert stabs, "peak lost its offbeat stabs"
+        # The bed mirrors the stab chord an octave up (same degree, +12), so
+        # the lowest bed note sits exactly an octave above the lowest stab.
+        assert min(e.note for e in sustained) >= min(s.note for s in stabs) + 12
+
+
+def test_peak_lead_development(spec) -> None:
+    """Peak phrases use >= 3 distinct statements including an octave lift."""
+    events = _events(spec, "lead")
+    for start_tick, end_tick in _section_windows(spec, ("peak",)):
+        in_peak = [e for e in events if start_tick <= e.start_tick < end_tick]
+        assert in_peak, "peak has no lead content"
+        slot_ticks = 2 * midi.TICKS_PER_BAR
+        fingerprints = set()
+        slot_notes: dict[int, list[int]] = {}
+        for event in in_peak:
+            slot = (event.start_tick - start_tick) // slot_ticks
+            slot_notes.setdefault(slot, []).append(event.note)
+            fingerprints.add(
+                tuple(
+                    sorted(
+                        (e.start_tick - start_tick - slot * slot_ticks, e.note % 12)
+                        for e in in_peak
+                        if (e.start_tick - start_tick) // slot_ticks == slot
+                    )
+                )
+            )
+        assert len(fingerprints) >= 3, "peak needs M, V, V2/M8 distinct statements"
+        all_notes = [e.note for e in in_peak]
+        assert max(all_notes) - min(all_notes) >= 12, "peak octave lift missing"

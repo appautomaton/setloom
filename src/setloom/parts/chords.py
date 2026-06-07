@@ -24,6 +24,7 @@ from setloom.schema import TrackSpec
 CHORD_OCTAVE = 4  # mid register
 PAD_VELOCITY = 64  # modest pad level in breaks
 STAB_VELOCITY = 70  # short offbeat stabs in drops/peak
+PEAK_BED_VELOCITY = 46  # soft sustained bed an octave up, under the peak stabs
 
 # Diatonic progressions as 0-based scale degrees, e.g. minor i-VI-III-VII.
 PROGRESSIONS = {
@@ -88,22 +89,33 @@ class ChordsGenerator:
         for section, (start_bar, bars) in section_layout(spec).items():
             if not section.startswith(("break", "drop", "peak")):
                 continue
-            sustained = section.startswith("break")
+            # Texture per section: breaks sustain, drops stab, peak does BOTH —
+            # the climax keeps a harmonic bed under the stabs (listening note
+            # 2026-06-07: peak "too simplistic"). The peak bed sits an octave
+            # above the stabs so same-pitch note pairing never collides and the
+            # low mids stay clear (review_vocabulary.overfilled_low_mids).
+            sustained = section.startswith(("break", "peak"))
+            stabs = section.startswith(("drop", "peak"))
+            bed_lift = 12 if section.startswith("peak") else 0
             for bar_in_section in range(bars):
                 bar = start_bar + bar_in_section
                 degree = progression[(bar_in_section // bars_per_chord) % len(progression)]
                 tones = chord_tones(scale, degree, color)
-                if sustained:
-                    if bar_in_section % bars_per_chord != 0:
-                        continue
+                if sustained and bar_in_section % bars_per_chord == 0:
                     span_bars = min(bars_per_chord, bars - bar_in_section)
-                    tick = bar_to_tick(bar)
-                    duration = span_bars * TICKS_PER_BAR
-                    velocity = PAD_VELOCITY
-                else:
+                    velocity = PEAK_BED_VELOCITY if bed_lift else PAD_VELOCITY
+                    for tone in tones:
+                        events.append(
+                            NoteEvent(
+                                2,
+                                base + bed_lift + tone,
+                                velocity,
+                                bar_to_tick(bar),
+                                span_bars * TICKS_PER_BAR,
+                            )
+                        )
+                if stabs:
                     tick = bar_to_tick(bar) + 2 * PPQ + EIGHTH_TICKS  # the "and" of beat 3
-                    duration = EIGHTH_TICKS
-                    velocity = STAB_VELOCITY
-                for tone in tones:
-                    events.append(NoteEvent(2, base + tone, velocity, tick, duration))
+                    for tone in tones:
+                        events.append(NoteEvent(2, base + tone, STAB_VELOCITY, tick, EIGHTH_TICKS))
         return events

@@ -35,11 +35,14 @@ MOTIF_FAMILIES = (
 
 Motif = tuple[tuple[int, int, int], ...]
 
-# Phrase plans over eight 2-bar slots: "M" states the motif, "V" plays the
-# phrase's variation, None rests. Breaks open with the reveal delay.
+# Phrase plans over eight 2-bar slots: "M" states the motif, "V"/"V2" play the
+# phrase's two variations, "M8" lifts the motif an octave, None rests. Breaks
+# open with the reveal delay. Peak runs all eight slots with two transforms and
+# the octave lift — the climax development the listening gate asked for
+# (listening note 2026-06-07: peak "too simplistic and not melodic enough").
 BREAK_FIRST_PLAN = (None,) * REVEAL_DELAY_SLOTS + ("M", "M", "V", "M", "M", "V")
 BREAK_PLAN = ("M", "M", "V", "M", "M", "V", "M", "V")
-PEAK_PLAN = ("M", "M", None, "V", "M", "M", None, "V")
+PEAK_PLAN = ("M", "V", "M8", "V2", "M", "V", "M8", "V2")
 
 TRANSFORMS = ("transpose_up", "displace", "tail_lift")
 
@@ -61,8 +64,9 @@ class LeadGenerator:
         pitch_class, quality = parse_key(spec.key)
         scale = SCALES[quality]
         base = 12 * (LEAD_OCTAVE + 1) + pitch_class
-        # One family draw per run, one transform draw per phrase: draw counts
-        # stay structural (they depend on the spec only, never on outcomes).
+        # One family draw per run; per phrase: one transform draw in breaks,
+        # one two-transform sample in peaks. Draw counts stay structural
+        # (they depend on the spec only, never on outcomes).
         motif = rng.choice(MOTIF_FAMILIES)
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():
@@ -70,20 +74,29 @@ class LeadGenerator:
             if not (is_break or section.startswith("peak")):
                 continue
             for phrase_start in range(0, bars, PHRASE_BARS):
-                transform = rng.choice(TRANSFORMS)
-                varied = _vary(motif, transform)
                 if is_break:
+                    varied = _vary(motif, rng.choice(TRANSFORMS))
+                    varied2 = varied  # breaks use a single variation
                     plan = BREAK_FIRST_PLAN if phrase_start == 0 else BREAK_PLAN
                 else:
+                    first, second = rng.sample(TRANSFORMS, 2)
+                    varied = _vary(motif, first)
+                    varied2 = _vary(motif, second)
                     plan = PEAK_PLAN
                 for slot, kind in enumerate(plan):
                     slot_bar = phrase_start + slot * SLOT_BARS
                     if kind is None or slot_bar + SLOT_BARS > bars:
                         continue
-                    statement = motif if kind == "M" else varied
+                    statement = {"M": motif, "M8": motif, "V": varied, "V2": varied2}[kind]
+                    octave_lift = 12 if kind == "M8" else 0
                     slot_tick = bar_to_tick(start_bar + slot_bar)
                     for degree, start_16th, dur_16ths in statement:
-                        note = base + 12 * (degree // len(scale)) + scale[degree % len(scale)]
+                        note = (
+                            base
+                            + octave_lift
+                            + 12 * (degree // len(scale))
+                            + scale[degree % len(scale)]
+                        )
                         tick = slot_tick + start_16th * SIXTEENTH_TICKS
                         events.append(
                             NoteEvent(4, note, LEAD_VELOCITY, tick, dur_16ths * SIXTEENTH_TICKS)

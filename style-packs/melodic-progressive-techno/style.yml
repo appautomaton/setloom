@@ -199,6 +199,9 @@ rejection_rules:
   - id: melodic-layer-overload
     rule: "Reject candidates with more than two foreground melodic layers in a drop or peak."
     basis: assumption  # model-knowledge (cross-model review 2026-06-07)
+    # ears datapoint (listening 2026-06-07, T01 seed-1001 v2): three layers at
+    # peak judged NOT crowded — thin-per-layer content was the complaint. Rule
+    # kept as review guidance, not generation-blocking; next ears pass decides.
   - id: weak-pump
     rule: "Reject candidates whose bass note length or onset pattern leaves no kick-duck space."
     basis: assumption  # model-knowledge (cross-model review 2026-06-07)
