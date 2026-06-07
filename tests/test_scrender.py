@@ -80,7 +80,7 @@ def test_lead_effects_define_required_roles() -> None:
     effects = {effect.name: effect for effect in LEAD_EFFECTS}
     assert set(effects) == {"lead_fx_tease", "lead_fx_throw", "lead_fx_whoop"}
     for effect in effects.values():
-        assert effect.synth.startswith("vibe_lead_")
+        assert effect.synth.startswith("vibe_lead_fx_")
         assert effect.role and effect.spectral_range and effect.phase_rule
         assert effect.arrangement_role and effect.rationale
 
@@ -89,8 +89,12 @@ def test_lead_layer_synthdefs_document_modern_roles() -> None:
     text = PATCHES.read_text(encoding="utf-8")
     for layer in LEAD_LAYERS:
         assert f"SynthDef(\\{layer.synth}" in text
+    for effect in LEAD_EFFECTS:
+        assert f"SynthDef(\\{effect.synth}" in text
     for phrase in (
         "role-separated layers",
+        "dark rave function, not MIDI-note patches",
+        "Anti-EDM safeguards",
         "no static single saw/pulse disco lead",
         "no bright",
         "no equal-status octave/unison doubling",
@@ -182,6 +186,8 @@ def test_build_scd_uses_layered_lead_score_and_report() -> None:
     scd = build_scd("lead", score, spec.bpm, 247.7, "/tmp/lead.wav")
     for layer in LEAD_LAYERS:
         assert f"'{layer.synth}'" in scd
+    for effect in LEAD_EFFECTS:
+        assert f"'{effect.synth}'" in scd
     assert "'vibe_lead'" not in scd
     assert scd == build_scd("lead", list(score), spec.bpm, 247.7, "/tmp/lead.wav")
 

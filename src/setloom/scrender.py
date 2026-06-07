@@ -165,7 +165,7 @@ LEAD_LAYERS = (
 LEAD_EFFECTS = (
     LeadEffect(
         name="lead_fx_tease",
-        synth="vibe_lead_air",
+        synth="vibe_lead_fx_tease",
         role="early filtered identity cue",
         spectral_range="3-5.5 kHz filtered air/resonance",
         phase_rule="wide only after high-pass; no low-mid smear",
@@ -175,7 +175,7 @@ LEAD_EFFECTS = (
     ),
     LeadEffect(
         name="lead_fx_throw",
-        synth="vibe_lead_edge",
+        synth="vibe_lead_fx_throw",
         role="dark resonant throw",
         spectral_range="1.2-4.8 kHz short-tonal motion",
         phase_rule="narrow transient with filtered tail",
@@ -185,7 +185,7 @@ LEAD_EFFECTS = (
     ),
     LeadEffect(
         name="lead_fx_whoop",
-        synth="vibe_lead_body",
+        synth="vibe_lead_fx_whoop",
         role="semi-pitched whoop response",
         spectral_range="500 Hz-3.5 kHz swept body",
         phase_rule="mostly center with only high-passed width",

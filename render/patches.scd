@@ -181,6 +181,65 @@ SynthDef(\vibe_lead_shadow, { |out=0, freq=220, amp=0.24, sustain=0.35, pumpRate
     Out.ar(out, (sig * env * amp) ! 2);
 }),
 
+// ---- Lead-effect source gestures: dark rave function, not MIDI-note patches. ----
+// Anti-EDM safeguards: phrase-triggered only, filtered under 5.5kHz, no random
+// riser spam, no open white-noise sweep, no supersaw hook substitute.
+
+// vibe_lead_fx_tease — early filtered identity cue.
+// Spectral allocation: 3-5.5kHz resonant air, below hats and above lead body.
+// Gesture/envelope: short breathed sweep; it hints at identity before the motif.
+// Stereo/phase: wide only after HPF, so low/body content stays phase-safe.
+SynthDef(\vibe_lead_fx_tease, { |out=0, freq=440, amp=0.18, sustain=0.8, pumpRate=2.066|
+    var env, sweep, body, noise, sig, wide;
+    RandSeed.ir(1, 101);
+    env = EnvGen.kr(Env.linen(0.012, sustain.max(0.20), 0.34, 1, \sin), doneAction: 2);
+    sweep = EnvGen.kr(
+        Env([freq * 3.8, freq * 5.2, freq * 2.6], [sustain * 0.42, sustain * 0.58], \sin));
+    body = Mix(SinOsc.ar(freq * [1, 1.005]) * [0.045, 0.035]);
+    noise = BPF.ar(PinkNoise.ar(0.9), sweep.clip(1800, 5400), 0.20);
+    sig = LPF.ar(HPF.ar((noise + body) * env, 1800), 5500);
+    wide = DelayC.ar(sig ! 2, 0.04, [0.017, 0.029]);
+    Out.ar(out, wide * amp);
+}),
+
+// vibe_lead_fx_throw — dark resonant phrase throw.
+// Spectral allocation: 1.2-4.8kHz transient/motion band, away from sub and hats.
+// Gesture/envelope: fast hit into resonant falling tail; reads as a throw, not a note.
+// Stereo/phase: localized attack plus a filtered post-HPF slap for club width.
+SynthDef(\vibe_lead_fx_throw, { |out=0, freq=440, amp=0.22, sustain=0.45, pumpRate=2.066|
+    var env, fenv, pm, hit, noise, tail, slap, sig;
+    RandSeed.ir(1, 103);
+    env = EnvGen.kr(Env.perc(0.002, sustain.max(0.24) + 0.22, 1, -5), doneAction: 2);
+    fenv = EnvGen.kr(Env([freq * 7.5, freq * 3.2, freq * 2.1], [0.05, sustain.max(0.20)], -4));
+    pm = SinOsc.ar(freq * 2.01, 0, freq * 0.06 * env);
+    hit = SinOsc.ar((freq * 2.0) + pm) * 0.22;
+    noise = BPF.ar(PinkNoise.ar(0.8), fenv.clip(1200, 4800), 0.18);
+    tail = RLPF.ar(((hit + noise) * 2.2).tanh, fenv.clip(900, 5200), 0.28);
+    tail = LPF.ar(HPF.ar(tail, 1100), 5000) * env;
+    slap = DelayC.ar(tail ! 2, 0.06, [0.023, 0.037]) * 0.26;
+    sig = ((tail ! 2) * 0.82) + slap;
+    Out.ar(out, sig * amp);
+}),
+
+// vibe_lead_fx_whoop — semi-pitched call-response sweep.
+// Spectral allocation: 500Hz-3.5kHz body motion, filtered before the hat band.
+// Gesture/envelope: curved pitch sweep with saturation, a rave response instead of MIDI melody.
+// Stereo/phase: centered body with only high-passed delayed width.
+SynthDef(\vibe_lead_fx_whoop, { |out=0, freq=440, amp=0.20, sustain=0.70, pumpRate=2.066|
+    var env, sweep, mod, raw, shaped, filt, wide, sig;
+    env = EnvGen.kr(Env.linen(0.006, sustain.max(0.30), 0.24, 1, \sin), doneAction: 2);
+    sweep = EnvGen.kr(
+        Env([freq * 0.72, freq * 1.36, freq * 2.10], [sustain * 0.48, sustain * 0.52], \sin));
+    mod = SinOsc.ar(sweep * 1.51, 0, sweep * 0.035);
+    raw = (SinOsc.ar(sweep + mod) * 0.34) + (VarSaw.ar(sweep * 0.5, 0, 0.42) * 0.11);
+    shaped = ((raw * 2.4).tanh) * env;
+    filt = RLPF.ar(shaped, (sweep * 2.2).clip(520, 3600), 0.32);
+    filt = LPF.ar(HPF.ar(filt, 480), 4200);
+    wide = DelayC.ar(HPF.ar(filt, 900) ! 2, 0.035, [0.014, 0.024]) * 0.18;
+    sig = ((filt ! 2) * 0.88) + wide;
+    Out.ar(out, sig * amp);
+}),
+
 // vibe_arp — metallic pluck, sits behind the lead.
 SynthDef(\vibe_arp, { |out=0, freq=440, amp=0.5, sustain=0.12, pumpRate=2.066,
                        cutoff=1900, snap=0.07|
