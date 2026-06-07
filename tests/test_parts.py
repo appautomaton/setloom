@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Musical invariant tests for the six part generators (SPEC AC7 + AC4 v2)."""
+"""Musical invariant tests for the part generators (SPEC AC7 + AC4 v2 + roster AC1)."""
 
 from collections import Counter
 from pathlib import Path
@@ -9,6 +9,7 @@ import pytest
 
 from setloom import midi
 from setloom.parts import ALL_PARTS, part_rng
+from setloom.parts.base import parse_key, root_note
 from setloom.parts.bass import (
     BASE_WEIGHTS,
     HIGH_PRESSURE_WEIGHTS,
@@ -16,7 +17,9 @@ from setloom.parts.bass import (
     articulation_weights,
     select_articulation_profile,
 )
+from setloom.parts.clap_ride import CLAP, RIDE
 from setloom.parts.drums import PERC
+from setloom.parts.fx import IMPACT_OCTAVE, IMPACT_VELOCITY, RISER_BARS
 from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -58,7 +61,18 @@ def _vector_spec(spec, updates: dict[str, int]):
 
 
 def test_all_parts_registered_and_nonempty(spec) -> None:
-    assert set(ALL_PARTS) == {"drums", "bass", "chords", "arp", "lead", "fills"}
+    assert set(ALL_PARTS) == {
+        "drums",
+        "bass",
+        "chords",
+        "arp",
+        "lead",
+        "fills",
+        "pad",
+        "shaker",
+        "clap_ride",
+        "fx",
+    }
     for part in ALL_PARTS:
         assert _events(spec, part), f"{part} produced no events for T01"
 
@@ -266,3 +280,131 @@ def test_lead_motif_repeats_then_varies(spec) -> None:
             )
             phrases_checked += 1
     assert phrases_checked, "T01 spec must contain a full 16-bar lead phrase"
+
+
+# --- Part roster expansion invariants (roster SPEC AC1) ---
+#
+# T01's render_targets.midi still lists six parts at this point; these tests
+# drive the new generators directly through ALL_PARTS with load_spec(T01).
+
+
+def _section_windows(spec, prefixes: tuple[str, ...]) -> list[tuple[int, int]]:
+    """Tick windows [lo, hi) of every section whose name starts with a prefix."""
+    return [
+        (midi.bar_to_tick(start_bar), midi.bar_to_tick(start_bar + bars))
+        for section, (start_bar, bars) in midi.section_layout(spec).items()
+        if section.startswith(prefixes)
+    ]
+
+
+def test_pad_sustained_quality_neutral_bed(spec) -> None:
+    """Pad notes sustain >= 2 bars, live only in break/drop/peak, and omit the third."""
+    pitch_class, _ = parse_key(spec.key)
+    allowed = {pitch_class, (pitch_class + 7) % 12, (pitch_class + 2) % 12}  # root/fifth/ninth
+    windows = _section_windows(spec, ("break", "drop", "peak"))
+    events = _events(spec, "pad")
+    assert events, "pad produced no events"
+    for event in events:
+        assert event.duration_ticks >= 2 * midi.TICKS_PER_BAR, f"pad note too short: {event}"
+        end = event.start_tick + event.duration_ticks
+        assert any(lo <= event.start_tick and end <= hi for lo, hi in windows), (
+            f"pad note outside break/drop/peak: {event}"
+        )
+        assert event.note % 12 in allowed, f"pad pitch class outside root/fifth/ninth: {event}"
+
+
+def test_shaker_texture_bed_with_nonflat_contour(spec) -> None:
+    """Shaker plays only in groove/drop/peak and its velocity contour is nonflat."""
+    windows = _section_windows(spec, ("groove", "drop", "peak"))
+    for seed in range(10):
+        events = _events(spec, "shaker", seed=seed)
+        assert events, f"seed {seed}: shaker produced no events"
+        assert len({e.velocity for e in events}) >= 2, f"seed {seed}: flat shaker contour"
+        for event in events:
+            assert any(lo <= event.start_tick < hi for lo, hi in windows), (
+                f"seed {seed}: shaker outside groove/drop/peak: {event}"
+            )
+
+
+def test_clap_on_backbeats_ride_in_peak_only(spec) -> None:
+    """Claps land only on beats 2 & 4 of drop/peak bars; ride stays inside peak."""
+    drop_peak = _section_windows(spec, ("drop", "peak"))
+    peak = _section_windows(spec, ("peak",))
+    events = _events(spec, "clap_ride")
+    assert events, "clap_ride produced no events"
+    clap_onsets = set()
+    for event in events:
+        if event.note == CLAP:
+            assert event.start_tick % midi.TICKS_PER_BAR in (midi.PPQ, 3 * midi.PPQ), (
+                f"clap off the backbeat: {event}"
+            )
+            assert any(lo <= event.start_tick < hi for lo, hi in drop_peak), (
+                f"clap outside drop/peak: {event}"
+            )
+            clap_onsets.add(event.start_tick)
+        else:
+            assert event.note == RIDE, f"unexpected clap_ride note: {event}"
+            assert any(lo <= event.start_tick < hi for lo, hi in peak), (
+                f"ride outside peak: {event}"
+            )
+    for lo, hi in drop_peak:  # both backbeats present in every drop/peak bar
+        for bar_tick in range(lo, hi, midi.TICKS_PER_BAR):
+            for beat in (1, 3):
+                assert bar_tick + beat * midi.PPQ in clap_onsets, (
+                    f"missing clap at tick {bar_tick + beat * midi.PPQ}"
+                )
+
+
+def test_fx_only_around_drop_and_peak_entries(spec) -> None:
+    """FX stay inside [entry - 4 bars, entry + 1 bar); impacts land, risers ramp up."""
+    entries = [
+        start_bar
+        for section, (start_bar, _) in midi.section_layout(spec).items()
+        if section.startswith(("drop", "peak"))
+    ]
+    assert entries, "T01 spec must contain drop/peak sections"
+    windows = [
+        (midi.bar_to_tick(max(0, entry - RISER_BARS)), midi.bar_to_tick(entry + 1))
+        for entry in entries
+    ]
+    impact_note = root_note(spec.key, IMPACT_OCTAVE)
+    for seed in range(10):
+        events = _events(spec, "fx", seed=seed)
+        assert events, f"seed {seed}: fx produced no events"
+        for event in events:
+            end = event.start_tick + event.duration_ticks
+            assert any(lo <= event.start_tick and end <= hi for lo, hi in windows), (
+                f"seed {seed}: fx outside an entry window: {event}"
+            )
+        onsets = {(e.start_tick, e.note, e.velocity) for e in events}
+        for entry in entries:
+            assert (midi.bar_to_tick(entry), impact_note, IMPACT_VELOCITY) in onsets, (
+                f"seed {seed}: missing impact at entry bar {entry}"
+            )
+        for entry in entries:
+            if entry < RISER_BARS:
+                continue
+            lo = midi.bar_to_tick(entry - RISER_BARS)
+            hi = midi.bar_to_tick(entry)
+            run = sorted(
+                (e for e in events if lo <= e.start_tick < hi), key=lambda e: e.start_tick
+            )
+            assert run, f"seed {seed}: missing riser before entry bar {entry}"
+            velocities = [e.velocity for e in run]
+            assert velocities == sorted(velocities), (
+                f"seed {seed}: riser velocity not monotonic before bar {entry}"
+            )
+            notes = [e.note for e in run]
+            assert notes == sorted(notes) and notes[-1] > notes[0], (
+                f"seed {seed}: riser pitch does not rise before bar {entry}"
+            )
+
+
+def test_new_part_seed_divergence(spec) -> None:
+    """A nearby seed flips at least one of the pad/shaker/fx structural draws."""
+    diverged = any(
+        _events(spec, part) != _events(spec, part, seed=spec.seed + offset)
+        for part in ("pad", "shaker", "fx")
+        for offset in range(1, 6)
+    )
+    assert diverged, "pad length, shaker contour, and fx speed all identical across seeds"

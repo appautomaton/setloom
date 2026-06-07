@@ -1,18 +1,38 @@
 # SPDX-License-Identifier: AGPL-3.0-only
+# First real listening note (2026-06-07). Replaces the scaffold placeholder.
 
 track_id: T01
-take: take-001
+take: seed-1001 generator-v2 (Logic Pro audition)
+date: 2026-06-07
 decision: revise
 
 notes:
-  groove: "Kick works. Bass should be simpler in the first 32 bars."
-  melody: "Motif direction is useful, but the break is too sentimental."
-  energy: "Drop needs more lift without becoming too EDM."
-  mix: "Low end needs a technical check before approval."
+  vibe: "那个味儿有了 — the lane vibe is there. v2 groove direction validated."
+  melody: "旋律太过单一 — melody too monotonous; single motif family per run is not enough development."
+  density: "轨道不够 — arrangement feels thin vs. reference productions (pro projects run 20-30 tracks)."
 
 requests:
-  - "Simplify bass before the first break."
-  - "Make the arp darker and less bright."
-  - "Shorten the first break by 16 bars."
-  - "Render four new variants with the same seed family."
+  - "More melodic development: motif should evolve across sections, not just repeat-then-vary one family."
+  - "More layers: texture/percussion/FX density toward reference-production track counts."
 
+routing:
+  - "melody -> generator v3: motif development depth (more transforms, B-motifs, per-section evolution)."
+  - "density -> part roster expansion: pads, split percussion, FX/riser parts (toward 10-12 MIDI parts / 20-30 render stems)."
+  - "Note: density should come from groove/texture/FX layers, NOT more foreground melodies — melodic-layer-overload rule (max 2) stays until ears say otherwise."
+
+---
+# Take 2: WAV excerpts (FluidSynth render), 2026-06-07
+
+take: seed-1001 generator-v2 (WAV excerpt audition)
+decision: revise
+
+notes:
+  peak: "Too simplistic and not melodic enough — adjudicates the melodic-layer-overload case: 3 layers at peak did NOT read as crowded; the complaint is thin content per layer (stab-only chords, single repeating motif, no pad bed)."
+  other_sections: "Groove/break/drop judged okay at this stage."
+
+requests:
+  - "Peak needs melodic richness: sustained harmonic bed + more lead development at the climax."
+
+routing:
+  - "melodic-layer-overload rule: first ears datapoint says 3 layers at peak is fine — annotate in style.yml, do not tighten generation."
+  - "Peak richness folds into the part-roster expansion change (pad bed) + peak-specific chord/lead behavior."
