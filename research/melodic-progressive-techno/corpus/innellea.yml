@@ -1,0 +1,102 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example, Slice 1 exemplar):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+
+artist: Innellea
+slug: innellea
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    German melodic/progressive techno producer. Releases on Afterlife Records
+    and Diynamic; debut album "The Belonging" (2024-02-09, 15 tracks) released
+    on his own Distorted Youth imprint in collaboration with [PIAS] Electronique.
+    Operates the "Belonging" label/event brand carrying much of his recent material.
+  labels:
+    - Afterlife Records
+    - Diynamic
+    - "Distorted Youth / [PIAS] Electronique"
+    - Belonging
+  sources:
+    - https://electronicgroove.com/innellea-announces-debut-album-the-belonging-shares-single/
+    - https://www.dancerebels.com/2024/02/13/innellea-the-belonging-lp-distorted-youth/
+    - https://www.discogs.com/release/29748196-Innellea-The-Belonging
+
+tracks:
+  - title: Loss Of Hope
+    year: 2021
+    label: Afterlife Records
+    bpm: 123
+    bpm_confidence: corroborated
+    key: F minor
+    duration: "7:19"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/loss-of-hope/16177841
+      - https://songbpm.com/@innellea/loss-of-hope-k7HP-t3VLT
+
+  - title: Angel 1
+    collaborators: [Anyma]
+    year: 2022
+    year_confidence: single-source
+    label: Afterlife Records
+    bpm: 122
+    bpm_confidence: corroborated
+    key: Bb minor
+    duration: "5:47"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/angel-1/16356991
+      - https://tunebat.com/Info/Angel-1-Anyma-Innellea/32uzMvtg0JKDKZzg6KhHoZ
+      - https://open.spotify.com/album/0omfFup8BUBLpflIPlo4gz
+
+  - title: Forced To Bend
+    year: 2020
+    label: Diynamic
+    bpm: 120
+    bpm_confidence: single-source
+    key: G minor
+    duration: "6:50"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/forced-to-bend/14461076
+      - https://diynamic.bandcamp.com/track/forced-to-bend
+
+  - title: Euphoria
+    year: unknown
+    label: "[PIAS] Electronique"
+    bpm: 128
+    bpm_confidence: single-source
+    key: F minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/euphoria/19719384
+
+sets:
+  - event: "Tomorrowland 2025 Weekend 1, Planaxis Stage, Belgium"
+    date: 2025-07-18
+    track_count: 10
+    genres: ["melodic house/techno", "indie dance"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "incomplete (9 of 10 IDs; order may be inexact)"
+    observations:
+      - "Set leans heavily on own material: at least 7 of 10 IDs are Innellea productions, collabs, or remixes."
+      - "Multiple tracks carry his own Belonging imprint, suggesting label-showcase set construction."
+    sources:
+      - https://www.1001tracklists.com/tracklist/2klcs2nt/innellea-planaxis-stage-tomorrowland-weekend-1-belgium-2025-07-18.html
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for all four tracks — needs listening."
+  - "Set BPM/key movement and transition lengths for Tomorrowland 2025-07-18 — needs listening to recording."
+  - "Second BPM source for Forced To Bend and Euphoria — single-source values pending corroboration."
+  - "Euphoria release year and duration."
