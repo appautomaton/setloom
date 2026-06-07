@@ -69,3 +69,17 @@ requests:
 
 routing:
   - "Spec 5 Render Engine: designed patches + sidechain pump + space (reverb/delay) + mix chain. The notes layer is approved-enough to clothe."
+
+---
+# Take 5: T02 vibe_mix audition, 2026-06-07
+
+take: T02 seed-1001 vibe-slice v1 (vibe_mix.wav)
+decision: reject
+
+notes:
+  rhythm: "Fine."
+  timbre: "Really bad / tacky — blocks aesthetic judgment entirely."
+
+routing:
+  - "ROOT CAUSE FOUND (coordinator): mix bug — GM full.wav (all 10 parts incl. GM kick/bass/pad) was layered under the SC stems, doubling the vibe parts with cheap GM versions. Fix: GM bed = 7 non-vibe parts only, drums stripped of kick notes."
+  - "Patch retune alongside: darker bass/pad cutoffs, less kick click, less verb."

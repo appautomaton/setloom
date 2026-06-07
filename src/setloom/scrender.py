@@ -29,10 +29,15 @@ KICK_NOTE = 36
 # Which generated parts feed which patch; kick events are the drum part's
 # kick notes only (hats/perc stay in the GM layer for this slice).
 VIBE_PARTS = ("kick", "bass", "pad")
-GM_PARTS = ("drums_nokick", "chords", "arp", "lead", "fills", "shaker", "clap_ride", "fx")
 
-# Mix gains: SC stems carry the low end; GM texture sits behind them.
-MIX_GAINS = {"kick": 1.0, "bass": 0.9, "pad": 0.8, "gm": 0.55}
+# GM texture bed: ONLY the non-vibe parts — the vibe parts must never be
+# doubled by their GM versions (take-5 root cause). Drums join the bed with
+# kick notes stripped (the SC kick owns the low end).
+GM_BED_PARTS = ("drums", "chords", "arp", "lead", "fills", "shaker", "clap_ride", "fx")
+GM_PROGRAMS = {2: 89, 3: 98, 4: 81, 6: 97}  # chords/arp/lead/fx GM patches
+
+# Mix gains: SC stems carry the low end; the GM texture sits well behind.
+MIX_GAINS = {"kick": 1.0, "bass": 0.85, "pad": 0.6, "gm": 0.45}
 
 SYNTH_FOR_PART = {"kick": "vibe_kick", "bass": "vibe_bass", "pad": "vibe_pad"}
 
@@ -126,14 +131,57 @@ def render_part_stem(
         raise RuntimeError(f"sclang render failed for {part}:\n{result.stdout[-2000:]}")
 
 
-def mix(variant_dir: Path, sc_stems: dict[str, Path], out_wav: Path) -> None:
-    """sox mix: SC stems at full weight, existing GM full render as the texture bed."""
-    gm_full = variant_dir / "full.wav"
+def build_gm_bed(variant_dir: Path, spec: TrackSpec, workdir: Path) -> Path | None:
+    """FluidSynth render of the non-vibe parts only, drums stripped of kick."""
+    import mido  # local import keeps module import light
+
+    fluidsynth = shutil.which("fluidsynth")
+    soundfont = Path.home() / "Library/Audio/Sounds/Banks/GeneralUser-GS.sf2"
+    if fluidsynth is None or not soundfont.exists():
+        return None
+
+    merged = mido.MidiFile(type=1, ticks_per_beat=PPQ)
+    prog_track = mido.MidiTrack()
+    for channel, program in GM_PROGRAMS.items():
+        prog_track.append(mido.Message("program_change", channel=channel, program=program, time=0))
+    merged.tracks.append(prog_track)
+    for part in GM_BED_PARTS:
+        mid_path = variant_dir / f"{part}.mid"
+        if not mid_path.exists():
+            continue
+        track = mido.MidiFile(str(mid_path)).tracks[0]
+        if part == "drums":
+            kept = mido.MidiTrack()
+            carry = 0
+            for message in track:
+                if message.type in ("note_on", "note_off") and message.note == KICK_NOTE:
+                    carry += message.time  # drop kick notes, preserve delta timing
+                    continue
+                message.time += carry
+                carry = 0
+                kept.append(message)
+            track = kept
+        merged.tracks.append(track)
+    bed_mid = workdir / "gm-bed.mid"
+    merged.save(str(bed_mid))
+    bed_wav = workdir / "gm-bed.wav"
+    subprocess.run(
+        [fluidsynth, "-ni", "-g", "0.6", "-r", "44100", "-F", str(bed_wav),
+         str(soundfont), str(bed_mid)],
+        check=True,
+        capture_output=True,
+    )
+    return bed_wav
+
+
+def mix(variant_dir: Path, sc_stems: dict[str, Path], spec: TrackSpec, out_wav: Path) -> None:
+    """sox mix: SC stems carry the vibe; GM bed (non-vibe parts only) behind."""
+    bed = build_gm_bed(variant_dir, spec, variant_dir)
     cmd = ["sox", "-m"]
     for part, stem in sc_stems.items():
         cmd += ["-v", str(MIX_GAINS[part]), str(stem)]
-    if gm_full.exists():
-        cmd += ["-v", str(MIX_GAINS["gm"]), str(gm_full)]
+    if bed is not None:
+        cmd += ["-v", str(MIX_GAINS["gm"]), str(bed)]
     cmd += [str(out_wav)]
     subprocess.run(cmd, check=True, capture_output=True)
 
@@ -163,7 +211,7 @@ def main(argv: list[str] | None = None) -> int:
         stems[part] = stem
         print(f"rendered {stem.name}")
     out = variant_dir / "vibe_mix.wav"
-    mix(variant_dir, stems, out)
+    mix(variant_dir, stems, spec, out)
     print(f"mixed {out}")
     print("reminder: candidates require human listening notes before approval")
     return 0

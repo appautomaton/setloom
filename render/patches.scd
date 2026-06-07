@@ -17,14 +17,14 @@
 //   bodyTime:     pitch drop time; longer = boomier
 //   drive:        tanh saturation amount; more = denser/darker
 SynthDef(\vibe_kick, { |out=0, freq=50, amp=0.9, sustain=0.3,
-                        bodyHi=108, bodyLo=46, bodyTime=0.085, drive=2.2|
+                        bodyHi=92, bodyLo=43, bodyTime=0.10, drive=1.8|
     var pitch, body, click, env, sig;
     // Fixed noise seed: PinkNoise must render byte-identically across runs.
     RandSeed.ir(1, 47);
     pitch = EnvGen.kr(Env([bodyHi, bodyLo], [bodyTime], -7));
     body = SinOsc.ar(pitch);
     click = HPF.ar(Impulse.ar(0) + (PinkNoise.ar(0.4) *
-        EnvGen.kr(Env.perc(0.0005, 0.012))), 900) * 0.5;
+        EnvGen.kr(Env.perc(0.0005, 0.008))), 1400) * 0.22;
     env = EnvGen.kr(Env.perc(0.0015, sustain.min(0.4), 1, -6), doneAction: 2);
     sig = ((body + click) * drive).tanh * env * amp;
     Out.ar(out, sig ! 2);
@@ -36,7 +36,7 @@ SynthDef(\vibe_kick, { |out=0, freq=50, amp=0.9, sustain=0.3,
 //   cutoff:    lowpass ceiling; lower = darker
 //   pumpDepth: sidechain duck depth (0 none, 1 full duck)
 SynthDef(\vibe_bass, { |out=0, freq=55, amp=0.8, sustain=0.2, pumpRate=2.066,
-                        harm=0.22, cutoff=420, pumpDepth=0.6|
+                        harm=0.10, cutoff=290, pumpDepth=0.6|
     var duck = LFSaw.kr(pumpRate, 1).range(0, 1).pow(0.35);
     var pump = 1 - (pumpDepth * (1 - duck));
     var sub = SinOsc.ar(freq);
@@ -54,8 +54,8 @@ SynthDef(\vibe_bass, { |out=0, freq=55, amp=0.8, sustain=0.2, pumpRate=2.066,
 //   pumpDepth: gentler than bass so the bed breathes, not gasps
 //   verbMix:   reverb wet amount (space)
 SynthDef(\vibe_pad, { |out=0, freq=220, amp=0.5, sustain=4.0, pumpRate=2.066,
-                       detune=0.006, cutoff=1500, bloom=2.5, pumpDepth=0.42,
-                       verbMix=0.38|
+                       detune=0.005, cutoff=850, bloom=3.5, pumpDepth=0.38,
+                       verbMix=0.30|
     var ratios = [1 - detune, 1 - (detune * 0.5), 1, 1 + (detune * 0.5), 1 + detune];
     var saws = Mix(ratios.collect { |r| Saw.ar(freq * r) * 0.2 });
     var duck = LFSaw.kr(pumpRate, 1).range(0, 1).pow(0.5);
