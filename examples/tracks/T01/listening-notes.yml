@@ -145,3 +145,33 @@ routing:
   - "If still tacky: revise layer timbre, not loudness or brightness alone."
   - "If layered but incoherent: revise lead/pad/arp/chord/percussion role rules before adding new patches."
   - "If acceptable: treat this as the baseline lead-bus architecture for the melodic/progressive techno style grammar."
+
+---
+# Take 11: T02 rave-entry lead/effect loudness candidate, 2026-06-07
+
+take: T02 seed-1001 rave-entry + lead/effect source + club loudness (candidates/T02/seed-1001/variant-01)
+decision: pending_human_listening
+
+render:
+  stem_lead: "candidates/T02/seed-1001/variant-01/stem-lead.wav"
+  mix: "candidates/T02/seed-1001/variant-01/vibe_mix.wav"
+  lead_bus_report: "candidates/T02/seed-1001/variant-01/lead-bus-report.json"
+
+notes:
+  entry: "T02 entry shortened to intro 8 + groove_a 8; lead-effect identity first appears at 7.74s."
+  source: "Lead now has melodic source plus effect source: tease/throw/whoop gestures in addition to motif layers."
+  loudness: "vibe_mix.wav measured about -7.5 LUFS integrated with peak safety near -1 dBFS."
+  candidate_surface: "Listen only inside candidates/T02/seed-1001/variant-01; stale GM/excerpt/MIDI/render clutter has been removed."
+  gate: "Taste owner listening is required before this render can be accepted as musically successful."
+
+questions:
+  - "Does the beginning still feel like it takes too long to arrive?"
+  - "Does stem-lead.wav still sound like a simple MIDI instrument?"
+  - "Do the new lead-effect gestures read as dark rave/progressive-techno identity?"
+  - "Is vibe_mix.wav now close enough to commercial club playback loudness?"
+  - "Do the lead, pad, arp, chords, and percussion sound like one coherent production, or modern pieces pasted together?"
+
+routing:
+  - "If entry is still late: add stronger bar-1 to bar-8 identity before revisiting duration."
+  - "If lead still sounds MIDI: revise effect-source gesture design and SynthDefs, not only layer gains."
+  - "If loudness is still low: inspect LUFS vs playback reference and master density, not peak level alone."
