@@ -1,5 +1,13 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Arp: 16th-note ascending chord-tone arpeggio in drops and peak (channel 3)."""
+"""Arp: phrase-gated rhythmic cells in drops and peak (channel 3).
+
+One rhythmic cell is drawn per run: straight 16ths over ascending chord
+tones, a 3-3-2 (dotted-8th feel) cell, or an octave-pedal alternation.
+Each section ramps density: its first quarter plays every other onset,
+the rest plays the full cell, and the last two 16ths of every 16-bar
+phrase rest so phrases breathe (style.yml arrangement_tension
+drop_entry_devices: arp_density_lift; counters the too_preset_arp critique).
+"""
 
 import random
 
@@ -8,7 +16,20 @@ from setloom.parts.base import TRIADS, parse_key
 from setloom.schema import TrackSpec
 
 ARP_OCTAVE = 5
-OCTAVE_JUMP_PROBABILITY = 0.08
+
+PHRASE_BARS = 16
+PHRASE_REST_STEPS = 2  # the last two 16ths of each phrase rest
+
+CELLS = ("straight_16ths", "cell_332", "octave_pedal")
+
+# 3-3-2 onset steps per bar (two 3-3-2 groups of eight 16ths).
+CELL_332_STEPS = (0, 3, 6, 8, 11, 14)
+
+# Velocity accents: beats for straight 16ths, group heads for 3-3-2,
+# the high octave for the pedal alternation.
+STRAIGHT_ACCENT, STRAIGHT_BASE = 84, 72
+CELL_ACCENT, CELL_BASE = 84, 74
+PEDAL_HIGH, PEDAL_LOW = 80, 70
 
 
 class ArpGenerator:
@@ -18,15 +39,35 @@ class ArpGenerator:
         pitch_class, quality = parse_key(spec.key)
         root = 12 * (ARP_OCTAVE + 1) + pitch_class
         tones = TRIADS[quality] + (12,)  # root, third, fifth, octave, ascending
+        # Exactly one rng draw per run keeps draw counts structural.
+        cell = rng.choice(CELLS)
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():
             if not section.startswith(("drop", "peak")):
                 continue
-            for bar in range(start_bar, start_bar + bars):
-                for step in range(STEPS_PER_BAR):
-                    note = root + tones[step % len(tones)]
-                    if rng.random() < OCTAVE_JUMP_PROBABILITY:
-                        note += 12  # seeded octave-jump sparkle
+            sparse_bars = max(1, bars // 4)  # density ramp: first quarter sparse
+            for bar_in_section in range(bars):
+                bar = start_bar + bar_in_section
+                steps = CELL_332_STEPS if cell == "cell_332" else tuple(range(STEPS_PER_BAR))
+                for index, step in enumerate(steps):
+                    if bar_in_section < sparse_bars and step % 2 == 1:
+                        continue  # sparse ramp: every other 16th only
+                    phrase_rest = (
+                        bar_in_section % PHRASE_BARS == PHRASE_BARS - 1
+                        and step >= STEPS_PER_BAR - PHRASE_REST_STEPS
+                    )
+                    if phrase_rest:
+                        continue  # rest at the 16-bar phrase boundary
+                    if cell == "octave_pedal":
+                        high = step % 2 == 1
+                        note = root + (12 if high else 0)
+                        velocity = PEDAL_HIGH if high else PEDAL_LOW
+                    elif cell == "cell_332":
+                        note = root + tones[index % len(tones)]
+                        velocity = CELL_ACCENT if step in (0, 8) else CELL_BASE
+                    else:
+                        note = root + tones[step % len(tones)]
+                        velocity = STRAIGHT_ACCENT if step % 4 == 0 else STRAIGHT_BASE
                     tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
-                    events.append(NoteEvent(3, note, 78, tick, SIXTEENTH_TICKS))
+                    events.append(NoteEvent(3, note, velocity, tick, SIXTEENTH_TICKS))
         return events
