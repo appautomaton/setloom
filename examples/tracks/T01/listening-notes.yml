@@ -102,3 +102,17 @@ routing:
   - "Master bus: sox compand + limit + normalize."
   - "Offbeat open hat added to drums (drop/peak)."
   - "style.yml review_vocabulary += palette_incoherence (ears-derived principle)."
+
+---
+# Take 9: T02 genre-loudness version, 2026-06-07
+
+take: T02 seed-1001 blueprint + genre loudness
+decision: revise
+
+notes:
+  lead: "Possibly too thin — signature-sound standard requested ('3M-follower sound engineer; fans recognize it on stage'). Codex consult in flight."
+  pad: "NOT distorted enough — wants an 'ecstasy' vibe: saturation warmth, harmonic rush, the euphoric swell."
+
+routing:
+  - "Lead: await Codex anatomy verdict (layers/unison/saturation/octave support), then rebuild vibe_lead."
+  - "Pad: follow-up Codex consult same session — saturation placement + harmonic excitement for vibe_pad while keeping the dark spectrum fence (<=5.5k melodic LPF)."

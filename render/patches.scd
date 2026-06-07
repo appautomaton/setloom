@@ -38,33 +38,51 @@ SynthDef(\vibe_bass, { |out=0, freq=55, amp=0.8, sustain=0.2, pumpRate=2.066,
     Out.ar(out, sig ! 2);
 }),
 
-// vibe_pad — dark wide MOVING pad: detuned saws, filter bloom + slow cutoff
-// wander (anti-static fix), DelayC stereo chorus, seeded noise-air bed,
-// GVerb dark space, high-shelf rolloff.
-//   cutoff: darkness ceiling | bloom: open time | verbMix: GVerb wet
-//   airLevel: noise-air bed level (felt, not heard)
+// vibe_pad v2 — saturated euphoric dark pad ("ecstasy", take-9 + cross-model
+// recipe): 7-voice VarSaw with moving widths (the emotional beating source),
+// asymmetric pre-filter saturation swelling with the bloom (warm glow, not
+// bright clip), slow 4.8s bloom, pump after tone shaping, dark space after
+// pump, 420 Hz carve making room for the lead's body push.
 SynthDef(\vibe_pad, { |out=0, freq=220, amp=0.5, sustain=4.0, pumpRate=2.066,
-                       detune=0.005, cutoff=850, bloom=3.5, pumpDepth=0.38,
-                       verbMix=0.20, airLevel=0.02|
-    var ratios, saws, duck, pump, open, cutoffMove, env, dry, air, mod, st, wet, sig;
+    detune=0.006, cutoff=1050, bloom=4.8, pumpDepth=0.40,
+    verbMix=0.16, airLevel=0.018, drive=1.55, bias=0.14, leadCarve=2.5|
+    var ratios, levels, widths, raw, body, driveEnv, sat;
+    var duck, pump, open, cutoffMove, env, filt, air;
+    var mod, wideSource, st, wet, sig;
     RandSeed.ir(1, 91);
-    ratios = [1 - detune, 1 - (detune * 0.5), 1, 1 + (detune * 0.5), 1 + detune];
-    saws = Mix(ratios.collect { |r| Saw.ar(freq * r) * 0.2 });
-    duck = LFSaw.kr(pumpRate, 1).range(0, 1).pow(0.5);
-    pump = 1 - (pumpDepth * (1 - duck));
-    open = EnvGen.kr(Env([cutoff * 0.3, cutoff], [bloom], \sin));
-    cutoffMove = SinOsc.kr(0.035, 0).range(cutoff * 0.75, cutoff * 1.25);
+    // About -12, -7, -3, 0, +4, +8, +13 cents.
+    ratios = [0.9931, 0.9960, 0.9983, 1, 1.0023, 1.0046, 1.0075];
+    levels = [0.07, 0.09, 0.11, 0.14, 0.11, 0.09, 0.07];
+    widths = SinOsc.kr(
+        [0.027, 0.033, 0.041, 0.019, 0.046, 0.052, 0.061],
+        [0, 1.2, 2.1, 0.4, 1.7, 2.6, 3.0]
+    ).range(0.36, 0.58);
+    raw = Mix(VarSaw.ar(freq * ratios, 0, widths) * levels);
+    body = SinOsc.ar(freq) * 0.10;  // warmth without a true sub layer
+    raw = raw + body;
+    driveEnv = EnvGen.kr(Env([drive * 0.75, drive], [bloom * 0.85], \sin));
+    sat = (((raw * driveEnv) + bias).tanh - bias.tanh) / driveEnv;
+    open = EnvGen.kr(Env([cutoff * 0.22, cutoff * 1.12], [bloom], \sin));
+    cutoffMove = SinOsc.kr(0.035, 0).range(0.84, 1.18);
     env = EnvGen.kr(
-        Env.linen(1.2, (sustain - 3.0).max(0.5), 1.8, 1, \sin), doneAction: 2);
-    dry = RLPF.ar(saws, open.min(cutoffMove).max(150), 0.45) * env * amp * pump;
+        Env.linen(1.6, (sustain - 4.0).max(0.6), 2.4, 1, \sin), doneAction: 2);
+    filt = RLPF.ar(sat, (open * cutoffMove).clip(180, 1800), 0.42);
+    filt = HPF.ar(filt, 155);
+    filt = BPeakEQ.ar(filt, 260, 0.7, 1.4);            // warmth below the lead body
+    filt = BPeakEQ.ar(filt, 420, 0.85, leadCarve.neg);  // room for lead v2's push
+    duck = LFSaw.kr(pumpRate, 1).range(0, 1).pow(0.52);
+    pump = 1 - (pumpDepth * (1 - duck));
+    filt = filt * env * amp * pump;
     air = HPF.ar(PinkNoise.ar(airLevel), 1800);
-    air = BPF.ar(air, SinOsc.kr(0.025).range(2200, 5200), 0.4) * env * amp;
-    dry = dry + air;
+    air = BPF.ar(air, SinOsc.kr(0.025).range(2400, 5200), 0.35) * env * amp * pump;
+    filt = filt + air;
+    wideSource = HPF.ar(filt, 320);
     mod = SinOsc.kr([0.07, 0.11], [0, 1.7]).range(0, 0.004);
-    st = DelayC.ar(dry ! 2, 0.04, [0.013, 0.021] + mod);
-    wet = GVerb.ar(LPF.ar(dry, 4500), 55, 5.5, 0.35, 0.55, 12, 0);
-    sig = (st * 0.75) + (wet * verbMix);
-    sig = BHiShelf.ar(sig, 6500, 1, -5);
+    st = DelayC.ar(wideSource ! 2, 0.04, [0.013, 0.021] + mod);
+    wet = GVerb.ar(LPF.ar(HPF.ar(filt, 260), 4300), 60, 6.2, 0.42, 0.52, 12, 0);
+    sig = ((filt ! 2) * 0.38) + (st * 0.78) + (wet * verbMix);
+    sig = LPF.ar(sig, 5200);
+    sig = BHiShelf.ar(sig, 6500, 1, -6);
     Out.ar(out, sig);
 }),
 
@@ -87,21 +105,49 @@ SynthDef(\vibe_chords, { |out=0, freq=220, amp=0.6, sustain=0.3, pumpRate=2.066,
     Out.ar(out, sig);
 }),
 
-// vibe_lead — delayed pluck with FILTERED STEREO ping-pong echoes + diffusion
-// (replaces the mono comb — the "metallic cheap" tell). Dry stays sine-forward.
+// vibe_lead v2 — signature dark pluck/body lead (take-9 + cross-model recipe):
+// centered sine core + 5-voice VarSaw unison (±4-8 cents) + pulse edge +
+// quiet octave-down support + air transient, asymmetric pre-filter tanh,
+// resonant darkening filter with slow wander, filtered stereo ping-pong
+// delay + small dark verb. Body and identity, still restrained.
 SynthDef(\vibe_lead, { |out=0, freq=440, amp=0.6, sustain=0.4, pumpRate=2.066,
-                        delayBeats=0.75, cutoff=2400|
-    var pluckEnv, tone, dry, delayTime, wet, env, sig;
-    pluckEnv = EnvGen.kr(Env.perc(0.002, 0.5, 1, -5));
-    tone = (SinOsc.ar(freq) * 0.65) + (Saw.ar(freq) * 0.18);
-    tone = LPF.ar(tone, (cutoff * pluckEnv).max(300));
-    dry = tone * pluckEnv;
+    delayBeats=0.75, cutoff=2600, drive=1.55, wetMix=0.32,
+    width=0.18, octaveLevel=0.10|
+    var hitEnv, bodyEnv, tailEnv, filtEnv, cutMove;
+    var ratios, core, uni, edge, octave, air, mono, sat, filt;
+    var center, wideSource, wide, delayTime, echo, verb, sig;
+    RandSeed.ir(1, 83);
+    hitEnv = EnvGen.kr(Env.perc(0.004, 0.42, 1, -5));
+    bodyEnv = EnvGen.kr(Env.linen(0.006, sustain.max(0.20), 0.32, 1, \sin));
+    tailEnv = EnvGen.kr(
+        Env.linen(0.001, sustain.max(0.30) + 2.2, 0.45), doneAction: 2);
+    // Filter opens for the attack, then settles dark instead of vanishing.
+    filtEnv = EnvGen.kr(Env(
+        [cutoff * 1.15, cutoff * 0.68, cutoff * 0.42], [0.10, 0.65], [-3, -4]));
+    cutMove = SinOsc.kr(0.045, 0).range(0.92, 1.08);
+    ratios = [0.9954, 0.9977, 1, 1.0023, 1.0046];  // ±4-8 cents, no supersaw cheese
+    core = SinOsc.ar(freq) * 0.38;
+    uni = Mix(VarSaw.ar(freq * ratios, 0, 0.42) * [0.07, 0.09, 0.12, 0.09, 0.07]);
+    edge = Pulse.ar(freq * 1.001, 0.42) * 0.08;
+    octave = (SinOsc.ar(freq * 0.5) * octaveLevel) + (VarSaw.ar(freq * 0.5, 0, 0.35) * 0.035);
+    octave = LPF.ar(HPF.ar(octave, 160), 900);  // chest, not bass
+    air = HPF.ar(PinkNoise.ar(0.01), 2500) * hitEnv;
+    mono = core + uni + edge + octave + air;
+    sat = (mono * drive).tanh / drive;  // dirt before filter: expensive-dark
+    filt = RLPF.ar(sat, (filtEnv * cutMove).clip(450, 4200), 0.38);
+    filt = BPeakEQ.ar(filt, 420, 0.8, 2.0);  // subtle body push
+    filt = BHiShelf.ar(filt, 6500, 1, -5);
+    center = filt * bodyEnv;
+    wideSource = HPF.ar(filt, 350) * bodyEnv;
+    wide = DelayC.ar(wideSource ! 2, 0.035,
+        [0.012, 0.019] + SinOsc.kr([0.08, 0.13], [0, 1.4]).range(0, 0.002));
     delayTime = delayBeats / pumpRate;
-    wet = DelayC.ar(dry ! 2, 1.0, [delayTime, delayTime * 1.5]);
-    wet = LPF.ar(HPF.ar(wet, 350), 4200);
-    wet = wet + AllpassC.ar(wet, 0.08, [0.031, 0.043], 1.2);
-    env = EnvGen.kr(Env.linen(0.001, sustain.max(0.3) + 2.0, 0.4), doneAction: 2);
-    sig = ((dry ! 2) + (wet * 0.35)) * env * amp;
+    echo = DelayC.ar((center ! 2) + (wide * 0.35), 1.0, [delayTime, delayTime * 1.5]);
+    echo = LPF.ar(HPF.ar(echo, 350), 3900);
+    echo = echo + AllpassC.ar(echo, 0.08, [0.031, 0.043], 1.1);
+    verb = GVerb.ar(LPF.ar(center, 3600), 35, 2.6, 0.4, 0.55, 8, 0) * 0.05;
+    sig = ((center ! 2) * 0.82) + (wide * width) + (echo * wetMix) + verb;
+    sig = (sig * 1.15).tanh * 0.9 * amp * tailEnv;
     Out.ar(out, sig);
 }),
 

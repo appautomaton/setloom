@@ -82,6 +82,14 @@ SYNTH_FOR_PART = {
     "fx": "vibe_fx",
 }
 
+# Section-aware level scaling (cross-model lead consult, 2026-06-07): a fixed
+# lead fader is too blunt for this lane. Factors multiply the note amp relative
+# to the part's base mix gain (lead base = -8 dB vs kick at peak foreground).
+SECTION_AMP_SCALE = {
+    "lead": {"break": 1.26, "drop": 0.84},  # break -6 dB hook; drop ~-9.5 support
+    "chords": {"break": 0.63},  # the ecstasy pad supplies the break wash; chords step back
+}
+
 
 def find_sclang() -> str | None:
     return shutil.which("sclang") or (SC_APP_SCLANG if Path(SC_APP_SCLANG).exists() else None)
@@ -183,6 +191,20 @@ def render_part_stem(
             synth = PERC_SYNTH_FOR_NOTE.get(event.note, "vibe_hat")
             row["synth"] = synth
             row["amp"] = round(row["amp"] * PERC_ROLE_SCALE[synth], 4)
+    if part in SECTION_AMP_SCALE:
+        scales = SECTION_AMP_SCALE[part]
+        windows = []  # (start_tick, end_tick, section_type)
+        cursor = 0
+        for name, bars in spec.sections.items():
+            end = cursor + bars * 4 * PPQ
+            windows.append((cursor, end, name.rstrip("0123456789_")))
+            cursor = end
+        for row in score:
+            tick = round(row["start"] * spec.bpm * PPQ / 60)
+            for lo, hi, kind in windows:
+                if lo <= tick < hi:
+                    row["amp"] = round(row["amp"] * scales.get(kind, 1.0), 4)
+                    break
     seconds = ticks_to_seconds(total_ticks(spec), spec.bpm)
     scd = build_scd(part, score, spec.bpm, seconds, str(out_wav))
     scd_path = workdir / f"render-{part}.scd"
