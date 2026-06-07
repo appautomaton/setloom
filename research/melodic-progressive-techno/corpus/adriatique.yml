@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example, after the Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Shallow expansion-anchor pass: 1-2 representative tracks, no sets.
+
+artist: Adriatique
+slug: adriatique
+role: expansion
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Melodic house and techno act releasing core material on the Siamese label,
+    including "X" (2019) and the vocal single "Home" (2020), written and
+    produced with Marino Canal and vocalist Delhia de France. Siamese also
+    hosts club remixes of their work (Mind Against remix of "Home").
+  labels:
+    - Siamese
+  sources:
+    - https://siameserecords.bandcamp.com/album/home-feat-delhia-de-france
+    - https://www.beatport.com/artist/adriatique/121765
+    - https://www.beatport.com/track/home-feat-delhia-de-france/16471109
+
+tracks:
+  - title: Home feat. Delhia de France
+    collaborators: [Marino Canal, Delhia de France]
+    year: 2020
+    label: Siamese
+    bpm: 120
+    bpm_confidence: corroborated
+    key: D minor
+    duration: "7:16"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/home/13614894
+      - https://songbpm.com/@adriatique/home
+      - https://siameserecords.bandcamp.com/album/home-feat-delhia-de-france
+
+  - title: X
+    year: 2019
+    label: Siamese
+    bpm: 123
+    bpm_confidence: corroborated
+    key: A major
+    duration: "6:05"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/x-original-mix/12048959
+      - https://songbpm.com/@adriatique/x
+
+sets: []
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for both tracks — needs listening."
+  - "Key conflict for X: Beatport reports A major, SongBPM reports B with minor mode — needs listening confirmation."
+  - "Home duration discrepancy: Bandcamp/Beatport list 7:16 for the original, SongBPM lists a 5:31 edit — recorded the original mix length; edit lineage unverified."
+  - "No DJ-set evidence collected in this shallow pass — set movement and transition behavior unknown."

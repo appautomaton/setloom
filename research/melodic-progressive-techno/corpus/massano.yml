@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example, after the Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Shallow expansion-anchor pass: 1-2 representative tracks, no sets.
+
+artist: Massano
+slug: massano
+role: expansion
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Melodic techno producer whose debut Afterlife Records EP "In My System"
+    (2022) carried a remastered version of his breakout track "The Feeling",
+    originally released on Running Clouds. Followed with the "Shut Down EP"
+    on Afterlife in 2023.
+  labels:
+    - Afterlife Records
+    - Running Clouds
+  sources:
+    - https://www.beatportal.com/playlists/147720-playlist-of-the-week-massano
+    - https://www.beatport.com/release/shut-down-ep/4364422
+    - https://www.beatport.com/track/the-feeling/13518744
+
+tracks:
+  - title: The Feeling (2022 Remaster)
+    year: 2022
+    label: Afterlife Records
+    bpm: 124
+    bpm_confidence: corroborated
+    key: E minor
+    duration: "6:08"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/the-feeling/16452815
+      - https://songbpm.com/@massano/the-feeling---2022-remaster-c4QBT_isYM
+
+  - title: System
+    year: 2022
+    label: Afterlife Records
+    bpm: 122
+    bpm_confidence: single-source
+    key: G minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/system/16452812
+
+sets: []
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for both tracks — needs listening."
+  - "Key conflict for The Feeling (2022 Remaster): Beatport reports E minor, SongBPM reports B minor — needs listening confirmation."
+  - "Second BPM source for System — single-source Beatport value pending corroboration."
+  - "System duration."
+  - "Release year of the original Running Clouds version of The Feeling."
+  - "No DJ-set evidence collected in this shallow pass — set movement and transition behavior unknown."

@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example, after the Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Shallow expansion-anchor pass: 1-2 representative tracks, no sets.
+
+artist: WhoMadeWho
+slug: whomadewho
+role: expansion
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Electronic act releasing club-oriented melodic material on Embassy One.
+    "Silence & Secrets" (2021), made with Innervisions co-founder Frank
+    Wiedemann, was the third single ahead of their seventh studio album.
+    Their originals carry club remixes by Adriatique, Black Coffee, Patrice
+    Baeumel, and Frank Wiedemann, anchoring their melodic house and techno
+    presence.
+  labels:
+    - Embassy One
+  sources:
+    - https://thegroovecartel.com/news/whomadewho-silence-secrets-embassy-one/
+    - https://edmhousenetwork.com/whomadewho-release-silence-secrets-via-embassy-one/
+    - https://www.beatport.com/release/silence-secrets/3546007
+
+tracks:
+  - title: "Silence & Secrets"
+    year: 2021
+    label: Embassy One
+    bpm: 118
+    bpm_confidence: single-source
+    key: G minor
+    duration: "4:28"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/silence-secrets/15840484
+      - https://thegroovecartel.com/news/whomadewho-silence-secrets-embassy-one/
+
+  - title: Never Alone
+    year: 2022
+    year_confidence: single-source
+    label: Embassy One
+    bpm: 120
+    bpm_confidence: single-source
+    key: Db minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/never-alone/16366826
+
+sets: []
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for both tracks — needs listening."
+  - "Second BPM source for Silence & Secrets and Never Alone — single-source Beatport values pending corroboration (Tunebat page exists for Silence & Secrets but its values could not be read)."
+  - "Never Alone duration."
+  - "Whether the 2022-05-27 Beatport date for Never Alone is the original single release or the album reissue date."
+  - "No DJ-set evidence collected in this shallow pass — set movement and transition behavior unknown."
