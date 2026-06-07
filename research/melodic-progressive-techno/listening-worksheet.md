@@ -19,6 +19,7 @@ Listen to the five corroborated-BPM tracks; for each, count and judge:
 | Miss Monique — Concorde | [Beatport](https://www.beatport.com/track/concorde/17230714) | same | peak_time_pressure, too_edm boundary |
 
 - [ ] Do observed section lengths support `section_model` (32/32/32/64/32/64/32) and `phrase_lengths_bars [16,32]`? Note deviations per track.
+- [ ] Internal tension found by the validator (2026-06-07): the section_model sums to 288 bars ≈ 9:08–9:26 at 122–126 BPM, exceeding the pack's own club-length rule (≤9:00). When counting bars, note whether anchors trim intro/outro (e.g., 16 bars) or run shorter drops than 64.
 - [ ] After all five: revisit each style-vector assumption in `style.yml` — confirm or propose new value.
 
 ## Priority 2 — Key conflicts (3)

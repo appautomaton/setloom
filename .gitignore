@@ -10,6 +10,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.venv/
+
+candidates/
 
 node_modules/
 dist/

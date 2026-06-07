@@ -16,14 +16,17 @@ intent:
     - "overcrowded bassline"
     - "long break that loses dancefloor motion"
 
+# Section bars must sum to duration_bars (256). 256 bars at 124 BPM is ~8:15,
+# inside the style pack's club-length window; the style.yml section_model (288
+# bars total) overshoots that window and is queued in the listening worksheet.
 sections:
-  intro: 32
+  intro: 16
   groove_a: 32
   break_1: 32
   drop_1: 64
   break_2: 32
   peak: 64
-  outro: 32
+  outro: 16
 
 palette:
   kick: "deep short saturated"

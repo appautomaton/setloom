@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Broken fixture: sections sum to 64 bars but duration_bars says 999.
+
+id: B03
+title: broken-sections-mismatch
+style_pack: melodic-progressive-techno
+seed: 7
+bpm: 124
+key: D minor
+energy: 5
+duration_bars: 999
+
+intent:
+  summary: "Fixture spec whose section bars do not add up to duration_bars."
+
+sections:
+  intro: 32
+  outro: 32
+
+palette:
+  kick: "deep"
+
+style_vector:
+  darkness: 8
+  melodic_emotion: 7
+  groove_hypnosis: 8
+  cinematic_tension: 7
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 5
+  vocal_presence: 0
+  organic_texture: 1
+  peak_time_pressure: 6
+
+render_targets:
+  midi: [drums, bass]
+
+human_gate:
+  required: true
