@@ -20,6 +20,9 @@ from setloom.parts.bass import select_articulation_profile
 from setloom.schema import TrackSpec
 from setloom.stylepack import GateResult, StylePack, evaluate_gate, spec_duration_seconds
 
+# Foreground melodic streams only — pad is deliberately excluded: it is a
+# harmonic BED, and the melodic-layer-overload review rule counts foreground
+# layers (see style.yml; ears datapoint 2026-06-07).
 MELODIC_PARTS = ("chords", "arp", "lead")
 
 HUMAN_GATE_NOTICE = (

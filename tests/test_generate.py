@@ -12,7 +12,7 @@ from setloom.parts.base import parse_key, root_note
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T01 = REPO_ROOT / "examples" / "tracks" / "T01" / "spec.yml"
 GATE_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "gate-bpm-138.yml"
-PARTS = ("drums", "bass", "chords", "arp", "lead", "fills")
+PARTS = ("drums", "bass", "chords", "arp", "lead", "fills", "pad", "shaker", "clap_ride", "fx")
 
 
 @pytest.fixture(autouse=True)

@@ -57,6 +57,10 @@ render_targets:
     - arp
     - lead
     - fills
+    - pad
+    - shaker
+    - clap_ride
+    - fx
   stems:
     - kick
     - bass
