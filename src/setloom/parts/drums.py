@@ -14,7 +14,7 @@ from setloom.midi import (
     EIGHTH_TICKS,
     PPQ,
     SIXTEENTH_TICKS,
-    TICKS_PER_BAR,
+    STEPS_PER_BAR,
     NoteEvent,
     bar_to_tick,
     beat_to_tick,
@@ -27,7 +27,6 @@ CLOSED_HAT = 42
 PERC = 39
 
 PERC_PROBABILITY = 0.05
-STEPS_PER_BAR = TICKS_PER_BAR // SIXTEENTH_TICKS
 
 
 class DrumsGenerator:

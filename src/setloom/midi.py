@@ -19,6 +19,7 @@ BEATS_PER_BAR = 4
 TICKS_PER_BAR = PPQ * BEATS_PER_BAR
 SIXTEENTH_TICKS = PPQ // 4  # 120
 EIGHTH_TICKS = PPQ // 2  # 240
+STEPS_PER_BAR = TICKS_PER_BAR // SIXTEENTH_TICKS  # 16th-note steps per bar
 
 DRUM_CHANNEL = 9
 
@@ -67,6 +68,8 @@ def write_part_midi(path: str | Path, spec: TrackSpec, events: list[NoteEvent]) 
     """
     end_tick = total_ticks(spec)
     for event in events:
+        if event.duration_ticks <= 0:
+            raise ValueError(f"note event must have a positive duration: {event}")
         if event.start_tick < 0 or event.start_tick + event.duration_ticks > end_tick:
             raise ValueError(f"note event outside track bounds [0, {end_tick}]: {event}")
 

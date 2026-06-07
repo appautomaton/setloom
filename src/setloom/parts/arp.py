@@ -3,12 +3,11 @@
 
 import random
 
-from setloom.midi import SIXTEENTH_TICKS, NoteEvent, bar_to_tick, section_layout
+from setloom.midi import SIXTEENTH_TICKS, STEPS_PER_BAR, NoteEvent, bar_to_tick, section_layout
 from setloom.parts.base import TRIADS, parse_key
 from setloom.schema import TrackSpec
 
 ARP_OCTAVE = 5
-STEPS_PER_BAR = 16
 OCTAVE_JUMP_PROBABILITY = 0.08
 
 

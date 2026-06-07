@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Gate fixture: schema-valid spec whose bpm 138 violates bpm-out-of-lane.
+
+id: G01
+title: gate-bpm-138
+style_pack: melodic-progressive-techno
+seed: 42
+bpm: 138
+key: F minor
+energy: 7
+duration_bars: 192
+
+intent:
+  summary: "Fixture spec for rejection-gate CLI tests."
+
+sections:
+  intro: 16
+  groove_a: 32
+  break_1: 16
+  drop_1: 48
+  break_2: 16
+  peak: 48
+  outro: 16
+
+palette:
+  kick: "deep"
+
+style_vector:
+  darkness: 8
+  melodic_emotion: 7
+  groove_hypnosis: 8
+  cinematic_tension: 7
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 5
+  vocal_presence: 0
+  organic_texture: 1
+  peak_time_pressure: 6
+
+render_targets:
+  midi: [drums, bass, chords, arp, lead, fills]
+
+human_gate:
+  required: true

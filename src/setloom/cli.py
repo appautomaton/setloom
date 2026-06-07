@@ -36,20 +36,65 @@ def _grammar_warnings(spec: TrackSpec, spec_path: Path) -> list[str]:
     return warnings
 
 
-def _cmd_validate(args: argparse.Namespace) -> int:
-    spec_path = Path(args.spec)
+def _load_spec_or_fail(spec_path: Path) -> TrackSpec | None:
     try:
-        spec = load_spec(spec_path)
+        return load_spec(spec_path)
     except ValidationError as exc:
         print(_format_validation_error(exc), file=sys.stderr)
-        return 1
+        return None
     except (OSError, yaml.YAMLError, ValueError) as exc:
         print(f"spec validation failed: {exc}", file=sys.stderr)
+        return None
+
+
+def _cmd_validate(args: argparse.Namespace) -> int:
+    spec_path = Path(args.spec)
+    spec = _load_spec_or_fail(spec_path)
+    if spec is None:
         return 1
 
     for warning in _grammar_warnings(spec, spec_path):
         print(f"warning: {warning}", file=sys.stderr)
     print(f"OK: {spec.id} '{spec.title}' ({spec.bpm:g} BPM, {spec.key}, {spec.duration_bars} bars)")
+    return 0
+
+
+def _cmd_generate(args: argparse.Namespace) -> int:
+    from setloom.generate import GateError, generate_candidates
+    from setloom.stylepack import load_style_pack
+
+    spec = _load_spec_or_fail(Path(args.spec))
+    if spec is None:
+        return 1
+    try:
+        pack = load_style_pack(spec.style_pack)
+    except FileNotFoundError as exc:
+        print(f"generation failed: {exc}", file=sys.stderr)
+        return 1
+
+    try:
+        result = generate_candidates(
+            spec,
+            pack,
+            out_dir=args.out,
+            variants=args.variants,
+            seed=args.seed,
+            allow_overrides=set(args.allow_override or []),
+        )
+    except GateError as exc:
+        print(f"generation rejected: {exc}", file=sys.stderr)
+        for violation in exc.result.blocking:
+            print(f"  {violation.rule_id}: {violation.message}", file=sys.stderr)
+        print("  (use --allow-override <rule-id> to override deliberately)", file=sys.stderr)
+        return 2
+    except ValueError as exc:
+        print(f"generation failed: {exc}", file=sys.stderr)
+        return 1
+
+    for variant in result.variants:
+        print(f"wrote {variant.directory} ({len(variant.note_counts)} parts)")
+    print(f"report: {result.report_path}")
+    print("reminder: candidates require human listening notes before approval")
     return 0
 
 
@@ -60,6 +105,19 @@ def build_parser() -> argparse.ArgumentParser:
     p_validate = sub.add_parser("validate", help="validate a track spec YAML file")
     p_validate.add_argument("spec", help="path to the track spec YAML")
     p_validate.set_defaults(func=_cmd_validate)
+
+    p_generate = sub.add_parser("generate", help="generate MIDI candidate variants from a spec")
+    p_generate.add_argument("spec", help="path to the track spec YAML")
+    p_generate.add_argument("--variants", type=int, default=3, help="number of variants (default 3)")
+    p_generate.add_argument("--seed", type=int, default=None, help="override the spec seed")
+    p_generate.add_argument("--out", default="candidates", help="output root (default candidates/)")
+    p_generate.add_argument(
+        "--allow-override",
+        action="append",
+        metavar="RULE_ID",
+        help="override a named rejection rule (repeatable); overrides are recorded in the report",
+    )
+    p_generate.set_defaults(func=_cmd_generate)
 
     return parser
 
