@@ -175,3 +175,38 @@ routing:
   - "If entry is still late: add stronger bar-1 to bar-8 identity before revisiting duration."
   - "If lead still sounds MIDI: revise effect-source gesture design and SynthDefs, not only layer gains."
   - "If loudness is still low: inspect LUFS vs playback reference and master density, not peak level alone."
+
+---
+# Take 12: T02 lead-family rebuild candidate, 2026-06-07
+
+take: T02 seed-1001 lead-family rebuild (candidates/T02/seed-1001/variant-01)
+decision: pending_human_listening
+
+render:
+  mix: "candidates/T02/seed-1001/variant-01/vibe_mix.wav"
+  stem_lead: "candidates/T02/seed-1001/variant-01/stem-lead.wav"
+  stem_lead_main: "candidates/T02/seed-1001/variant-01/stem-lead-main.wav"
+  stem_lead_fx: "candidates/T02/seed-1001/variant-01/stem-lead-fx.wav"
+  stem_lead_atmos: "candidates/T02/seed-1001/variant-01/stem-lead-atmos.wav"
+  lead_bus_report: "candidates/T02/seed-1001/variant-01/lead-bus-report.json"
+
+notes:
+  scope: "Other track elements were treated as directionally accepted; this pass targets the thin/monotonous lead only."
+  lead_family: "stem-lead.wav is now a summed bus from separate main, FX, and atmosphere lead-family stems."
+  source_timing: "Lead-family first events: fx 7.74s, atmos 11.61s, main 38.71s."
+  expression: "Lead score now carries row-level cutoff/drive/tone/motion/width/space/accent variation; report records distinct expression ranges."
+  render: "vibe_mix.wav measured about -7.9 LUFS integrated with peak safety near -1 dBFS."
+  candidate_surface: "Listen only inside candidates/T02/seed-1001/variant-01; folder contains only current lead-family files plus report."
+  gate: "Taste owner listening is required before this render can be accepted as musically successful."
+
+questions:
+  - "Does stem-lead.wav still feel thin or like one flat MIDI line?"
+  - "Does stem-lead-main.wav have enough body and melodic-techno identity?"
+  - "Do stem-lead-fx.wav and stem-lead-atmos.wav provide the fancy supporting FX and atmosphere expected from professional sound design?"
+  - "In vibe_mix.wav, does the richer lead family support the accepted groove without crowding pad, arp, percussion, or bass?"
+  - "Does the full lead family now feel coherent and melodic/progressive techno, or does it still miss the vibe?"
+
+routing:
+  - "If main is still thin: revise main-family body/saturation and expression, not master loudness."
+  - "If FX/atmos are insufficient: add/retune support gestures before changing the accepted groove."
+  - "If the full mix is crowded: reduce family gains or phrase density before touching non-lead parts."

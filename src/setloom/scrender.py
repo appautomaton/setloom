@@ -102,7 +102,7 @@ MASTER_CHAIN = (
     "6:-70,-70,-36,-30,-24,-20,-18,-15,-12,-10,-8,-7,-4,-3", "0", "-90", "0.02",
     # Club/mastered candidate pass: raise into a fast safety limiter so loudness
     # comes from whole-mix density and controlled saturation, not a lead fader bump.
-    "gain", "13",
+    "gain", "14",
     "compand", "0.001,0.010", "-5,-5,-2,-2,0,-1.4", "0", "-90", "0.001",
     "gain", "-n", str(PEAK_TARGET_DBFS),
 )

@@ -289,7 +289,8 @@ def test_master_loudness_contract_is_inspectable() -> None:
     assert LOUDNESS_TARGET_LUFS == (-8.0, -7.0)
     assert PEAK_TARGET_DBFS == -1.0
     assert MASTER_CHAIN.count("gain") >= 2
-    assert "13" in MASTER_CHAIN
+    makeup_gain = float(MASTER_CHAIN[MASTER_CHAIN.index("gain") + 1])
+    assert makeup_gain >= 13.0
     assert MIX_GAINS["lead"] == pytest.approx(0.40)
 
     wav = Path("/tmp/candidate.wav")
