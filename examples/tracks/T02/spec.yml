@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# Streaming edit of dark-orbit: same musical identity as T01, generated
+# natively as a single-arc ~4:08 short form (never blind-trimmed from the
+# club arrangement). Sections follow style.yml streaming_edit_128.
+
+id: T02
+title: dark-orbit-edit
+style_pack: melodic-progressive-techno
+duration_profile: streaming_edit
+seed: 1001
+bpm: 124
+key: D minor
+energy: 6
+duration_bars: 128
+
+intent:
+  summary: "Streaming/radio edit of dark-orbit: one break, one peak, concise edges."
+  avoid:
+    - "festival-pop drop"
+    - "overcrowded bassline"
+    - "DJ-tool intro/outro padding"
+
+sections:
+  intro: 16
+  groove_a: 16
+  break_1: 16
+  drop_1: 32
+  peak: 32
+  outro: 16
+
+palette:
+  kick: "deep short saturated"
+  bass: "rolling mono-aware offbeat drive"
+  drums: "tight hats, restrained percussion, phrase-aware fills"
+  chords: "minor stabs with controlled reverb"
+  pad: "wide dark evolving atmosphere"
+  lead: "delayed pluck motif, sparse and emotional"
+  fx: "noise risers, impacts, reverse swells"
+
+style_vector:
+  darkness: 8
+  melodic_emotion: 7
+  groove_hypnosis: 8
+  cinematic_tension: 7
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 5
+  vocal_presence: 0
+  organic_texture: 1
+  peak_time_pressure: 6
+
+render_targets:
+  midi:
+    - drums
+    - bass
+    - chords
+    - arp
+    - lead
+    - fills
+    - pad
+    - shaker
+    - clap_ride
+    - fx
+  stems:
+    - kick
+    - bass
+    - drums
+    - chords
+    - pad
+    - lead
+    - fx
+  demo_mix: true
+
+human_gate:
+  required: true

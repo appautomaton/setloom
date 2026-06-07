@@ -54,3 +54,18 @@ def test_broken_fixture_cli_exit_nonzero(
 ) -> None:
     assert cli.main(["validate", str(FIXTURES / fixture)]) == 1
     assert field in capsys.readouterr().err
+
+
+# --- Duration profiles: T02 streaming edit (change 2026-06-07-duration-profiles) ---
+
+T02 = REPO_ROOT / "examples" / "tracks" / "T02" / "spec.yml"
+
+
+def test_t02_validates_streaming_profile() -> None:
+    spec = load_spec(T02)
+    assert spec.duration_profile == "streaming_edit"
+    assert sum(spec.sections.values()) == spec.duration_bars == 128
+
+
+def test_default_profile_is_club_extended() -> None:
+    assert load_spec(T01).duration_profile == "club_extended"
