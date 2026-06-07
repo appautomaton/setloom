@@ -79,7 +79,7 @@ SYNTH_FOR_PART = {
     "pad": "vibe_pad",
     "chords": "vibe_chords",
     "arp": "vibe_arp",
-    "lead": "vibe_lead",
+    "lead": "vibe_lead_body",
     "fx": "vibe_fx",
 }
 
@@ -253,6 +253,40 @@ def lead_coherence_report() -> dict[str, dict[str, str]]:
     return {part: dict(rules) for part, rules in LEAD_COHERENCE.items()}
 
 
+def lead_bus_report(score: list[dict]) -> dict:
+    """Inspectable lead-bus report for render logs and listening handoff."""
+    layer_counts = {layer.name: 0 for layer in LEAD_LAYERS}
+    section_counts: dict[str, int] = {}
+    for row in score:
+        layer = row.get("layer")
+        section = row.get("section")
+        if layer in layer_counts:
+            layer_counts[layer] += 1
+        if isinstance(section, str):
+            section_counts[section] = section_counts.get(section, 0) + 1
+    return {
+        "layers": [
+            {
+                "name": layer.name,
+                "synth": layer.synth,
+                "role": layer.role,
+                "spectral_range": layer.spectral_range,
+                "phase_rule": layer.phase_rule,
+                "arrangement_role": layer.arrangement_role,
+                "events": layer_counts[layer.name],
+            }
+            for layer in LEAD_LAYERS
+        ],
+        "sections": dict(sorted(section_counts.items())),
+        "coherence": lead_coherence_report(),
+    }
+
+
+def write_lead_bus_report(score: list[dict], path: Path) -> None:
+    """Write deterministic lead-bus metadata beside generated stems."""
+    path.write_text(json.dumps(lead_bus_report(score), indent=2, sort_keys=True), encoding="utf-8")
+
+
 def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[NoteEvent]]:
     """The designed parts' events, derived exactly like ``setloom generate``."""
     drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"))
@@ -269,6 +303,30 @@ def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[Note
             continue
         events[part] = ALL_PARTS[part].generate(spec, part_rng(seed, variant, part))
     return events
+
+
+def score_for_part(part: str, events: list[NoteEvent], spec: TrackSpec) -> list[dict]:
+    """Part-specific NRT score rows, including routed buses."""
+    if part == "lead":
+        return lead_layer_score(events, spec)
+    score = export_score(events, spec.bpm)
+    if part == "perc":  # route each note to its kit synth, pre-scaled per role
+        by_tick = {(e.start_tick, e.note): e for e in events}
+        for row in score:
+            event = by_tick[(round(row["start"] * spec.bpm * PPQ / 60), row["note"])]
+            synth = PERC_SYNTH_FOR_NOTE.get(event.note, "vibe_hat")
+            row["synth"] = synth
+            row["amp"] = round(row["amp"] * PERC_ROLE_SCALE[synth], 4)
+    if part in SECTION_AMP_SCALE:
+        scales = SECTION_AMP_SCALE[part]
+        windows = section_windows(spec)
+        for row in score:
+            tick = round(row["start"] * spec.bpm * PPQ / 60)
+            for lo, hi, kind in windows:
+                if lo <= tick < hi:
+                    row["amp"] = round(row["amp"] * scales.get(kind, 1.0), 4)
+                    break
+    return score
 
 
 def build_scd(part: str, score: list[dict], bpm: float, total_seconds: float, out_wav: str) -> str:
@@ -323,23 +381,9 @@ def render_part_stem(
     sclang: str,
     workdir: Path,
 ) -> None:
-    score = export_score(events, spec.bpm)
-    if part == "perc":  # route each note to its kit synth, pre-scaled per role
-        by_tick = {(e.start_tick, e.note): e for e in events}
-        for row in score:
-            event = by_tick[(round(row["start"] * spec.bpm * PPQ / 60), row["note"])]
-            synth = PERC_SYNTH_FOR_NOTE.get(event.note, "vibe_hat")
-            row["synth"] = synth
-            row["amp"] = round(row["amp"] * PERC_ROLE_SCALE[synth], 4)
-    if part in SECTION_AMP_SCALE:
-        scales = SECTION_AMP_SCALE[part]
-        windows = section_windows(spec)
-        for row in score:
-            tick = round(row["start"] * spec.bpm * PPQ / 60)
-            for lo, hi, kind in windows:
-                if lo <= tick < hi:
-                    row["amp"] = round(row["amp"] * scales.get(kind, 1.0), 4)
-                    break
+    score = score_for_part(part, events, spec)
+    if part == "lead":
+        write_lead_bus_report(score, workdir / "lead-bus-report.json")
     seconds = ticks_to_seconds(total_ticks(spec), spec.bpm)
     scd = build_scd(part, score, spec.bpm, seconds, str(out_wav))
     scd_path = workdir / f"render-{part}.scd"

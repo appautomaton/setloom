@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Spec 5 vibe-slice tests: score export units always; NRT integration when sclang exists."""
 
+import json
 from pathlib import Path
 
 import pytest
 
-from setloom.midi import NoteEvent
+from setloom.midi import PPQ, NoteEvent
 from setloom.schema import load_spec
 from setloom.scrender import (
     LEAD_LAYERS,
@@ -14,10 +15,13 @@ from setloom.scrender import (
     export_score,
     export_score_json,
     find_sclang,
+    lead_bus_report,
     lead_coherence_report,
     lead_layer_score,
     lead_layer_score_json,
     render_part_stem,
+    score_for_part,
+    section_windows,
     ticks_to_seconds,
     vibe_events,
 )
@@ -105,6 +109,57 @@ def test_lead_layer_score_is_section_aware_and_deterministic() -> None:
     assert lead_layer_score_json(lead, spec) == lead_layer_score_json(list(reversed(lead)), spec)
 
 
+def test_lead_bus_score_covers_section_roles() -> None:
+    spec = load_spec(T02)
+    starts = {kind: start for start, _end, kind in section_windows(spec)}
+
+    def section_burst(kind: str) -> list[NoteEvent]:
+        return [NoteEvent(1, 72, 100, starts[kind] + PPQ + i * 120, PPQ) for i in range(6)]
+
+    events = (
+        section_burst("intro")
+        + section_burst("break")
+        + section_burst("drop")
+        + section_burst("peak")
+        + section_burst("outro")
+    )
+    rows = score_for_part("lead", events, spec)
+    by_section = {}
+    for row in rows:
+        by_section.setdefault(row["section"], set()).add(row["layer"])
+    assert "intro" not in by_section
+    assert "outro" not in by_section
+    assert by_section["break"] == {"lead_body", "lead_edge", "lead_air", "lead_shadow"}
+    assert by_section["drop"] == {"lead_body", "lead_edge"}
+    assert by_section["peak"] == {"lead_body", "lead_edge", "lead_air", "lead_shadow"}
+
+
+def test_build_scd_uses_layered_lead_score_and_report() -> None:
+    spec = load_spec(T02)
+    starts = {kind: start for start, _end, kind in section_windows(spec)}
+    lead = [
+        NoteEvent(1, 72, 100, starts["break"] + PPQ, PPQ),
+        NoteEvent(1, 72, 100, starts["drop"] + PPQ, PPQ),
+        NoteEvent(1, 72, 100, starts["peak"] + PPQ, PPQ),
+    ]
+    score = score_for_part("lead", lead, spec)
+    scd = build_scd("lead", score, spec.bpm, 247.7, "/tmp/lead.wav")
+    for layer in LEAD_LAYERS:
+        assert f"'{layer.synth}'" in scd
+    assert "'vibe_lead'" not in scd
+    assert scd == build_scd("lead", list(score), spec.bpm, 247.7, "/tmp/lead.wav")
+
+    report = lead_bus_report(score)
+    assert {layer["name"] for layer in report["layers"]} == {
+        "lead_body",
+        "lead_edge",
+        "lead_air",
+        "lead_shadow",
+    }
+    assert {"break", "drop", "peak"} <= set(report["sections"])
+    assert set(report["coherence"]) == {"pad", "arp", "chords", "perc"}
+
+
 def test_lead_coherence_report_names_neighboring_parts() -> None:
     report = lead_coherence_report()
     assert set(report) == {"pad", "arp", "chords", "perc"}
@@ -122,3 +177,21 @@ def test_nrt_renders_kick_stem(tmp_path: Path) -> None:
     short = [e for e in events["kick"] if e.start_tick < 2 * 4 * 480]
     render_part_stem("kick", short, spec, out, find_sclang(), tmp_path)
     assert out.exists() and out.stat().st_size > 44100  # > ~0.5s of 16-bit stereo
+
+
+@pytest.mark.skipif(find_sclang() is None, reason="SuperCollider not installed")
+def test_nrt_renders_short_lead_bus_stem(tmp_path: Path) -> None:
+    spec = load_spec(T02)
+    starts = {kind: start for start, _end, kind in section_windows(spec)}
+    out = tmp_path / "stem-lead.wav"
+    events = [NoteEvent(1, 72, 100, starts["break"] + PPQ, PPQ)]
+    render_part_stem("lead", events, spec, out, find_sclang(), tmp_path)
+    report = json.loads((tmp_path / "lead-bus-report.json").read_text(encoding="utf-8"))
+    assert out.exists() and out.stat().st_size > 44100
+    assert {layer["name"] for layer in report["layers"]} == {
+        "lead_body",
+        "lead_edge",
+        "lead_air",
+        "lead_shadow",
+    }
+    assert report["sections"] == {"break": 4}
