@@ -211,6 +211,8 @@ def mix(variant_dir: Path, sc_stems: dict[str, Path], spec: TrackSpec, out_wav: 
          "highpass", "28",
          "compand", "0.003,0.120",
          "6:-70,-70,-36,-30,-24,-20,-18,-15,-12,-10,-8,-7,-4,-3", "0", "-90", "0.02",
+         "gain", "6",  # makeup toward the ~-11 LUFS demo target
+         "compand", "0.001,0.020", "-6,-6,0,-4", "0", "-90", "0.001",  # peak limiter
          "gain", "-n", "-1"],
         check=True,
         capture_output=True,
