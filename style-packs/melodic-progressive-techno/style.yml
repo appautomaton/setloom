@@ -1,7 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
+#
+# Annotation contract: every grammar value carries either
+#   # evidence: <corpus-backed, see research/melodic-progressive-techno/>
+#   # assumption: <design choice or value pending the listening gate>
 
 id: melodic-progressive-techno
-status: draft
+status: surveyed
+provenance:
+  surveyed: 2026-06-07
+  corpus: research/melodic-progressive-techno/corpus/
+  findings: research/melodic-progressive-techno/findings.md
+
 summary: >
   Dark, melodic, progressive, club-functional techno with patient arrangement,
   controlled low end, hypnotic groove, cinematic tension, and DJ-set-aware flow.
@@ -23,22 +32,27 @@ reference_anchors:
     - Adriatique
 
 style_vector_defaults:
-  darkness: 8
-  melodic_emotion: 7
-  groove_hypnosis: 8
-  cinematic_tension: 7
-  bass_aggression: 6
-  arrangement_patience: 9
-  hook_density: 5
-  vocal_presence: 1
-  organic_texture: 2
-  peak_time_pressure: 6
+  # Style-vector values are taste-level judgments that metadata cannot settle;
+  # all remain assumptions until the listening worksheet returns.
+  darkness: 8              # assumption: pending listening
+  melodic_emotion: 7       # assumption: pending listening
+  groove_hypnosis: 8       # assumption: pending listening
+  cinematic_tension: 7     # assumption: pending listening
+  bass_aggression: 6       # assumption: pending listening
+  arrangement_patience: 9  # assumption: pending listening
+  hook_density: 5          # assumption: pending listening
+  vocal_presence: 1        # assumption: pending listening; corpus shows guest vocals are common in anchor catalogs (findings.md), value may be understated
+  organic_texture: 2       # assumption: pending listening
+  peak_time_pressure: 6    # assumption: pending listening
 
 generation_defaults:
-  bpm_range: [122, 126]
-  meter: "4/4"
-  phrase_lengths_bars: [16, 32]
-  section_model:
+  bpm_range: [120, 125]    # evidence: corroborated anchor tracks span 120-125, median ~123 (findings.md "BPM"); draft [122,126] corrected
+  bpm_outliers_observed: [118, 128]  # evidence: single-source extremes (whomadewho.yml 118, innellea.yml Euphoria 128)
+  key_mode_bias: minor     # evidence: ~2:1 minor:major across 34 sourced corpus keys (findings.md "Key practice")
+  club_edit_duration_minutes: [5.5, 8.5]  # evidence: 16 sourced durations 5:37-8:35, median ~6:38 (findings.md "Duration")
+  meter: "4/4"             # assumption: genre norm, not verified per-track
+  phrase_lengths_bars: [16, 32]  # assumption: pending listening; no structure evidence in corpus
+  section_model:           # assumption: pending listening; structure_notes unknown for all 34 corpus tracks
     intro: 32
     groove_a: 32
     break_1: 32
@@ -48,6 +62,8 @@ generation_defaults:
     outro: 32
 
 rules:
+  # Normative design rules. Corpus structure evidence is pending (findings.md);
+  # quantitative thresholds for these rules route through the listening worksheet.
   kick:
     - "Use stable four-on-the-floor timing."
     - "Keep the kick controlled and mixable."
@@ -66,12 +82,31 @@ rules:
     - "Breakdowns may be emotional but should not collapse dancefloor motion."
 
 review_vocabulary:
-  too_busy: "Too many events compete for attention."
-  too_flat: "Energy does not lift across sections."
-  too_edm: "Drop or hook feels over-signaled, obvious, or festival-pop."
-  too_static: "Loop works but does not evolve."
-  not_club_functional: "Track is hard to mix, weak on low end, or lacks phrase clarity."
-  low_end_conflict: "Kick and bass compete in timing, tuning, length, or spectral space."
+  # Definitional reviewer vocabulary; calibration examples route through listening.
+  too_busy: "Too many events compete for attention."            # assumption: definitional
+  too_flat: "Energy does not lift across sections."             # assumption: definitional
+  too_edm: "Drop or hook feels over-signaled, obvious, or festival-pop."  # assumption: definitional
+  too_static: "Loop works but does not evolve."                 # assumption: definitional
+  not_club_functional: "Track is hard to mix, weak on low end, or lacks phrase clarity."  # assumption: definitional
+  low_end_conflict: "Kick and bass compete in timing, tuning, length, or spectral space."  # assumption: definitional
+
+rejection_rules:
+  # Candidate auto-reject conditions for the Spec 6 review gate (rationale: findings.md).
+  - id: bpm-out-of-lane
+    rule: "Reject candidates outside bpm_range unless the track spec explicitly overrides."
+    basis: evidence
+  - id: club-length
+    rule: "Reject final club edits shorter than 5:00 or longer than 9:00."
+    basis: evidence
+  - id: no-listening-no-approval
+    rule: "Reject any final-approval request that lacks human listening notes."
+    basis: policy
+  - id: low-end-conflict
+    rule: "Reject candidates where kick and bass overlap in timing and register (see review_vocabulary.low_end_conflict)."
+    basis: assumption
+  - id: unmixable-edges
+    rule: "Reject arrangements without mixable intro and outro sections."
+    basis: assumption
 
 approval:
   human_listening_required: true
@@ -79,4 +114,3 @@ approval:
     - keep
     - revise
     - reject
-

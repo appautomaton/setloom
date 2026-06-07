@@ -49,6 +49,7 @@ tracks:
     bpm: 123
     bpm_confidence: corroborated
     key: A major
+    key_confidence: conflicting
     duration: "6:05"
     structure_notes: unknown
     sources:

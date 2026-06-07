@@ -11,7 +11,7 @@
 # Researched via web evidence (Beatport, SongBPM, SoundCloud, 1001tracklists).
 # Public data on this artist is sparse; gaps are recorded rather than filled.
 
-artist: Enai
+artist: ENAI
 slug: enai
 role: starting
 researched: 2026-06-07
@@ -22,7 +22,7 @@ profile:
     sound with support from Solomun, Tale Of Us, Adriatique, and Tiesto.
     Released "The Gate" on Afterlife; other material on ATLANT and Oddity.
   labels:
-    - Afterlife
+    - Afterlife Records
     - ATLANT
     - Oddity
   sources:
@@ -34,7 +34,7 @@ tracks:
   - title: The Gate
     year: 2023
     year_confidence: single-source
-    label: Afterlife
+    label: Afterlife Records
     bpm: 121
     bpm_confidence: single-source
     key: Ab minor
@@ -83,7 +83,7 @@ sets:
 unknowns:
   - "Second documented DJ set — searched 1001tracklists, MixesDB, and SoundCloud; only the Melodic Diggers podcast mix was found. Gap stands until a club/festival tracklist surfaces."
   - "Track structure (intro/break/drop section lengths in bars) for all three tracks — needs listening."
-  - "Release year and label for HORUS; release date precision and duration for Our Mind."
+  - "Release year, label, and duration for HORUS; release date precision and duration for Our Mind."
   - "Exact release date for The Gate — search results indicate 2023-11-24 but no primary page was directly verifiable."
   - "Second BPM source for all three tracks — single-source values pending corroboration."
   - "Set BPM/key movement and transition lengths for the podcast mix — needs listening."

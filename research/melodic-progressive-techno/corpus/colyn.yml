@@ -48,6 +48,7 @@ tracks:
     bpm: 124
     bpm_confidence: corroborated
     key: B minor
+    key_confidence: conflicting
     duration: unknown
     structure_notes: unknown
     sources:
