@@ -9,6 +9,7 @@ from setloom.midi import NoteEvent
 from setloom.schema import load_spec
 from setloom.scrender import (
     LEAD_LAYERS,
+    PATCHES,
     build_scd,
     export_score,
     export_score_json,
@@ -67,6 +68,23 @@ def test_lead_layers_define_required_roles() -> None:
         assert layer.synth.startswith("vibe_lead_")
         assert layer.role and layer.spectral_range and layer.phase_rule
         assert layer.arrangement_role and layer.rationale
+
+
+def test_lead_layer_synthdefs_document_modern_roles() -> None:
+    text = PATCHES.read_text(encoding="utf-8")
+    for layer in LEAD_LAYERS:
+        assert f"SynthDef(\\{layer.synth}" in text
+    for phrase in (
+        "role-separated layers",
+        "no static single saw/pulse disco lead",
+        "no bright",
+        "no equal-status octave/unison doubling",
+        "Spectral allocation",
+        "Stereo/phase",
+        "Psychoacoustic role",
+        "Temporal rule",
+    ):
+        assert phrase in text
 
 
 def test_lead_layer_score_is_section_aware_and_deterministic() -> None:

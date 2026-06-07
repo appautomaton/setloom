@@ -105,50 +105,80 @@ SynthDef(\vibe_chords, { |out=0, freq=220, amp=0.6, sustain=0.3, pumpRate=2.066,
     Out.ar(out, sig);
 }),
 
-// vibe_lead v2 — signature dark pluck/body lead (take-9 + cross-model recipe):
-// centered sine core + 5-voice VarSaw unison (±4-8 cents) + pulse edge +
-// quiet octave-down support + air transient, asymmetric pre-filter tanh,
-// resonant darkening filter with slow wander, filtered stereo ping-pong
-// delay + small dark verb. Body and identity, still restrained.
-SynthDef(\vibe_lead, { |out=0, freq=440, amp=0.6, sustain=0.4, pumpRate=2.066,
-    delayBeats=0.75, cutoff=2600, drive=1.55, wetMix=0.32,
-    width=0.18, octaveLevel=0.10|
-    var hitEnv, bodyEnv, tailEnv, filtEnv, cutMove;
-    var ratios, core, uni, edge, octave, air, mono, sat, filt;
-    var center, wideSource, wide, delayTime, echo, verb, sig;
-    RandSeed.ir(1, 83);
-    hitEnv = EnvGen.kr(Env.perc(0.004, 0.42, 1, -5));
-    bodyEnv = EnvGen.kr(Env.linen(0.006, sustain.max(0.20), 0.32, 1, \sin));
-    tailEnv = EnvGen.kr(
-        Env.linen(0.001, sustain.max(0.30) + 2.2, 0.45), doneAction: 2);
-    // Filter opens for the attack, then settles dark instead of vanishing.
-    filtEnv = EnvGen.kr(Env(
-        [cutoff * 1.15, cutoff * 0.68, cutoff * 0.42], [0.10, 0.65], [-3, -4]));
-    cutMove = SinOsc.kr(0.045, 0).range(0.92, 1.08);
-    ratios = [0.9954, 0.9977, 1, 1.0023, 1.0046];  // ±4-8 cents, no supersaw cheese
-    core = SinOsc.ar(freq) * 0.38;
-    uni = Mix(VarSaw.ar(freq * ratios, 0, 0.42) * [0.07, 0.09, 0.12, 0.09, 0.07]);
-    edge = Pulse.ar(freq * 1.001, 0.42) * 0.08;
-    octave = (SinOsc.ar(freq * 0.5) * octaveLevel) + (VarSaw.ar(freq * 0.5, 0, 0.35) * 0.035);
-    octave = LPF.ar(HPF.ar(octave, 160), 900);  // chest, not bass
-    air = HPF.ar(PinkNoise.ar(0.01), 2500) * hitEnv;
-    mono = core + uni + edge + octave + air;
-    sat = (mono * drive).tanh / drive;  // dirt before filter: expensive-dark
-    filt = RLPF.ar(sat, (filtEnv * cutMove).clip(450, 4200), 0.38);
-    filt = BPeakEQ.ar(filt, 420, 0.8, 2.0);  // subtle body push
-    filt = BHiShelf.ar(filt, 6500, 1, -5);
-    center = filt * bodyEnv;
-    wideSource = HPF.ar(filt, 350) * bodyEnv;
-    wide = DelayC.ar(wideSource ! 2, 0.035,
-        [0.012, 0.019] + SinOsc.kr([0.08, 0.13], [0, 1.4]).range(0, 0.002));
-    delayTime = delayBeats / pumpRate;
-    echo = DelayC.ar((center ! 2) + (wide * 0.35), 1.0, [delayTime, delayTime * 1.5]);
-    echo = LPF.ar(HPF.ar(echo, 350), 3900);
-    echo = echo + AllpassC.ar(echo, 0.08, [0.031, 0.043], 1.1);
-    verb = GVerb.ar(LPF.ar(center, 3600), 35, 2.6, 0.4, 0.55, 8, 0) * 0.05;
-    sig = ((center ! 2) * 0.82) + (wide * width) + (echo * wetMix) + verb;
-    sig = (sig * 1.15).tanh * 0.9 * amp * tailEnv;
-    Out.ar(out, sig);
+// ---- Modern lead bus (2026): role-separated layers, not one retro patch. ----
+// Anti-retro safeguards: no static single saw/pulse disco lead, no bright
+// chorus-brass profile, and no equal-status octave/unison doubling across all notes.
+
+// vibe_lead_body — center identity/body.
+// Spectral allocation: owns 400Hz-3.5kHz; avoids sub and hat air.
+// Math/psychoacoustics: sine-FM core gives focus, VarSaw micro-detune gives
+// controlled beating, pre-filter tanh adds body before a dark moving LPF.
+// Stereo/phase: mostly center; tiny post-HPF micro-delay only above 350Hz.
+SynthDef(\vibe_lead_body, { |out=0, freq=440, amp=0.6, sustain=0.4, pumpRate=2.066,
+    cutoff=2600, drive=1.45|
+    var hit, hold, tail, fm, core, ratios, widths, saw, raw, sat, filt, wide, sig;
+    hit = EnvGen.kr(Env.perc(0.004, 0.22, 1, -5));
+    hold = EnvGen.kr(Env.linen(0.006, sustain.max(0.22), 0.34, 1, \sin));
+    tail = EnvGen.kr(Env.linen(0.001, sustain.max(0.30) + 1.5, 0.30), doneAction: 2);
+    fm = SinOsc.ar(freq * 1.997, 0, freq * 0.018 * hit);
+    core = SinOsc.ar(freq + fm) * 0.40;
+    ratios = [0.996, 0.9985, 1, 1.0025, 1.004];
+    widths = SinOsc.kr([0.031, 0.037, 0.043, 0.049, 0.055], 0).range(0.38, 0.52);
+    saw = Mix(VarSaw.ar(freq * ratios, 0, widths) * [0.05, 0.08, 0.11, 0.08, 0.05]);
+    raw = core + saw;
+    sat = (raw * drive).tanh / drive;
+    filt = RLPF.ar(sat, (cutoff * hit.linlin(0, 1, 0.42, 1.08)).clip(420, 3600), 0.36);
+    filt = BPeakEQ.ar(filt, 430, 0.8, 1.6);
+    filt = LPF.ar(BHiShelf.ar(filt, 6500, 1, -5), 5200) * hold;
+    wide = DelayC.ar(HPF.ar(filt, 350) ! 2, 0.03, [0.011, 0.017]);
+    sig = ((filt ! 2) * 0.88) + (wide * 0.10);
+    Out.ar(out, sig * amp * tail);
+}),
+
+// vibe_lead_edge — short modern attack bite.
+// Spectral allocation: 1.2-4.8kHz only; it adds attack, never sustained brass.
+// Temporal rule: very short envelope, so it cannot become an 80s disco stab.
+// Stereo/phase: narrow, because transient localization should stay precise.
+SynthDef(\vibe_lead_edge, { |out=0, freq=440, amp=0.35, sustain=0.08, pumpRate=2.066,
+    drive=1.8|
+    var env, pm, body, glass, sig;
+    env = EnvGen.kr(Env.perc(0.0015, sustain.clip(0.035, 0.14), 1, -7), doneAction: 2);
+    pm = SinOsc.ar(freq * 3.01, 0, freq * 0.025);
+    body = SinOsc.ar((freq * 2.0) + pm) * 0.28;
+    glass = Pulse.ar(freq * 2.003, 0.42) * 0.10;
+    sig = ((body + glass) * drive).tanh / drive;
+    sig = LPF.ar(HPF.ar(sig, 1200), 4800);
+    Out.ar(out, (sig * env * amp) ! 2);
+}),
+
+// vibe_lead_air — filtered air/grain texture.
+// Spectral allocation: 3-5.5kHz; deliberately below the hat/shaker >6k zone.
+// Psychoacoustic role: movement and expensive texture, not brightness ownership.
+// Stereo/phase: wide after HPF; deterministic RandSeed controls noise source.
+SynthDef(\vibe_lead_air, { |out=0, freq=440, amp=0.18, sustain=0.25, pumpRate=2.066|
+    var env, band, motion, grains, wide, sig;
+    RandSeed.ir(1, 89);
+    env = EnvGen.kr(Env.perc(0.008, sustain.max(0.18) + 0.35, 1, -4), doneAction: 2);
+    motion = SinOsc.kr(0.067, 0).range(3300, 5200);
+    band = BPF.ar(PinkNoise.ar(1), motion, 0.22);
+    grains = HPF.ar(Impulse.ar(freq / 8) * 0.12, 2500);
+    sig = LPF.ar(HPF.ar((band + grains) * env, 2800), 5500);
+    wide = DelayC.ar(sig ! 2, 0.035, [0.014, 0.023]);
+    Out.ar(out, wide * amp);
+}),
+
+// vibe_lead_shadow — quiet octave/response support.
+// Spectral allocation: 160-900Hz chest only; high-passed out of bass territory.
+// Arrangement role: the renderer does not send every note; this layer supports
+// selected moments instead of becoming equal-status octave doubling.
+// Stereo/phase: mono/narrow to protect body-range phase.
+SynthDef(\vibe_lead_shadow, { |out=0, freq=220, amp=0.24, sustain=0.35, pumpRate=2.066|
+    var env, core, pulse, sig;
+    env = EnvGen.kr(Env.linen(0.008, sustain.max(0.18), 0.22, 1, \sin), doneAction: 2);
+    core = SinOsc.ar(freq) * 0.28;
+    pulse = VarSaw.ar(freq * 1.005, 0, 0.36) * 0.08;
+    sig = LPF.ar(HPF.ar(((core + pulse) * 1.25).tanh, 160), 900);
+    Out.ar(out, (sig * env * amp) ! 2);
 }),
 
 // vibe_arp — metallic pluck, sits behind the lead.
