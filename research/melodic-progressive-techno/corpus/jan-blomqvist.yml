@@ -38,6 +38,7 @@ tracks:
     key: F minor
     duration: unknown
     structure_notes: unknown
+    conflation_risk: "cross-model review 2026-06-07: cited source may be the Ben Bohmer remix; 2018/120/F-minor possibly remix-specific, verify against the original"
     sources:
       - https://www.beatport.com/track/t/11097813
 
@@ -56,6 +57,7 @@ tracks:
 sets: []
 
 unknowns:
+  - "The Space In Between: original-vs-Ben-Bohmer-remix metadata conflation risk — confirm whose 120 BPM / F minor / 2018 these are."
   - "Track structure (intro/break/drop section lengths in bars) for both tracks — needs listening."
   - "Second BPM source for The Space In Between and Carry On — single-source Beatport values pending corroboration (Tunebat and SongData pages exist but their values could not be read)."
   - "The Space In Between duration."

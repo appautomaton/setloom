@@ -41,6 +41,7 @@ tracks:
     structure_notes: unknown
     sources:
       - https://www.beatport.com/release/beyond/6620280
+      # verified 2026-06-07: artist page lists "Beyond - Extended Mix" 124 BPM / G / 5:46
       - https://songbpm.com/@arodes
       - https://arodes.bandcamp.com/album/beyond
 

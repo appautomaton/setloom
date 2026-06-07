@@ -31,6 +31,7 @@ profile:
 tracks:
   - title: Home feat. Delhia de France
     collaborators: [Marino Canal, Delhia de France]
+    duplicate_of: marino-canal  # same record as marino-canal.yml "Home"; dedupe in aggregate stats
     year: 2020
     label: Siamese
     bpm: 120

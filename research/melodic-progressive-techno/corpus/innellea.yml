@@ -70,15 +70,16 @@ tracks:
       - https://diynamic.bandcamp.com/track/forced-to-bend
 
   - title: Euphoria
-    year: unknown
+    year: 2024  # released 2024-11-01; cross-model knowledge confirmed by web 2026-06-07
     label: "[PIAS] Electronique"
     bpm: 128
     bpm_confidence: single-source
     key: F minor
-    duration: unknown
+    duration: "5:11"
     structure_notes: unknown
     sources:
       - https://www.beatport.com/track/euphoria/19719384
+      - https://bleep.com/release/478227-innellea-euphoria
 
 sets:
   - event: "Tomorrowland 2025 Weekend 1, Planaxis Stage, Belgium"
@@ -113,6 +114,6 @@ unknowns:
   - "Track structure (intro/break/drop section lengths in bars) for all four tracks — needs listening."
   - "Set BPM/key movement and transition lengths for Tomorrowland 2025-07-18 — needs listening to recording."
   - "Second BPM source for Forced To Bend and Euphoria — single-source values pending corroboration."
-  - "Euphoria release year and duration."
+  - "Euphoria BPM second source — 128 remains single-source (year/duration resolved 2026-06-07)."
   - "Set BPM/key movement and transition lengths for Awakenings ADE 2024-10-18 — needs listening to recording."
   - "Genre tags and full ID list for Awakenings ADE 2024-10-18 — tracklist marked incomplete."
