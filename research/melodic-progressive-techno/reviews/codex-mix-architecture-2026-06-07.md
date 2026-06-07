@@ -78,6 +78,12 @@ Demo loudness targets: integrated ≈ −11 LUFS, drop short-term ≈ −9, true
 `highpass 28` → soft-knee compand (6:-70,…,-4,-3) → `gain -n -1`. Render stems
 24-bit, not int16. [high]
 
+> **Taste-owner amendment (2026-06-07, take-8):** use the GENRE default, not
+> the conservative demo target — techno/tech house masters run ~−8..−6 LUFS,
+> significantly louder than vocal music. Master chain gained +9 dB makeup and
+> a brickwall-ish limiter; achieved drop/peak RMS ≈ −10.8 dBFS (full-file
+> −12.5), true peak −1 dB. Further pushes trade audible squash — ears decide.
+
 ## D. Coherence rules ("one instrument designed by one person")
 
 - Shared oscillator family: sine lows, saw/pulse harmonics, filtered noise percussion.
