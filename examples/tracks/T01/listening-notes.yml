@@ -83,3 +83,22 @@ notes:
 routing:
   - "ROOT CAUSE FOUND (coordinator): mix bug — GM full.wav (all 10 parts incl. GM kick/bass/pad) was layered under the SC stems, doubling the vibe parts with cheap GM versions. Fix: GM bed = 7 non-vibe parts only, drums stripped of kick notes."
   - "Patch retune alongside: darker bass/pad cutoffs, less kick click, less verb."
+
+---
+# Take 7: T02 vibe v3 audition, 2026-06-07
+
+take: T02 seed-1001 vibe v3
+decision: revise
+
+notes:
+  alignment: "Background claps not aligned — ROOT CAUSE: SC stems carry +0.05s scheduling offset, GM bed starts at 0; every GM percussion hit flams 50ms early."
+  loudness: "Not loud enough at max volume — no master bus (RMS ~ -15 dB vs commercial ~ -8)."
+  drums: "Drum content insufficient."
+  rhythm: "Still monotonous — beginner-sounding."
+  maturity_principle: "Maturity = variety WITHIN one spectrum, not a timbre hodgepodge — palette coherence as a grammar principle."
+
+routing:
+  - "Tranche 3: synthesized percussion kit (hat/openhat/clap/ride/shaker/tom) replaces GM bed entirely; alignment bug dies with the GM bed."
+  - "Master bus: sox compand + limit + normalize."
+  - "Offbeat open hat added to drums (drop/peak)."
+  - "style.yml review_vocabulary += palette_incoherence (ears-derived principle)."

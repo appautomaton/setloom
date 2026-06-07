@@ -201,6 +201,7 @@ review_vocabulary:
   too_preset_arp: "Arp is continuous, literal, or lacks phrase-level motion."  # assumption: model-knowledge (cross-model review 2026-06-07)
   break_loses_floor: "Breakdown removes too much pulse or takes too long to re-enter."  # assumption: model-knowledge (cross-model review 2026-06-07)
   no_phrase_payoff: "Energy changes do not land on clear 16/32-bar boundaries."  # assumption: model-knowledge (cross-model review 2026-06-07)
+  palette_incoherence: "Timbres pull from different families instead of varying within one spectrum."  # evidence: ears (listening take-7, 2026-06-07) — maturity = variety within one spectrum
 
 rejection_rules:
   # Candidate auto-reject conditions for the Spec 6 review gate (rationale: findings.md).

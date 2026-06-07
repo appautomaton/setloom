@@ -41,7 +41,7 @@ def test_export_score_rows_and_determinism() -> None:
 def test_vibe_events_kick_only_and_deterministic() -> None:
     spec = load_spec(T02)
     events = vibe_events(spec, spec.seed, 1)
-    assert set(events) == {"kick", "bass", "pad", "chords", "arp", "lead", "fx"}
+    assert set(events) == {"kick", "bass", "pad", "chords", "arp", "lead", "fx", "perc"}
     assert all(e.note == 36 for e in events["kick"]) and events["kick"]
     assert events == vibe_events(spec, spec.seed, 1)
 

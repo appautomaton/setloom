@@ -326,33 +326,32 @@ def test_shaker_texture_bed_with_nonflat_contour(spec) -> None:
             )
 
 
-def test_clap_on_backbeats_ride_in_peak_only(spec) -> None:
-    """Claps land only on beats 2 & 4 of drop/peak bars; ride stays inside peak."""
-    drop_peak = _section_windows(spec, ("drop", "peak"))
+def test_clap_shadow_and_ride_peak_only(spec) -> None:
+    """Shadow-backbeat contract (mix-architecture review + take-7, 2026-06-07):
+    claps are a peak-only phrase accent on beats 2 & 4 of every 4th bar — never
+    an every-bar backbeat; ride stays inside peak."""
     peak = _section_windows(spec, ("peak",))
     events = _events(spec, "clap_ride")
     assert events, "clap_ride produced no events"
     clap_onsets = set()
     for event in events:
+        assert any(lo <= event.start_tick < hi for lo, hi in peak), (
+            f"clap_ride event outside peak: {event}"
+        )
         if event.note == CLAP:
             assert event.start_tick % midi.TICKS_PER_BAR in (midi.PPQ, 3 * midi.PPQ), (
                 f"clap off the backbeat: {event}"
             )
-            assert any(lo <= event.start_tick < hi for lo, hi in drop_peak), (
-                f"clap outside drop/peak: {event}"
-            )
             clap_onsets.add(event.start_tick)
         else:
             assert event.note == RIDE, f"unexpected clap_ride note: {event}"
-            assert any(lo <= event.start_tick < hi for lo, hi in peak), (
-                f"ride outside peak: {event}"
+    for lo, hi in peak:
+        bars = [lo + i * midi.TICKS_PER_BAR for i in range((hi - lo) // midi.TICKS_PER_BAR)]
+        for index, bar_tick in enumerate(bars):
+            has_clap = any(bar_tick + beat * midi.PPQ in clap_onsets for beat in (1, 3))
+            assert has_clap == (index % 4 == 0), (
+                f"clap shadow cadence broken at bar index {index}"
             )
-    for lo, hi in drop_peak:  # both backbeats present in every drop/peak bar
-        for bar_tick in range(lo, hi, midi.TICKS_PER_BAR):
-            for beat in (1, 3):
-                assert bar_tick + beat * midi.PPQ in clap_onsets, (
-                    f"missing clap at tick {bar_tick + beat * midi.PPQ}"
-                )
 
 
 def test_fx_only_around_drop_and_peak_entries(spec) -> None:

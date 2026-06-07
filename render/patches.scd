@@ -113,6 +113,7 @@ SynthDef(\vibe_arp, { |out=0, freq=440, amp=0.5, sustain=0.12, pumpRate=2.066,
     tone = (Pulse.ar(freq, 0.35) * 0.4) + (Pulse.ar(freq * 1.005, 0.35) * 0.3);
     tone = LPF.ar(tone, (cutoff * EnvGen.kr(Env.perc(0.001, snap))).max(400));
     sig = tone + CombC.ar(tone, 0.3, 0.25 / pumpRate, 0.8, 0.3);
+    sig = HPF.ar(sig, 550);  // arp owns 900Hz+ (spectral fences, mix review)
     Out.ar(out, (sig * env * amp) ! 2);
 }),
 
@@ -128,5 +129,68 @@ SynthDef(\vibe_fx, { |out=0, freq=440, amp=0.7, sustain=0.12, pumpRate=2.066|
     sig = Select.ar(isBoom, [noise, boom]);
     EnvGen.kr(Env.linen(0.001, sustain.max(0.8) + 0.3, 0.2), doneAction: 2);
     Out.ar(out, (sig * amp) ! 2);
+}),
+
+// ---- Synthesized percussion kit (tranche 3): GM percussion retired. ----
+// One dark-analog family: filtered noise + metal partials, no samples.
+
+// vibe_hat — closed hat: metallic noise tick.
+SynthDef(\vibe_hat, { |out=0, freq=440, amp=0.5, sustain=0.06, pumpRate=2.066|
+    var env, sig;
+    RandSeed.ir(1, 53);
+    env = EnvGen.kr(Env.perc(0.001, sustain.clip(0.03, 0.08), 1, -7), doneAction: 2);
+    sig = BPF.ar(WhiteNoise.ar(1), 9000, 0.9) + BPF.ar(WhiteNoise.ar(0.5), 12500, 1.2);
+    Out.ar(out, (HPF.ar(sig, 6000) * env * amp) ! 2);
+}),
+
+// vibe_openhat — offbeat sizzle: same family, longer tail.
+SynthDef(\vibe_openhat, { |out=0, freq=440, amp=0.5, sustain=0.3, pumpRate=2.066|
+    var env, sig;
+    RandSeed.ir(1, 59);
+    env = EnvGen.kr(Env.perc(0.001, sustain.clip(0.18, 0.4), 1, -4), doneAction: 2);
+    sig = BPF.ar(WhiteNoise.ar(1), 8500, 0.7) + BPF.ar(WhiteNoise.ar(0.4), 11500, 1.0);
+    Out.ar(out, (HPF.ar(sig, 5500) * env * amp * 0.8) ! 2);
+}),
+
+// vibe_clap — 909-style clap: three pre-echo bursts + main burst, dark band.
+SynthDef(\vibe_clap, { |out=0, freq=440, amp=0.7, sustain=0.25, pumpRate=2.066|
+    var burstEnv, tailEnv, noise, sig;
+    RandSeed.ir(1, 61);
+    burstEnv = EnvGen.kr(Env(
+        [0, 1, 0.2, 1, 0.25, 1, 0], [0.001, 0.009, 0.001, 0.009, 0.001, 0.02], -4));
+    tailEnv = EnvGen.kr(Env.perc(0.02, 0.18, 0.5, -5), doneAction: 2);
+    noise = BPF.ar(WhiteNoise.ar(1), 1200, 0.9) + BPF.ar(WhiteNoise.ar(0.6), 1800, 1.1);
+    sig = noise * (burstEnv + tailEnv);
+    sig = LPF.ar(HPF.ar(sig, 800), 4000);  // dark rim shadow band (mix review)
+    Out.ar(out, (sig * amp) ! 2);
+}),
+
+// vibe_ride — peak shimmer: high metal partials, restrained.
+SynthDef(\vibe_ride, { |out=0, freq=440, amp=0.4, sustain=0.35, pumpRate=2.066|
+    var env, metal, sig;
+    RandSeed.ir(1, 67);
+    env = EnvGen.kr(Env.perc(0.001, sustain.clip(0.25, 0.5), 1, -3), doneAction: 2);
+    metal = Mix([5237, 6433, 7891, 9241].collect { |f| SinOsc.ar(f) * 0.1 });
+    sig = (metal + BPF.ar(WhiteNoise.ar(0.5), 8200, 0.8)) * env;
+    Out.ar(out, (HPF.ar(sig, 4500) * amp * 0.7) ! 2);
+}),
+
+// vibe_shaker — 16th texture: soft dark noise grain with velocity contour.
+SynthDef(\vibe_shaker, { |out=0, freq=440, amp=0.4, sustain=0.05, pumpRate=2.066|
+    var env, sig;
+    RandSeed.ir(1, 71);
+    env = EnvGen.kr(Env.perc(0.004, sustain.clip(0.03, 0.07), 1, -5), doneAction: 2);
+    sig = BPF.ar(PinkNoise.ar(1.2), 6800, 1.1);
+    Out.ar(out, (HPF.ar(sig, 4200) * env * amp) ! 2);
+}),
+
+// vibe_tom — fill tom: pitched sine drop, same family as the kick.
+SynthDef(\vibe_tom, { |out=0, freq=110, amp=0.7, sustain=0.25, pumpRate=2.066|
+    var pitch, env, sig;
+    RandSeed.ir(1, 73);
+    pitch = EnvGen.kr(Env([freq * 1.6, freq], [0.06], -4));
+    env = EnvGen.kr(Env.perc(0.002, sustain.clip(0.15, 0.35), 1, -5), doneAction: 2);
+    sig = (SinOsc.ar(pitch) * 1.3).tanh * env * amp;
+    Out.ar(out, sig ! 2);
 })
 ]

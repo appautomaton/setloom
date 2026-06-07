@@ -26,6 +26,7 @@ from setloom.schema import TrackSpec
 
 KICK = 36
 CLOSED_HAT = 42
+OPEN_HAT = 46  # offbeat sizzle in drop/peak (style.yml groove.percussion.offbeat_open_hat)
 PERC = 39
 
 # Hat velocity contours: index is step-within-beat for the 16th bed (offbeat
@@ -81,6 +82,9 @@ class DrumsGenerator:
                         events.append(
                             NoteEvent(DRUM_CHANNEL, CLOSED_HAT, velocity, tick, SIXTEENTH_TICKS)
                         )
+                    for beat in range(4):  # offbeat open hat: the lane's signature sizzle
+                        tick = beat_to_tick(bar, beat) + EIGHTH_TICKS
+                        events.append(NoteEvent(DRUM_CHANNEL, OPEN_HAT, 58, tick, EIGHTH_TICKS))
                 for step in pattern[bar_in_section % len(pattern)]:
                     tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
                     events.append(
