@@ -1,0 +1,107 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example; follows Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Researched via web evidence (Beatport, SongBPM, Tunebat, 1001tracklists, Discogs, press).
+
+artist: Miss Monique
+slug: miss-monique
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Ukrainian DJ and producer; runs the Siona Records label and also releases
+    on Cercle Records and Interstellar Recordings (Insomniac). Heavily
+    documented set history on 1001tracklists, including Tomorrowland Mainstage
+    and Ibiza residency appearances. "Look At You" was among Beatport's top 10
+    best-selling melodic house & techno tracks of 2025.
+  labels:
+    - Siona Records
+    - Cercle Records
+    - "Interstellar Recordings (Insomniac)"
+  sources:
+    - https://www.beatport.com/artist/miss-monique/429406
+    - https://www.guettapen.com/2023/01/23/miss-monique-sort-concorde-sur-cercle-music/
+    - https://missmoniquemusic.com/about/
+    - https://www.beatport.com/release/look-at-you/4509704
+
+tracks:
+  - title: Concorde
+    year: 2023
+    label: Cercle Records
+    bpm: 124
+    bpm_confidence: corroborated
+    key: G major
+    duration: "6:52"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/concorde/17230714
+      - https://songbpm.com/@miss-monique/concorde-kwrGwFn0Q0
+      - https://www.guettapen.com/2023/01/23/miss-monique-sort-concorde-sur-cercle-music/
+      - https://www.discogs.com/release/26396162-Miss-Monique-Concorde
+
+  - title: Look At You
+    year: 2025
+    label: "Interstellar Recordings (Insomniac)"
+    bpm: 124
+    bpm_confidence: single-source
+    key: G major
+    duration: "6:46"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/look-at-you/18857194
+      - https://www.beatport.com/release/look-at-you/4509704
+      - https://tunebat.com/Info/Look-At-You-Miss-Monique/1OBa351gDcE1HWUsfaTCCy
+
+  - title: Loona
+    year: unknown
+    label: Siona Records
+    bpm: 123
+    bpm_confidence: single-source
+    key: C major
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://tunebat.com/Info/Loona-Miss-Monique/7F9ZEilwyY3tLj4rhAL5PP
+      - https://www.beatport.com/release/loona/3423224
+
+sets:
+  - event: "Mainstage, Tomorrowland Weekend 2, Belgium"
+    date: 2024-07-28
+    track_count: 8
+    genres: ["progressive house", "melodic house/techno"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "8 IDs logged on 1001tracklists; likely partial for a mainstage slot"
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/2twjlq01/miss-monique-mainstage-tomorrowland-weekend-2-belgium-2024-07-28.html
+
+  - event: "Hacienda Na Xamena, Ibiza, Spain"
+    date: 2025-12-05
+    track_count: unknown
+    genres: ["melodic house/techno", "afro house", "indie dance"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: unknown
+    observations:
+      - "Genre tags span melodic house/techno, afro house, and indie dance — broader stylistic range than her festival mainstage tags."
+    sources:
+      - https://www.1001tracklists.com/tracklist/1nr9phk1/miss-monique-hacienda-na-xamena-ibiza-spain-2025-12-05.html
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for all three tracks — needs listening."
+  - "Loona release year and duration (Tunebat lists roughly 4 minutes; exact value unverified)."
+  - "Second BPM source for Look At You and Loona — single-source values pending corroboration. Look At You's reported 124/G major exactly matches Concorde; flag for verification when listening."
+  - "Tomorrowland 2024 Mainstage full track count — 8 IDs likely undercount the set."
+  - "Hacienda Na Xamena track count and recording status."
+  - "Set BPM/key movement and transition lengths for both sets — needs listening to recordings."

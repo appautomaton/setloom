@@ -1,0 +1,112 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example; follows Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Researched via web evidence (Beatport, Tunebat, 1001tracklists, Electrobuzz, Bandcamp).
+
+artist: Marino Canal
+slug: marino-canal
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Producer from Málaga, Spain; Beatport's bio describes his productions as
+    organic, hypnotic, and melancholic. International breakthrough came with
+    "Home" on Siamese alongside Adriatique and Delhia De France (SIAMESE015,
+    2020). Also releases on Afterlife Records and HABITAT Records.
+  labels:
+    - Siamese
+    - Afterlife Records
+    - HABITAT Records
+  sources:
+    - https://www.beatport.com/artist/marino-canal/353885
+    - https://electronicgroove.com/adriatique-marino-canal-collaborate-siamese-home/
+    - https://www.electrobuzz.net/2020/06/adriatique-delhia-de-france-marino-canal-home-siamese015/367727/
+
+tracks:
+  - title: Home
+    collaborators: [Adriatique, Delhia De France]
+    year: 2020
+    label: Siamese
+    bpm: 120
+    bpm_confidence: corroborated
+    key: D minor
+    duration: "7:16"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/release/home/2967086
+      - https://tunebat.com/Info/Home-Adriatique-Marino-Canal-Delhia-De-France/6jYXP1jrYIHkEYglFgeL2Q
+      - https://siameserecords.bandcamp.com/album/home-feat-delhia-de-france
+
+  - title: Windspeak
+    year: 2021
+    label: Afterlife Records
+    bpm: 123
+    bpm_confidence: single-source
+    key: E major
+    duration: "8:35"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/windspeak/15499147
+      - https://soundcloud.com/afterlifeofc/marino-canal-windspeak
+
+  - title: Provenance
+    year: unknown
+    label: Siamese
+    bpm: 122
+    bpm_confidence: single-source
+    key: F# minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/provenance/12998524
+
+  - title: Independence
+    year: unknown
+    label: Afterlife Records
+    bpm: 123
+    bpm_confidence: single-source
+    key: Bb major
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/independence/18392427
+
+sets:
+  - event: "DJ Mag, The Ruins Of Acinipo, Spain (stream)"
+    date: 2020-12-07
+    track_count: 11
+    genres: ["progressive house", "techno"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "set length 1:04 logged on 1001tracklists"
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/1r6n5cgk/marino-canal-dj-mag-the-ruins-of-acinipo-spain-2020-12-07.html
+
+  - event: "Beatport Artist Of The Week Mix 124"
+    date: 2019-10-10
+    track_count: 12
+    genres: ["progressive house", "techno"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "mix length 1:01 logged on 1001tracklists"
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/y08222t/marino-canal-beatport-artist-of-the-week-mix-124-2019-10-10.html
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for all four tracks — needs listening."
+  - "Release years and durations for Provenance and Independence."
+  - "Second BPM source for Windspeak, Provenance, and Independence — single-source values pending corroboration."
+  - "Set BPM/key movement and transition lengths for both sets — needs listening to recordings."
+  - "Recording availability beyond 1001tracklists length fields for both sets."

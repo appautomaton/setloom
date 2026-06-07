@@ -1,0 +1,89 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example; follows Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Researched via web evidence (Beatport, SongBPM, SoundCloud, 1001tracklists).
+# Public data on this artist is sparse; gaps are recorded rather than filled.
+
+artist: Enai
+slug: enai
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Producer from Girona, Spain. Beatport's bio describes a deep, melodic
+    sound with support from Solomun, Tale Of Us, Adriatique, and Tiesto.
+    Released "The Gate" on Afterlife; other material on ATLANT and Oddity.
+  labels:
+    - Afterlife
+    - ATLANT
+    - Oddity
+  sources:
+    - https://www.beatport.com/artist/enai/542972
+    - https://soundcloud.com/afterlifeofc/enai-the-gate
+    - https://soundcloud.com/enaimusic/sets/illusory-enai-epica-original
+
+tracks:
+  - title: The Gate
+    year: 2023
+    year_confidence: single-source
+    label: Afterlife
+    bpm: 121
+    bpm_confidence: single-source
+    key: Ab minor
+    duration: "6:19"
+    structure_notes: unknown
+    sources:
+      - https://songbpm.com/@enai/the-gate-lOZXtAQGmX
+      - https://soundcloud.com/afterlifeofc/enai-the-gate
+      - https://www.1001tracklists.com/track/26rddnsf/enai-the-gate/index.html
+
+  - title: Our Mind
+    year: 2024
+    label: ATLANT
+    bpm: 122
+    bpm_confidence: single-source
+    key: E major
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/artist/enai/542972/tracks
+
+  - title: HORUS
+    year: unknown
+    label: unknown
+    bpm: 122
+    bpm_confidence: single-source
+    key: D major
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/artist/enai/542972/tracks
+
+sets:
+  - event: "Melodic Diggers Seven Lives °120 (podcast mix, not a club set)"
+    date: 2022-05-30
+    track_count: 11
+    genres: ["progressive house"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "mix length 58 minutes logged on 1001tracklists"
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/15mg9f0k/enai-melodic-diggers-seven-lives-120-2022-05-30.html
+
+unknowns:
+  - "Second documented DJ set — searched 1001tracklists, MixesDB, and SoundCloud; only the Melodic Diggers podcast mix was found. Gap stands until a club/festival tracklist surfaces."
+  - "Track structure (intro/break/drop section lengths in bars) for all three tracks — needs listening."
+  - "Release year and label for HORUS; release date precision and duration for Our Mind."
+  - "Exact release date for The Gate — search results indicate 2023-11-24 but no primary page was directly verifiable."
+  - "Second BPM source for all three tracks — single-source values pending corroboration."
+  - "Set BPM/key movement and transition lengths for the podcast mix — needs listening."

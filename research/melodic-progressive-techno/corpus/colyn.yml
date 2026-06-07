@@ -1,0 +1,112 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example; follows Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Researched via web evidence (Beatport, SongBPM, Tunebat, 1001tracklists).
+
+artist: Colyn
+slug: colyn
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Melodic/progressive techno producer releasing primarily on Afterlife
+    Records; catalog spans Amor (2019), Resolve (2019), It's All Over (2020),
+    and Oxygen Levels Low (2022). Documented festival and club sets on
+    1001tracklists, including Tomorrowland appearances and back-to-back work
+    with Anyma and Innellea.
+  labels:
+    - Afterlife Records
+  sources:
+    - https://www.beatport.com/artist/colyn/661550/tracks
+    - https://www.1001tracklists.com/dj/colyn/index.html
+
+tracks:
+  - title: Resolve
+    year: 2019
+    label: Afterlife Records
+    bpm: 123
+    bpm_confidence: corroborated
+    key: F# minor
+    duration: "7:23"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/resolve/12478714
+      - https://songbpm.com/@colyn/resolve
+      - https://tunebat.com/Info/Resolve-Colyn/0GOxBVl062KmJt4Spnvjuu
+
+  - title: Amor
+    year: 2019
+    label: Afterlife Records
+    bpm: 124
+    bpm_confidence: corroborated
+    key: B minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/amor/12082610
+      - https://songbpm.com/@colyn/amor
+
+  - title: It's All Over
+    year: 2020
+    label: Afterlife Records
+    bpm: 125
+    bpm_confidence: single-source
+    key: Bb minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/its-all-over/13393226
+
+  - title: Oxygen Levels Low
+    year: 2022
+    label: Afterlife Records
+    bpm: 125
+    bpm_confidence: single-source
+    key: G major
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/oxygen-levels-low/16271203
+
+sets:
+  - event: "Atmosphere Stage, Tomorrowland Weekend 3, Belgium"
+    date: 2022-07-30
+    track_count: 25
+    genres: ["progressive house", "techno"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: unknown
+    observations:
+      - "1001tracklists logs 25 tracks tagged progressive house/techno for this festival set."
+    sources:
+      - https://www.1001tracklists.com/tracklist/2rx47409/colyn-atmosphere-stage-tomorrowland-weekend-3-belgium-2022-07-30.html
+
+  - event: "Grand Place Brussels, Belgium (stream)"
+    date: 2020-06-10
+    track_count: 28
+    genres: ["deep house"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "set length 2:02 logged on 1001tracklists"
+    observations:
+      - "1001tracklists logs 28 tracks over 2h02m, tagged deep house — a slower-lane register than his Afterlife festival sets."
+    sources:
+      - https://www.1001tracklists.com/tracklist/20htg6h9/colyn-grand-place-brussels-belgium-2020-06-10.html
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for all four tracks — needs listening."
+  - "Durations for Amor, It's All Over, and Oxygen Levels Low."
+  - "Second BPM source for It's All Over and Oxygen Levels Low — single-source values pending corroboration."
+  - "Key of Amor is reported as B minor by Beatport but G by SongBPM — conflicting sources, needs listening or a third source."
+  - "Set BPM/key movement and transition lengths for both sets — needs listening to recordings."
+  - "Recording availability for the Tomorrowland 2022 set."

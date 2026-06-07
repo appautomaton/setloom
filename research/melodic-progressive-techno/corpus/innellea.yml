@@ -95,8 +95,24 @@ sets:
     sources:
       - https://www.1001tracklists.com/tracklist/2klcs2nt/innellea-planaxis-stage-tomorrowland-weekend-1-belgium-2025-07-18.html
 
+  - event: "Adriatique pres. X, Awakenings, Gashouder, Amsterdam Dance Event, Netherlands"
+    date: 2024-10-18
+    track_count: 15
+    genres: unknown
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "incomplete (several unknown IDs); recording length 1:29:27 documented on MixesDB"
+    observations:
+      - "Tracklist includes multiple Innellea originals, collaborations, and remixes (Effort Of Change, Euphoria, Set Me Free with Colyn, remixes for Vintage Culture and WhoMadeWho) — consistent with own-material-heavy set construction."
+    sources:
+      - https://www.1001tracklists.com/tracklist/1h23vmh9/innellea-adriatique-pres.-x-awakenings-gashouder-amsterdam-dance-event-netherlands-2024-10-18.html
+      - https://www.mixesdb.com/w/2024-10-18_-_Innellea_@_Awakenings_x_X,_Gashouder,_Amsterdam,_ADE
+
 unknowns:
   - "Track structure (intro/break/drop section lengths in bars) for all four tracks — needs listening."
   - "Set BPM/key movement and transition lengths for Tomorrowland 2025-07-18 — needs listening to recording."
   - "Second BPM source for Forced To Bend and Euphoria — single-source values pending corroboration."
   - "Euphoria release year and duration."
+  - "Set BPM/key movement and transition lengths for Awakenings ADE 2024-10-18 — needs listening to recording."
+  - "Genre tags and full ID list for Awakenings ADE 2024-10-18 — tracklist marked incomplete."

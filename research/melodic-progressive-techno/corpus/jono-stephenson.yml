@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example; follows Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Researched via web evidence (Beatport, SongBPM, 1001tracklists, Traxsource).
+# Public data on this artist is sparse; gaps are recorded rather than filled.
+
+artist: Jono Stephenson
+slug: jono-stephenson
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Melodic/progressive techno producer with releases across ZAMNA Records,
+    Purified Recordings, Impressum, Siona Records, and Atlant, per Beatport
+    and Traxsource catalogs. Documented mixes include a Yalla Techno podcast
+    and a back-to-back club set with DeepMe.
+  labels:
+    - ZAMNA Records
+    - Purified Recordings
+    - Impressum
+    - Siona Records
+  sources:
+    - https://www.beatport.com/artist/jono-stephenson/623168
+    - https://www.traxsource.com/artist/393526/jono-stephenson
+
+tracks:
+  - title: I Can't Save You
+    year: 2023
+    label: Impressum
+    bpm: 125
+    bpm_confidence: corroborated
+    key: F minor
+    duration: "6:17"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/i-cant-save-you/18162906
+      - https://songbpm.com/@jono-stephenson/i-can-t-save-you-5CvkJAiSII
+
+  - title: March Of Avalon
+    collaborators: [Sevenn]
+    year: 2024
+    label: ZAMNA Records
+    bpm: 123
+    bpm_confidence: single-source
+    key: F major
+    duration: "6:38"
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/march-of-avalon/19453094
+      - https://soundcloud.com/zamnarecords/sevenn-jono-stephenson-march
+      - https://music.apple.com/tr/album/march-of-avalon-single/1765763998
+
+  - title: Lose Myself
+    collaborators: [LUFS]
+    year: 2024
+    label: Siona Records
+    bpm: 125
+    bpm_confidence: single-source
+    key: G minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/lose-myself/19340694
+
+sets:
+  - event: "Yalla Techno Podcast EP 52"
+    date: 2024-10-15
+    track_count: unknown
+    genres: unknown
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: unknown
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/1t9vr4u1/jono-stephenson-yalla-techno-podcast-ep-52-2024-10-15.html
+
+  - event: "DeepMe b2b Jono Stephenson, High Desert, California, United States"
+    date: 2026-02-09
+    track_count: unknown
+    genres: ["techno", "melodic house/techno"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "set length 1:10 logged on 1001tracklists; recording on YouTube"
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/wjzgk01/deepme-jono-stephenson-high-desert-california-united-states-2026-02-09.html
+      - https://www.youtube.com/watch?v=CQEmWwUBWIc
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for all three tracks — needs listening."
+  - "Duration for Lose Myself."
+  - "Second BPM source for March Of Avalon and Lose Myself — single-source values pending corroboration."
+  - "Yalla Techno Podcast EP 52 track count, genres, and recording status — 1001tracklists page found but details not surfaced via search."
+  - "Track count for the High Desert b2b set."
+  - "Set BPM/key movement and transition lengths for both sets — needs listening to recordings."

@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+# Corpus entry schema (schema-by-example; follows Slice 1 exemplar innellea.yml):
+#   artist/slug/role  — identity; role: starting | expansion
+#   profile           — label affiliations and album context, with sources
+#   tracks[]          — quantitative claims carry sources; bpm_confidence is
+#                       corroborated (>=2 sources) | single-source; gaps are "unknown"
+#   sets[]            — DJ-set evidence: movement/transition data or "unknown"
+#   unknowns[]        — every "unknown" above, routed to the listening worksheet
+#
+# Researched via web evidence (Beatport, 1001tracklists, Juno Download, YouTube).
+
+artist: 8Kays
+slug: 8kays
+role: starting
+researched: 2026-06-07
+
+profile:
+  summary: >
+    Project of Ukrainian-born producer, live act, and DJ Iryna Shvydka.
+    Beatport's artist bio cites releases and support across Radikon, Afterlife
+    Records, Watergate Records, and John Digweed's Bedrock, plus a self-titled
+    "Darkness & Light" release imprint. Sound sits in the melodic house &
+    techno lane.
+  labels:
+    - Radikon
+    - Afterlife Records
+    - "Darkness & Light"
+  sources:
+    - https://www.beatport.com/artist/8kays/402362
+    - https://www.beatport.com/track/subway-to-berlin/16476069
+    - https://www.beatport.com/track/morning-after-the-rave/16722133
+
+tracks:
+  - title: Subway To Berlin
+    collaborators: [Hotmode]
+    year: 2022
+    label: Radikon
+    bpm: 121
+    bpm_confidence: single-source
+    key: Eb minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/subway-to-berlin/16476069
+      - https://www.junodownload.com/products/8kays-hotmode-subway-to-berlin/5559589-02/
+
+  - title: Morning After The Rave
+    year: 2022
+    label: Afterlife Records
+    bpm: 124
+    bpm_confidence: single-source
+    key: Gb major
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/morning-after-the-rave/16722133
+
+  - title: "Darkness & Light"
+    collaborators: [Cari Golden]
+    year: 2021
+    label: "Darkness & Light"
+    bpm: 124
+    bpm_confidence: single-source
+    key: F minor
+    duration: unknown
+    structure_notes: unknown
+    sources:
+      - https://www.beatport.com/track/darkness-light-feat-cari-golden/15374156
+      - https://www.junodownload.com/products/8kays-cari-golden-darkness-light/5175049-02/
+
+sets:
+  - event: "Rooftop Lviv, Ukraine"
+    date: 2021-09-08
+    track_count: 11
+    genres: ["techno", "melodic house/techno"]
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: "set length 1:01 logged on 1001tracklists; full recording on YouTube"
+    observations:
+      - "Tracklist includes her own remix work (Booka Shade ft. Eli & Fur - To The Sea, 8Kays Remix)."
+    sources:
+      - https://www.1001tracklists.com/tracklist/18ccw4c1/8kays-rooftop-lviv-ukraine-2021-09-08.html
+      - https://www.youtube.com/watch?v=n55ns-JNUOc
+
+  - event: "BBC Radio 1 Wind Down Mix"
+    date: 2023-01-21
+    track_count: unknown
+    genres: unknown
+    bpm_movement: unknown
+    key_movement: unknown
+    transition_notes: unknown
+    recording_status: unknown
+    observations: []
+    sources:
+      - https://www.1001tracklists.com/tracklist/j7757rk/8kays-bbc-radio-1-wind-down-mix-2023-01-21.html
+
+unknowns:
+  - "Track structure (intro/break/drop section lengths in bars) for all three tracks — needs listening."
+  - "Durations for all three tracks."
+  - "Second BPM source for all three tracks — all values are Beatport single-source pending corroboration (SongBPM/Tunebat searches returned no matches)."
+  - "BBC Radio 1 Wind Down Mix track count, genres, and recording status — 1001tracklists page found but details not surfaced via search."
+  - "Set BPM/key movement and transition lengths for both sets — needs listening to recordings."
