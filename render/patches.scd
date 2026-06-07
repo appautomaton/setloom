@@ -66,5 +66,69 @@ SynthDef(\vibe_pad, { |out=0, freq=220, amp=0.5, sustain=4.0, pumpRate=2.066,
     var sig = LPF.ar(saws, open) * env * amp * pump;
     sig = FreeVerb2.ar(sig, sig, verbMix, 0.86, 0.4);
     Out.ar(out, [sig[0], sig[1]]);
+}),
+
+// vibe_chords — dark stab/swell hybrid: 3-voice detuned saw, filter envelope
+// scaled by note length (short notes pluck, long notes bloom), dry-leaning.
+//   cutoff:   ceiling of the filter envelope (darkness)
+//   pluck:    filter decay for short stabs (seconds)
+//   verbMix:  small room amount
+SynthDef(\vibe_chords, { |out=0, freq=220, amp=0.6, sustain=0.3, pumpRate=2.066,
+                          cutoff=1100, pluck=0.18, verbMix=0.18|
+    var stab, ratios, saws, fenv, env, sig;
+    stab = sustain < 1.0;
+    ratios = [0.996, 1, 1.004];
+    saws = Mix(ratios.collect { |r| Saw.ar(freq * r) * 0.3 });
+    fenv = EnvGen.kr(Env([cutoff, cutoff * 0.25], [Select.kr(stab, [sustain * 0.8, pluck])], -3));
+    env = EnvGen.kr(Env.linen(0.004, (sustain - 0.06).max(0.02), 0.05), doneAction: 2);
+    sig = LPF.ar(saws, fenv.max(120)) * env * amp;
+    sig = FreeVerb.ar(sig, verbMix, 0.7, 0.5);
+    Out.ar(out, sig ! 2);
+}),
+
+// vibe_lead — delayed pluck (the T01 palette: "delayed pluck motif, sparse and
+// emotional"): sine+saw blend, fast filter decay, dotted-8th feedback delay.
+//   delayBeats: echo spacing in beats (0.75 = dotted 8th)
+//   decay:      echo tail length (seconds)
+SynthDef(\vibe_lead, { |out=0, freq=440, amp=0.6, sustain=0.4, pumpRate=2.066,
+                        delayBeats=0.75, decay=2.2, cutoff=2400|
+    var pluckEnv, tone, delayTime, sig, env;
+    pluckEnv = EnvGen.kr(Env.perc(0.002, 0.5, 1, -5));
+    tone = (SinOsc.ar(freq) * 0.6) + (Saw.ar(freq) * 0.25);
+    tone = LPF.ar(tone, (cutoff * pluckEnv).max(300));
+    delayTime = delayBeats / pumpRate;
+    sig = tone * pluckEnv;
+    sig = sig + CombC.ar(sig, 1.0, delayTime, decay, 0.45);
+    env = EnvGen.kr(Env.linen(0.001, sustain.max(0.3) + decay, 0.4), doneAction: 2);
+    sig = sig * env * amp;
+    Out.ar(out, Pan2.ar(sig, 0));
+}),
+
+// vibe_arp — metallic pluck: detuned pulse, tight filter snap, short comb
+// shimmer; sits behind the lead.
+SynthDef(\vibe_arp, { |out=0, freq=440, amp=0.5, sustain=0.12, pumpRate=2.066,
+                       cutoff=1900, snap=0.07|
+    var env, tone, sig;
+    env = EnvGen.kr(Env.perc(0.001, sustain.max(0.1) + 0.12, 1, -6), doneAction: 2);
+    tone = (Pulse.ar(freq, 0.35) * 0.4) + (Pulse.ar(freq * 1.005, 0.35) * 0.3);
+    tone = LPF.ar(tone, (cutoff * EnvGen.kr(Env.perc(0.001, snap))).max(400));
+    sig = tone + CombC.ar(tone, 0.3, 0.25 / pumpRate, 0.8, 0.3);
+    Out.ar(out, (sig * env * amp) ! 2);
+}),
+
+// vibe_fx — noise riser grains + boom impact. Low notes (impact register,
+// octave <= 1) become a sine boom; higher notes are bandpassed noise hits whose
+// center follows the chromatic run, so risers read as a rising noise roll.
+SynthDef(\vibe_fx, { |out=0, freq=440, amp=0.7, sustain=0.12, pumpRate=2.066|
+    var isBoom, noiseEnv, noise, boomEnv, boom, sig;
+    RandSeed.ir(1, 47);
+    isBoom = freq < 60;
+    noiseEnv = EnvGen.kr(Env.perc(0.002, sustain.max(0.1), 1, -4));
+    noise = BPF.ar(WhiteNoise.ar(1), freq.max(180) * 6, 0.6) * noiseEnv * 0.8;
+    boomEnv = EnvGen.kr(Env.perc(0.004, sustain.max(0.8), 1, -6));
+    boom = (SinOsc.ar(EnvGen.kr(Env([70, 38], [0.12], -4))) * 1.6).tanh * boomEnv;
+    sig = Select.ar(isBoom, [noise, boom]);
+    EnvGen.kr(Env.linen(0.001, sustain.max(0.8) + 0.3, 0.2), doneAction: 2);
+    Out.ar(out, (sig * amp) ! 2);
 })
 ]

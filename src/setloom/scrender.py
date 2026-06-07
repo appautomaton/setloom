@@ -27,19 +27,36 @@ PATCHES = Path(__file__).resolve().parents[2] / "render" / "patches.scd"
 KICK_NOTE = 36
 
 # Which generated parts feed which patch; kick events are the drum part's
-# kick notes only (hats/perc stay in the GM layer for this slice).
-VIBE_PARTS = ("kick", "bass", "pad")
+# kick notes only. Tranche 2 (take-6): the whole melodic foreground is
+# designed; GM remains percussion-only.
+VIBE_PARTS = ("kick", "bass", "pad", "chords", "arp", "lead", "fx")
 
-# GM texture bed: ONLY the non-vibe parts — the vibe parts must never be
-# doubled by their GM versions (take-5 root cause). Drums join the bed with
-# kick notes stripped (the SC kick owns the low end).
-GM_BED_PARTS = ("drums", "chords", "arp", "lead", "fills", "shaker", "clap_ride", "fx")
-GM_PROGRAMS = {2: 89, 3: 98, 4: 81, 6: 97}  # chords/arp/lead/fx GM patches
+# GM texture bed: percussion only — designed parts must never be doubled by
+# their GM versions (take-5 root cause). Drums join with kick notes stripped.
+GM_BED_PARTS = ("drums", "fills", "shaker", "clap_ride")
+GM_PROGRAMS: dict[int, int] = {}  # percussion is channel 9; no melodic GM programs left
 
-# Mix gains: SC stems carry the low end; the GM texture sits well behind.
-MIX_GAINS = {"kick": 1.0, "bass": 0.85, "pad": 0.6, "gm": 0.45}
+# Mix gains: SC stems carry the music; the GM percussion sits as texture.
+MIX_GAINS = {
+    "kick": 1.0,
+    "bass": 0.85,
+    "pad": 0.6,
+    "chords": 0.55,
+    "arp": 0.45,
+    "lead": 0.6,
+    "fx": 0.5,
+    "gm": 0.4,
+}
 
-SYNTH_FOR_PART = {"kick": "vibe_kick", "bass": "vibe_bass", "pad": "vibe_pad"}
+SYNTH_FOR_PART = {
+    "kick": "vibe_kick",
+    "bass": "vibe_bass",
+    "pad": "vibe_pad",
+    "chords": "vibe_chords",
+    "arp": "vibe_arp",
+    "lead": "vibe_lead",
+    "fx": "vibe_fx",
+}
 
 
 def find_sclang() -> str | None:
@@ -65,13 +82,16 @@ def export_score(events: list[NoteEvent], bpm: float) -> list[dict]:
 
 
 def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[NoteEvent]]:
-    """The three vibe parts' events, derived exactly like ``setloom generate``."""
+    """The designed parts' events, derived exactly like ``setloom generate``."""
     drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"))
-    return {
+    events: dict[str, list[NoteEvent]] = {
         "kick": [e for e in drums if e.note == KICK_NOTE],
-        "bass": ALL_PARTS["bass"].generate(spec, part_rng(seed, variant, "bass")),
-        "pad": ALL_PARTS["pad"].generate(spec, part_rng(seed, variant, "pad")),
     }
+    for part in VIBE_PARTS:
+        if part == "kick":
+            continue
+        events[part] = ALL_PARTS[part].generate(spec, part_rng(seed, variant, part))
+    return events
 
 
 def build_scd(part: str, score: list[dict], bpm: float, total_seconds: float, out_wav: str) -> str:
