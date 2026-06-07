@@ -74,6 +74,19 @@ MIX_GAINS = {
     "perc": 1.00,   # roles pre-scaled per synth above
 }
 
+LOUDNESS_TARGET_LUFS = (-8.0, -7.0)
+PEAK_TARGET_DBFS = -1.0
+MASTER_CHAIN = (
+    "highpass", "28",
+    "compand", "0.003,0.090",
+    "6:-70,-70,-36,-30,-24,-20,-18,-15,-12,-10,-8,-7,-4,-3", "0", "-90", "0.02",
+    # Club/mastered candidate pass: raise into a fast safety limiter so loudness
+    # comes from whole-mix density and controlled saturation, not a lead fader bump.
+    "gain", "13",
+    "compand", "0.001,0.010", "-5,-5,-2,-2,0,-1.4", "0", "-90", "0.001",
+    "gain", "-n", str(PEAK_TARGET_DBFS),
+)
+
 SYNTH_FOR_PART = {
     "kick": "vibe_kick",
     "bass": "vibe_bass",
@@ -426,6 +439,27 @@ def write_lead_bus_report(score: list[dict], path: Path) -> None:
     path.write_text(json.dumps(lead_bus_report(score), indent=2, sort_keys=True), encoding="utf-8")
 
 
+def loudness_proof_command(wav: Path) -> list[str]:
+    """Command used to verify integrated LUFS for rendered candidates."""
+    return [
+        "ffmpeg",
+        "-hide_banner",
+        "-nostats",
+        "-i",
+        str(wav),
+        "-filter_complex",
+        "ebur128",
+        "-f",
+        "null",
+        "-",
+    ]
+
+
+def peak_proof_command(wav: Path) -> list[str]:
+    """Command used to verify peak safety for rendered candidates."""
+    return ["sox", str(wav), "-n", "stat"]
+
+
 def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[NoteEvent]]:
     """The designed parts' events, derived exactly like ``setloom generate``."""
     drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"))
@@ -547,16 +581,7 @@ def mix(variant_dir: Path, sc_stems: dict[str, Path], spec: TrackSpec, out_wav: 
     cmd += [str(premaster), "gain", "-n", "-6"]
     subprocess.run(cmd, check=True, capture_output=True)
     subprocess.run(
-        ["sox", str(premaster), str(out_wav),
-         "highpass", "28",
-         "compand", "0.003,0.120",
-         "6:-70,-70,-36,-30,-24,-20,-18,-15,-12,-10,-8,-7,-4,-3", "0", "-90", "0.02",
-         # Genre-default loudness (taste-owner decision 2026-06-07): techno/tech
-         # house masters run ~-8..-6 LUFS, well above vocal-music norms. Push
-         # makeup harder and limit tighter; aim drop RMS ~ -9 dBFS.
-         "gain", "9",
-         "compand", "0.001,0.012", "-4,-4,0,-2", "0", "-90", "0.001",  # brickwall-ish limiter
-         "gain", "-n", "-1"],
+        ["sox", str(premaster), str(out_wav), *MASTER_CHAIN],
         check=True,
         capture_output=True,
     )

@@ -11,7 +11,11 @@ from setloom.schema import load_spec
 from setloom.scrender import (
     LEAD_EFFECTS,
     LEAD_LAYERS,
+    LOUDNESS_TARGET_LUFS,
+    MASTER_CHAIN,
+    MIX_GAINS,
     PATCHES,
+    PEAK_TARGET_DBFS,
     build_scd,
     export_score,
     export_score_json,
@@ -21,6 +25,8 @@ from setloom.scrender import (
     lead_effect_score,
     lead_layer_score,
     lead_layer_score_json,
+    loudness_proof_command,
+    peak_proof_command,
     render_part_stem,
     score_for_part,
     section_windows,
@@ -216,6 +222,29 @@ def test_lead_coherence_report_names_neighboring_parts() -> None:
     for rules in report.values():
         assert set(rules) == {"shares", "avoids", "rule"}
         assert all(rules.values())
+
+
+def test_master_loudness_contract_is_inspectable() -> None:
+    assert LOUDNESS_TARGET_LUFS == (-8.0, -7.0)
+    assert PEAK_TARGET_DBFS == -1.0
+    assert MASTER_CHAIN.count("gain") >= 2
+    assert "13" in MASTER_CHAIN
+    assert MIX_GAINS["lead"] == pytest.approx(0.40)
+
+    wav = Path("/tmp/candidate.wav")
+    assert loudness_proof_command(wav) == [
+        "ffmpeg",
+        "-hide_banner",
+        "-nostats",
+        "-i",
+        "/tmp/candidate.wav",
+        "-filter_complex",
+        "ebur128",
+        "-f",
+        "null",
+        "-",
+    ]
+    assert peak_proof_command(wav) == ["sox", "/tmp/candidate.wav", "-n", "stat"]
 
 
 @pytest.mark.skipif(find_sclang() is None, reason="SuperCollider not installed")
