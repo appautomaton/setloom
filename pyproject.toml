@@ -23,8 +23,13 @@ setloom = "setloom.cli:run"
 
 [dependency-groups]
 anatomy = [
+    "beartype>=0.22.9",
     "demucs>=4.0.1",
+    "einops>=0.8.2",
     "essentia==2.1b6.dev1389",
+    "rotary-embedding-torch>=0.8.9",
+    "torch>=2.12.0",
+    "torchfcpe>=0.0.4",
 ]
 dev = [
     "pytest>=8.0",

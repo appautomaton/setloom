@@ -11,6 +11,7 @@ Use this index to keep context small.
 | Style grammar concepts | `style-grammar.md` |
 | Executable style grammar | `../style-packs/melodic-progressive-techno/style.yml` |
 | Candidate and listening workflow | `workflow.md` |
+| Component names for listening notes | `../research/melodic-progressive-techno/component-glossary.md` |
 | Open-source tool direction | `tooling.md` |
 | Deep survey plan | `research-plan.md` |
 | License, hosted service, output, sample, and model policy | `licensing.md` |

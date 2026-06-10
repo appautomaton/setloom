@@ -2,7 +2,7 @@
 
 # Taste Lexicon: Review Words → Measurements → Knobs
 
-One row per `review_vocabulary` term in `style.yml`. **Sounds like** stays open until the taste owner fills it from listening sessions; that column is the human half of the contract. **Measures as** names the dossier metric (see `dossier-guide.md`) when one exists today. **Knob** is where a revision request lands in the generator.
+One row per `review_vocabulary` term in `style.yml`. **Sounds like** stays open until the taste owner fills it from listening sessions; that column is the human half of the contract. **Measures as** names the dossier metric (see `dossier-guide.md`) when one exists today. **Knob** is where a revision request lands in the generator. For the layer names those quotes will use (pad, lead, arp, riser), see `component-glossary.md`.
 
 | Term | Measures as (today) | Knob to turn |
 | --- | --- | --- |
