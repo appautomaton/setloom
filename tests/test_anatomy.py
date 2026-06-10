@@ -273,6 +273,22 @@ class TestPipelineIntegration:
         assert dossier["vocals"]["active_bar_ranges"] == []
         assert (out_dir / "synthetic.bass.mid").is_file()
 
+    def test_partition_residual_clean_and_broken(self, tmp_path):
+        import soundfile as sf
+
+        from setloom.anatomy import pipeline as pl
+
+        stem_dir = tmp_path / "stems" / "synthetic"
+        mix = _synthesize_stems(stem_dir, sr=pl.SR)
+        source = tmp_path / "source.wav"
+        # FLOAT subtype: the synthetic mix peaks above 1.0 and PCM_16 would clip
+        sf.write(source, mix, pl.SR, subtype="FLOAT")
+        # stems sum exactly to the source: residual is near silence
+        assert pl.partition_residual_db(source, stem_dir) < -40.0
+        # source scaled away from the stem sum: partition broken, check fires
+        sf.write(source, 0.5 * mix, pl.SR, subtype="FLOAT")
+        assert pl.partition_residual_db(source, stem_dir) > -20.0
+
     def test_fullmix_pass_on_synthetic_mix(self, tmp_path):
         import soundfile as sf
 

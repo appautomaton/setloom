@@ -283,6 +283,25 @@ def _analyze_vocals(y: np.ndarray, grid: Grid) -> dict:
     }
 
 
+def partition_residual_db(source: Path, stem_dir: Path) -> float:
+    """Sanity check on the 4-stem split: (source - sum of stems) in dB relative
+    to the source. The stems are a partition only while this stays near silence
+    (corpus measures -30 dB and lower); energy shares stop meaning anything
+    when it drifts."""
+    from setloom.anatomy.separate import STEM_NAMES
+
+    src = _load_mono(source)
+    total: np.ndarray | None = None
+    for name in STEM_NAMES:
+        y = _load_mono(stem_dir / f"{name}.wav")
+        total = y if total is None else total[: len(y)] + y[: len(total)]
+    n = min(len(src), len(total))
+    resid = src[:n] - total[:n]
+    src_rms = float(np.sqrt(np.mean(src[:n] ** 2))) + 1e-12
+    res_rms = float(np.sqrt(np.mean(resid**2)))
+    return float(20 * np.log10(res_rms / src_rms + 1e-12))
+
+
 def stem_pass(track: str, stem_dir: Path, grid: Grid, out_dir: Path) -> dict:
     """Per-stem dossier from separated stems; writes the bass MIDI transcription."""
     drums = _analyze_drums(_load_mono(stem_dir / "drums.wav"), grid)
@@ -384,6 +403,17 @@ def run(
             else:
                 stems = stem_pass(track, stem_dir, grid, out_dir)
                 status.append("stempass:analyzed")
+            # Partition sanity check: backfills cached dossiers too. A drifting
+            # residual means the energy shares can no longer be trusted.
+            if "partition_residual_db" not in stems:
+                try:
+                    stems["partition_residual_db"] = round(
+                        partition_residual_db(audio, stem_dir), 1
+                    )
+                except Exception:
+                    status.append("partition:unreadable-source")
+            if stems.get("partition_residual_db", -99.0) > -20.0:
+                status.append("partition:suspect")
             _write_yaml_if_changed(stem_yml, stems)
             # Candidates get dossiers but never corpus-summary rows, even as
             # explicit file targets — the exemption is structural, not a

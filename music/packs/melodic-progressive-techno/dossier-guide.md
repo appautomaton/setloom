@@ -26,6 +26,7 @@ One dossier pair per track under `local/corpus/dossiers/` (local-only): `<track>
 | `bass.note_len_16ths_median`, `share_one_step_notes` | 2.0 median = 8th-note pulse; high one-step share = 16th-note movement. |
 | `other.chords_per_2bars`, `harmonic_changes_per_16bars` | Harmony skeleton from the chords/lead/pad stem. Major/minor flips on the same root are usually template flicker; read change *rate*, not exact labels. ≈2/16 bars = static-pedal mode, ≈4–5 = slow-progression mode. |
 | `vocals.active_share`, `active_bar_ranges` | How much, and exactly where, vocal material sits. Short 2–3-bar islands = landmark fragments; large share = vocal collaboration. |
+| `partition_residual_db` | Sanity check that the 4 demucs stems sum back to the source — the property that makes every share above meaningful. Corpus baseline −30 dB and lower; above −20 dB the run is flagged `partition:suspect` and the dossier's energy numbers should not be trusted. |
 
 ## `<track>.layers.yml` — 53-stem layer lens (opt-in: `anatomize --layers`)
 
