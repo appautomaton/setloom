@@ -43,10 +43,11 @@ def test_bpm_138_override_passes_and_records(pack) -> None:
 
 
 def test_club_length_too_long_fails(pack) -> None:
-    # 320 bars at 120 BPM = 10:40 — over the 9:00 ceiling.
+    # 320 bars at 122 BPM = 10:29 — over the 9:00 ceiling. 122 stays inside the
+    # corpus-narrowed bpm_range so only club-length is exercised here.
     sections = {"intro": 32, "groove_a": 64, "drop_1": 96, "peak": 96, "outro": 32}
     result = evaluate_gate(
-        _spec_with(bpm=120, duration_bars=320, sections=sections), pack
+        _spec_with(bpm=122, duration_bars=320, sections=sections), pack
     )
     assert "club-length" in [v.rule_id for v in result.blocking]
 

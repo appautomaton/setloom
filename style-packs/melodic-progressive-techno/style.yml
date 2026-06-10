@@ -1,8 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 #
-# Annotation contract: every grammar value carries either
-#   # evidence: <corpus-backed, see research/melodic-progressive-techno/>
+# Annotation contract: every grammar value carries one of
+#   # corpus: <measured from local reference audio by `setloom anatomize`;
+#              see research/melodic-progressive-techno/anatomy-findings.md>
+#   # evidence: <corpus-backed survey/metadata, see research/melodic-progressive-techno/>
 #   # assumption: <design choice or value pending the listening gate>
+# corpus outranks evidence (signal-level measurement vs corroborated metadata).
 # model-knowledge assumptions come from the cross-model review
 # (research/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md)
 # and rank between bare assumptions and corpus evidence: domain-expert priors
@@ -12,8 +15,10 @@ id: melodic-progressive-techno
 status: surveyed
 provenance:
   surveyed: 2026-06-07
+  anatomized: 2026-06-10
   corpus: research/melodic-progressive-techno/corpus/
   findings: research/melodic-progressive-techno/findings.md
+  anatomy_findings: research/melodic-progressive-techno/anatomy-findings.md
   cross_model_review: research/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md
 
 summary: >
@@ -51,8 +56,9 @@ style_vector_defaults:
   peak_time_pressure: 6    # assumption: pending listening; model-knowledge flags as conservative for peak-time side
 
 generation_defaults:
-  default_bpm: 123         # evidence: corpus median ~123 (findings.md "BPM"); model-knowledge concurs
-  bpm_range: [120, 125]    # evidence: corroborated anchor tracks span 120-125, median ~123 (findings.md "BPM"); draft [122,126] corrected
+  default_bpm: 123         # corpus: anatomy-findings.md — all 8 measured tracks lock at 123.0
+  bpm_range: [122, 124]    # corpus: anatomy-findings.md — measured corpus is single-valued at 123.0; ±1 kept for neighbors. Supersedes survey [120,125]
+  loudness_target_lufs: [-9.0, -8.0]  # corpus: anatomy-findings.md — masters span -9.34..-7.61, mean -8.45; mirrored by scrender LOUDNESS_TARGET_LUFS
   bpm_outliers_observed: [118, 128]  # evidence: single-source extremes (whomadewho.yml 118, innellea.yml Euphoria 128)
   bpm_soft_outliers: [118, 128]      # assumption: model-knowledge (cross-model review 2026-06-07) — allow for organic/vocal and peak-time variants
   key_mode_bias: minor     # evidence: ~2:1 minor:major across sourced corpus keys (findings.md "Key practice")
@@ -117,9 +123,13 @@ groove:
   # assumption: model-knowledge (cross-model review 2026-06-07) — the lane's drive
   # comes from controlled bass/pump/top-loop interaction; pending listening.
   bass_articulation_weights:
+    # corpus note: anatomy-findings.md measures occupancy 0.75-0.93 (median note
+    # 2 sixteenths), supporting rolling dominance; reweighting is generation
+    # behavior and stays deferred to the conductor/style_vector change.
     rolling_16th_sub: 0.45
     offbeat_eighth_pulse: 0.35
     syncopated_pedal: 0.20
+  bass_step_occupancy_target: [0.75, 0.93]  # corpus: anatomy-findings.md — rolling pedal bass occupies 75-93% of the 16th grid across all 8 tracks
   sidechain:
     required: true
     duck_on_kick_beats: true
@@ -213,6 +223,7 @@ arrangement_tension:
     - per_band_stereo_width
     - shared_space_send
     - lead_distance
+  main_break_start_fraction: [0.42, 0.48]  # corpus: anatomy-findings.md — 7/8 tracks open the principal breakdown just before the midpoint (mean 0.43). The section_model_presets predate this measurement; aligning them is deferred to the conductor/arrangement change
   reference_derived_energy_rules:
     # evidence: local reference anatomy 2026-06-09.
     low_end_removal_restoration_is_primary_drama: true

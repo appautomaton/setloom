@@ -75,7 +75,9 @@ MIX_GAINS = {
     "perc": 1.00,   # roles pre-scaled per synth above
 }
 
-LOUDNESS_TARGET_LUFS = (-8.0, -7.0)
+# corpus: anatomy-findings.md — reference masters span -9.34..-7.61 LUFS, mean
+# -8.45; mirrors style.yml generation_defaults.loudness_target_lufs.
+LOUDNESS_TARGET_LUFS = (-9.0, -8.0)
 PEAK_TARGET_DBFS = -1.0
 LEAD_EXPRESSION_KEYS = ("cutoff", "drive", "tone", "motion", "width", "space", "accent")
 LEAD_EXPRESSION_DEFAULTS = {

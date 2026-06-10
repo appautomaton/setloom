@@ -288,7 +288,7 @@ def test_lead_coherence_report_names_neighboring_parts() -> None:
 
 
 def test_master_loudness_contract_is_inspectable() -> None:
-    assert LOUDNESS_TARGET_LUFS == (-8.0, -7.0)
+    assert LOUDNESS_TARGET_LUFS == (-9.0, -8.0)
     assert PEAK_TARGET_DBFS == -1.0
     assert MASTER_CHAIN.count("gain") >= 2
     makeup_gain = float(MASTER_CHAIN[MASTER_CHAIN.index("gain") + 1])
