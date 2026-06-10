@@ -22,6 +22,7 @@ from setloom.anatomy import corpus as co
 
 SR = 22050
 HOP = 512
+VOCAL_SILENCE_RMS = 3.2e-3  # -50 dBFS; real singing measures -20 to -30 dBFS per bar
 AUDIO_SUFFIXES = {".mp3", ".wav", ".flac", ".aiff", ".aif", ".m4a"}
 START_BPM = 124.0
 PYIN_VOICED_MIN = 0.4
@@ -270,6 +271,10 @@ def _analyze_vocals(y: np.ndarray, grid: Grid) -> dict:
     for b in range(grid.n_bars):
         sel = (times >= grid.t0 + b * grid.bar_dur) & (times < grid.t0 + (b + 1) * grid.bar_dur)
         per_bar[b] = float(rms[sel].mean()) if sel.any() else 0.0
+    # Absolute silence floor before any relative math: separation bleed on
+    # vocal-free mixes sits near -56 dBFS and would otherwise self-normalize
+    # to "100% active".
+    per_bar[per_bar < VOCAL_SILENCE_RMS] = 0.0
     ranges = an.active_ranges(per_bar)
     normalized = per_bar / (per_bar.max() + 1e-12)
     return {
@@ -381,7 +386,11 @@ def run(
                 stems = stem_pass(track, stem_dir, grid, out_dir)
                 status.append("stempass:analyzed")
             _write_yaml_if_changed(stem_yml, stems)
-            rows.append(co.track_row(quick, stems))
+            # Candidates get dossiers but never corpus-summary rows, even as
+            # explicit file targets — the exemption is structural, not a
+            # directory-scan side effect.
+            if "_candidates" not in audio.parts:
+                rows.append(co.track_row(quick, stems))
 
         if layers:
             # Lazy import: the layer lens is torch-heavy and opt-in. Runs after

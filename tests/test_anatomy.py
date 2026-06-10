@@ -354,3 +354,47 @@ class TestSummaryMerge:
         cand.touch()
         assert [p.name for p in pl.collect_audio(tmp_path)] == ["a.mp3"]
         assert pl.collect_audio(cand) == [cand]
+
+
+class TestAnalyzeVocalsSilenceFloor:
+    """Separation bleed on vocal-free mixes must not self-normalize to 'active'."""
+
+    def test_bleed_floor_scores_zero(self):
+        from setloom.anatomy import pipeline as pl
+
+        grid = pl.Grid(bpm=123.0, t0=0.0, n_bars=16)
+        n = int(grid.n_bars * grid.bar_dur * pl.SR)
+        rng = np.random.default_rng(7)
+        bleed = rng.normal(0.0, 1.58e-3, n).astype(np.float32)  # ~-56 dBFS RMS
+        res = pl._analyze_vocals(bleed, grid)
+        assert res["active_share"] == 0.0
+        assert res["active_bar_ranges"] == []
+
+    def test_real_singing_still_counts(self):
+        from setloom.anatomy import pipeline as pl
+
+        grid = pl.Grid(bpm=123.0, t0=0.0, n_bars=16)
+        n = int(grid.n_bars * grid.bar_dur * pl.SR)
+        rng = np.random.default_rng(7)
+        y = rng.normal(0.0, 1.58e-3, n).astype(np.float32)
+        half = n // 2
+        t = np.arange(half) / pl.SR
+        y[:half] += (0.05 * np.sin(2 * np.pi * 220.0 * t)).astype(np.float32)  # ~-29 dBFS
+        res = pl._analyze_vocals(y, grid)
+        assert 0.3 <= res["active_share"] <= 0.7
+        assert res["active_bar_ranges"] != []
+
+
+class TestCandidateSummaryExemption:
+    def test_explicit_candidate_target_gets_dossier_but_no_summary_row(self, tmp_path):
+        from setloom.anatomy import pipeline as pl
+
+        audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
+        cand = tmp_path / "_candidates" / audio.name
+        cand.parent.mkdir()
+        audio.rename(cand)
+
+        statuses = pl.run(cand, out_dir=out_dir, stems_dir=stems_dir, separate=False)
+        assert "fake" in statuses
+        assert "corpus-summary" not in statuses
+        assert not (out_dir / "corpus-summary.yml").exists()
