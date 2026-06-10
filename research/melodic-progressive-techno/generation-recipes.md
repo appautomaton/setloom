@@ -35,7 +35,9 @@ Reproducibility contract (verified 2026-06-10):
 
 - The script passes `use_random_seed=False` + explicit `seeds`; the upstream config default silently discards the seed otherwise.
 - `--no-thinking` runs are byte-reproducible per seed, and the caption reaches the DiT verbatim.
-- Thinking runs are **one-offs**: the 5Hz LM's MLX sampler is unseeded upstream, and the LM rewrites the caption (observed drift: melodic-techno brief → deep-house/oud/vocal-chop caption). Use thinking for exploration, `--no-thinking` for seed iteration and A/B work.
+- Thinking runs are **one-offs**: the 5Hz LM's MLX sampler is unseeded upstream, and the LM rewrites the caption by design ("query rewrite"; observed drift: melodic-techno brief → deep-house/oud/vocal-chop caption).
+- **Default to thinking for musical candidates.** The LM is the composition engine (upstream capability table: CoT metas, query rewrite, composition); DiT-only is upstream's low-VRAM fallback. Retention means keeping the WAV — revision flows from saved artifacts (repaint/retake/cover tasks), not from re-running seeds. Reach for `--no-thinking` only for engineering runs (determinism tests, knob attribution) or as a brief-fidelity fallback when the rewrite keeps drifting the mood.
+- Quality levers above the current `acestep-5Hz-lm-1.7B` + 2B turbo DiT: the 4B LM ("strong" composition tier) and the XL DiT both fit this machine's unified memory; trying them is its own change.
 
 ## Recipe 2 — Magenta RT 2: jam-pillar smoke clip
 
