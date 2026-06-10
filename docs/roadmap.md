@@ -120,3 +120,17 @@ Acceptance:
 - First style pack: melodic/progressive techno.
 - Future packs: house, tech house, afro house, indie dance, and related lanes.
 - Style packs must use constraints and review gates, not artist cloning.
+
+## Spec 9: GenAI Candidate Lane
+
+Generate full-audio candidates from local models, graded by the same instruments as the corpus.
+
+Status: shipped — `scripts/generate_candidate.py` (ACE-Step 1.5 songwriter pillar), `scripts/magenta_smoke.py` (Magenta RT 2 sound-design/jam pillar), the `models/` store, and corpus-exempt routing into `anatomy/_candidates/`; recipes in `research/melodic-progressive-techno/generation-recipes.md`.
+
+Acceptance:
+
+- One repo-local environment; models join via dependency groups, never per-model virtualenvs.
+- Candidates land in `anatomy/_candidates/` and never enter the corpus summary.
+- The same anatomize/score instruments grade reference tracks and candidates alike.
+- GenAI covers melody, motif, atmosphere, and texture lanes; groove and low-end safety stay rule-based.
+- Every candidate routes to the human listening gate; scores are technical distance only.
