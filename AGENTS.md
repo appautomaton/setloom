@@ -28,9 +28,9 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 - Read `docs/roadmap.md` before adding or changing roadmap scope.
 - Read `docs/style-grammar.md` and `style-packs/*/style.yml` for music-generation behavior.
 - Read `docs/workflow.md` for candidate, render, review, and listening-gate flow.
-- Read `research/melodic-progressive-techno/dossier-guide.md` to interpret anatomize and score output.
-- Read `research/melodic-progressive-techno/generation-recipes.md` before genai generation or model-store work.
-- Read `research/melodic-progressive-techno/component-glossary.md` and `research/melodic-progressive-techno/taste-lexicon.md` for listening-note and review vocabulary.
+- Read `style-packs/melodic-progressive-techno/dossier-guide.md` to interpret anatomize and score output.
+- Read `style-packs/melodic-progressive-techno/generation-recipes.md` before genai generation or model-store work.
+- Read `style-packs/melodic-progressive-techno/component-glossary.md` and `style-packs/melodic-progressive-techno/taste-lexicon.md` for listening-note and review vocabulary.
 - Read `docs/licensing.md`, `CONTRIBUTING.md`, and `TRADEMARKS.md` for policy-sensitive changes.
 
 ## Musical Rules
@@ -58,7 +58,7 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 - `.references/` upstream clones are read-only working aids.
 - Serialize heavy ML jobs — separation, generation, transcription — one at a time.
 - Committed configs pin stock PyPI `torch`; machine-tuned wheels are local-only installs behind capability checks.
-- Genai candidates go to `candidates/genai/` and never enter the corpus summary. Routing details and recipes: `docs/tooling.md`, `research/melodic-progressive-techno/generation-recipes.md`.
+- Genai candidates go to `candidates/genai/` and never enter the corpus summary. Routing details and recipes: `docs/tooling.md`, `style-packs/melodic-progressive-techno/generation-recipes.md`.
 
 ## Licensing Rules
 

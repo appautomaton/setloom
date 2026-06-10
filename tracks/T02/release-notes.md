@@ -9,7 +9,7 @@ and never committed.
 Quality posture (taste owner, 2026-06-10): T02 is a **placeholder release
 only** — not a production-quality reference for sound, beat, or lead. It is
 never used as a style or quality target; all reference targets come from the
-measured corpus under `anatomy/` and `research/melodic-progressive-techno/`.
+measured corpus under `anatomy/` and `style-packs/melodic-progressive-techno/`.
 T02's shortcomings are why the corpus study exists.
 
 - Track: Anima Ex Machina

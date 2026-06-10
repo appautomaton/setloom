@@ -4,7 +4,7 @@
 
 A documented local experiment recipe, not a product surface: candidates are
 reference material for the taste owner, scored by ``setloom score`` and judged
-at the listening gate. See research/melodic-progressive-techno/generation-recipes.md.
+at the listening gate. See style-packs/melodic-progressive-techno/generation-recipes.md.
 
 Run from the repo root (requires the genai dependency group):
 

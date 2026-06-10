@@ -22,7 +22,7 @@ Acceptance:
 
 Build a bounded deep survey from tracks and DJ sets.
 
-Status: shipped — corpus and findings under `research/melodic-progressive-techno/`.
+Status: shipped — corpus and findings under `style-packs/melodic-progressive-techno/`.
 
 Acceptance:
 
@@ -34,7 +34,7 @@ Acceptance:
 
 Convert references into measurable constraints.
 
-Status: shipped — `style-packs/melodic-progressive-techno/style.yml` with corpus-annotated targets; `research/melodic-progressive-techno/taste-lexicon.md`.
+Status: shipped — `style-packs/melodic-progressive-techno/style.yml` with corpus-annotated targets; `style-packs/melodic-progressive-techno/taste-lexicon.md`.
 
 Acceptance:
 
@@ -125,7 +125,7 @@ Acceptance:
 
 Generate full-audio candidates from local models, graded by the same instruments as the corpus.
 
-Status: shipped — `scripts/generate_candidate.py` (ACE-Step 1.5 songwriter pillar), `scripts/magenta_smoke.py` (Magenta RT 2 sound-design/jam pillar), the `models/` store, and corpus-exempt routing into `candidates/genai/`; recipes in `research/melodic-progressive-techno/generation-recipes.md`.
+Status: shipped — `scripts/generate_candidate.py` (ACE-Step 1.5 songwriter pillar), `scripts/magenta_smoke.py` (Magenta RT 2 sound-design/jam pillar), the `models/` store, and corpus-exempt routing into `candidates/genai/`; recipes in `style-packs/melodic-progressive-techno/generation-recipes.md`.
 
 Acceptance:
 

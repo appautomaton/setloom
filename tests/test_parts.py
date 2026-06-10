@@ -23,7 +23,7 @@ from setloom.parts.fx import IMPACT_OCTAVE, IMPACT_VELOCITY, RISER_BARS
 from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-T01 = REPO_ROOT / "tracks" / "T01" / "spec.yml"
+T01 = Path(__file__).resolve().parent / "fixtures" / "spec-t01.yml"
 
 KICK = 36
 

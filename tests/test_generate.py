@@ -10,7 +10,7 @@ from setloom import cli
 from setloom.parts.base import parse_key, root_note
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-T01 = REPO_ROOT / "tracks" / "T01" / "spec.yml"
+T01 = Path(__file__).resolve().parent / "fixtures" / "spec-t01.yml"
 GATE_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "gate-bpm-138.yml"
 PARTS = (
     "drums",

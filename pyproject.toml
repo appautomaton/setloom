@@ -37,7 +37,7 @@ dev = [
 ]
 # GenAI generation pillars in the one project env (no per-model venvs).
 # Weights download to the gitignored project model store (models/) via
-# HF_HUB_CACHE; see research/melodic-progressive-techno/generation-recipes.md.
+# HF_HUB_CACHE; see style-packs/melodic-progressive-techno/generation-recipes.md.
 genai = [
     "ace-step",
     "magenta-rt[mlx]>=2.0.2",

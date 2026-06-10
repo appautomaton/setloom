@@ -4,7 +4,7 @@
 
 Proves the jam pillar runs in setloom's one environment — not the realtime jam
 workflow (live audio routing and MIDI steering are a future change). See
-research/melodic-progressive-techno/generation-recipes.md.
+style-packs/melodic-progressive-techno/generation-recipes.md.
 
 Run from the repo root (requires the genai dependency group):
 

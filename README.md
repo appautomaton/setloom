@@ -44,8 +44,7 @@ Humans make the listening decision.
 ```text
 AGENTS.md             High-signal instructions for coding agents.
 docs/                 Charter, roadmap, licensing, style grammar, and workflow notes.
-style-packs/          Executable style grammar files.
-research/             Reference corpus, findings, and review memos for style packs.
+style-packs/          Per-lane style packs: executable grammar plus the research that produced it.
 src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
 scripts/              Local genai candidate and smoke-clip scripts.
 tracks/               Committed track registry: specs, briefs, listening notes, release records.
