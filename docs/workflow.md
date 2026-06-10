@@ -45,17 +45,16 @@ requests:
 Current layout:
 
 ```text
-tracks/TNN/spec.yml                     # committed track specs, briefs, and listening notes
-candidates/                             # all candidates (gitignored): TNN/ deterministic MIDI + renders
-candidates/genai/                       # genai audio candidates; never enter the corpus summary
-releases/TNN/                           # frozen release packages: master, artwork, upload notes (gitignored)
-anatomy/<artist>/                       # local reference audio (gitignored)
-anatomy/_dossiers/<track>.quick.yml     # anatomize dossiers (.quick/.stems/.layers/.score)
-anatomy/_stems/                         # stem separation cache
-models/                                 # model weights: generation and separation (gitignored)
+music/tracks/TNN/                # committed per-track spec, brief, and listening notes
+local/corpus/audio/<artist>/     # reference audio (copyrighted, never committed)
+local/corpus/stems/  stems53/    # separation caches
+local/corpus/dossiers/           # anatomize dossiers and the corpus summary
+local/candidates/                # TNN/ deterministic MIDI + renders; genai/ generated audio (corpus-exempt)
+local/releases/TNN/              # frozen release packages: master, artwork, upload notes
+models/                          # model weights: generation and separation (gitignored)
 ```
 
-The fuller `renders/`–`reports/`–`sets/` companions remain the Spec 7-era target; `tracks/` already follows the spec-plus-notes shape.
+The `renders/`–`reports/`–`sets/` companions remain the Spec 7-era target; `music/tracks/` already follows the spec-plus-notes shape.
 
 ## Review Gates
 

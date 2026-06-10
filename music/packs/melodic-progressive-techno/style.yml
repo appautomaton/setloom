@@ -2,12 +2,12 @@
 #
 # Annotation contract: every grammar value carries one of
 #   # corpus: <measured from local reference audio by `setloom anatomize`;
-#              see style-packs/melodic-progressive-techno/anatomy-findings.md>
-#   # evidence: <corpus-backed survey/metadata, see style-packs/melodic-progressive-techno/>
+#              see music/packs/melodic-progressive-techno/anatomy-findings.md>
+#   # evidence: <corpus-backed survey/metadata, see music/packs/melodic-progressive-techno/>
 #   # assumption: <design choice or value pending the listening gate>
 # corpus outranks evidence (signal-level measurement vs corroborated metadata).
 # model-knowledge assumptions come from the cross-model review
-# (style-packs/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md)
+# (music/packs/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md)
 # and rank between bare assumptions and corpus evidence: domain-expert priors
 # awaiting listening confirmation.
 
@@ -16,10 +16,10 @@ status: surveyed
 provenance:
   surveyed: 2026-06-07
   anatomized: 2026-06-10
-  corpus: style-packs/melodic-progressive-techno/corpus/
-  findings: style-packs/melodic-progressive-techno/findings.md
-  anatomy_findings: style-packs/melodic-progressive-techno/anatomy-findings.md
-  cross_model_review: style-packs/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md
+  corpus: music/packs/melodic-progressive-techno/corpus/
+  findings: music/packs/melodic-progressive-techno/findings.md
+  anatomy_findings: music/packs/melodic-progressive-techno/anatomy-findings.md
+  cross_model_review: music/packs/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md
 
 summary: >
   Dark, melodic, progressive, club-functional techno with patient arrangement,

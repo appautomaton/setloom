@@ -22,7 +22,7 @@ def _format_validation_error(exc: ValidationError) -> str:
 def _grammar_warnings(spec: TrackSpec, spec_path: Path) -> list[str]:
     """Non-fatal style-grammar checks against the spec's style pack."""
     warnings: list[str] = []
-    pack_path = Path("style-packs") / spec.style_pack / "style.yml"
+    pack_path = Path("music/packs") / spec.style_pack / "style.yml"
     if not pack_path.is_file():
         warnings.append(f"style pack '{spec.style_pack}' not found at {pack_path}; grammar checks skipped")
         return warnings
@@ -155,7 +155,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_generate.add_argument("spec", help="path to the track spec YAML")
     p_generate.add_argument("--variants", type=int, default=3, help="number of variants (default 3)")
     p_generate.add_argument("--seed", type=int, default=None, help="override the spec seed")
-    p_generate.add_argument("--out", default="candidates", help="output root (default candidates/)")
+    p_generate.add_argument("--out", default="local/candidates", help="output root (default local/candidates/)")
     p_generate.add_argument(
         "--allow-override",
         action="append",
@@ -168,16 +168,16 @@ def build_parser() -> argparse.ArgumentParser:
         "anatomize", help="dissect local reference audio into anatomy dossiers"
     )
     p_anatomize.add_argument(
-        "path", nargs="?", default="anatomy", help="audio file or directory (default anatomy/)"
+        "path", nargs="?", default="local/corpus/audio", help="audio file or directory (default local/corpus/audio/)"
     )
     p_anatomize.add_argument(
-        "--out", default="anatomy/_dossiers", help="dossier output root (default anatomy/_dossiers)"
+        "--out", default="local/corpus/dossiers", help="dossier output root (default local/corpus/dossiers)"
     )
     p_anatomize.add_argument(
         "--stems-dir",
         dest="stems_dir",
-        default="anatomy/_stems",
-        help="stem cache root (default anatomy/_stems)",
+        default="local/corpus/stems",
+        help="stem cache root (default local/corpus/stems)",
     )
     p_anatomize.add_argument(
         "--layers",
@@ -201,13 +201,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="style pack id (default melodic-progressive-techno)",
     )
     p_score.add_argument(
-        "--out", default="anatomy/_dossiers", help="dossier root (default anatomy/_dossiers)"
+        "--out", default="local/corpus/dossiers", help="dossier root (default local/corpus/dossiers)"
     )
     p_score.add_argument(
         "--stems-dir",
         dest="stems_dir",
-        default="anatomy/_stems",
-        help="stem cache root (default anatomy/_stems)",
+        default="local/corpus/stems",
+        help="stem cache root (default local/corpus/stems)",
     )
     p_score.set_defaults(func=_cmd_score)
 

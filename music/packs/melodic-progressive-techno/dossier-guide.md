@@ -2,7 +2,7 @@
 
 # Dossier Guide: Reading `setloom anatomize` Output
 
-One dossier pair per track under `anatomy/_dossiers/` (local-only): `<track>.quick.yml` (full mix), `<track>.stems.yml` (per stem), plus `<track>.bass.mid` (bass transcription, never committed) and a corpus-wide `corpus-summary.yml`. With `--layers`, each track also gets `<track>.layers.yml` and per-layer MIDI (see the layer-lens section below).
+One dossier pair per track under `local/corpus/dossiers/` (local-only): `<track>.quick.yml` (full mix), `<track>.stems.yml` (per stem), plus `<track>.bass.mid` (bass transcription, never committed) and a corpus-wide `corpus-summary.yml`. With `--layers`, each track also gets `<track>.layers.yml` and per-layer MIDI (see the layer-lens section below).
 
 ## `<track>.quick.yml` — full-mix pass
 
@@ -29,7 +29,7 @@ One dossier pair per track under `anatomy/_dossiers/` (local-only): `<track>.qui
 
 ## `<track>.layers.yml` — 53-stem layer lens (opt-in: `anatomize --layers`)
 
-Extracted by the MVSep Mega BS-RoFormer checkpoint into named layers, cached under `anatomy/_stems53/<track>/`. Two contracts to keep straight:
+Extracted by the MVSep Mega BS-RoFormer checkpoint into named layers, cached under `local/corpus/stems53/<track>/`. Two contracts to keep straight:
 
 - **Layers are overlapping extractions, not a partition.** The same content can appear in several layers (the synth layer carries the bassline too). Energy-accounting metrics stay on the demucs stems above; layer metrics describe each layer in isolation.
 - **Weights caveat:** the upstream checkpoint's license is unstated. The weights live in the gitignored model store at `models/roformer/`, are used for local analysis only, and are never committed or redistributed.

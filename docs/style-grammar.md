@@ -6,7 +6,7 @@ Style grammar turns taste references into constraints that agents and generators
 
 Setloom does not ask agents to copy artists. It extracts musical dimensions from references and uses those dimensions to guide generation, tuning, and review.
 
-Executable style packs live under `style-packs/`. This document explains the first grammar; it is not the source of truth for automation.
+Executable style packs live under `music/packs/`. This document explains the first grammar; it is not the source of truth for automation.
 
 Today the generators and the rejection gate consume only part of the pack: `generation_defaults.bpm_range`, `generation_defaults.duration_profiles`, and `rejection_rules`. The remaining sections carry review vocabulary and target constraints that are not yet machine-enforced.
 

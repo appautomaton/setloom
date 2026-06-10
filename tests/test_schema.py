@@ -58,7 +58,7 @@ def test_broken_fixture_cli_exit_nonzero(
 
 # --- Duration profiles: T02 streaming edit (change 2026-06-07-duration-profiles) ---
 
-T02 = REPO_ROOT / "tracks" / "T02" / "spec.yml"
+T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
 
 
 def test_t02_validates_streaming_profile() -> None:

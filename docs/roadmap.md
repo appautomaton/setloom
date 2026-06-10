@@ -22,7 +22,7 @@ Acceptance:
 
 Build a bounded deep survey from tracks and DJ sets.
 
-Status: shipped — corpus and findings under `style-packs/melodic-progressive-techno/`.
+Status: shipped — corpus and findings under `music/packs/melodic-progressive-techno/`.
 
 Acceptance:
 
@@ -34,7 +34,7 @@ Acceptance:
 
 Convert references into measurable constraints.
 
-Status: shipped — `style-packs/melodic-progressive-techno/style.yml` with corpus-annotated targets; `style-packs/melodic-progressive-techno/taste-lexicon.md`.
+Status: shipped — `music/packs/melodic-progressive-techno/style.yml` with corpus-annotated targets; `music/packs/melodic-progressive-techno/taste-lexicon.md`.
 
 Acceptance:
 
@@ -42,7 +42,7 @@ Acceptance:
 - Track section defaults.
 - Groove and bass rules.
 - Review vocabulary for "too busy", "too flat", "too EDM", "too static", and "not club-functional".
-- First executable style pack under `style-packs/melodic-progressive-techno/style.yml`.
+- First executable style pack under `music/packs/melodic-progressive-techno/style.yml`.
 
 ## Spec 3: Track Spec Schema
 
@@ -125,12 +125,12 @@ Acceptance:
 
 Generate full-audio candidates from local models, graded by the same instruments as the corpus.
 
-Status: shipped — `scripts/generate_candidate.py` (ACE-Step 1.5 songwriter pillar), `scripts/magenta_smoke.py` (Magenta RT 2 sound-design/jam pillar), the `models/` store, and corpus-exempt routing into `candidates/genai/`; recipes in `style-packs/melodic-progressive-techno/generation-recipes.md`.
+Status: shipped — `scripts/generate_candidate.py` (ACE-Step 1.5 songwriter pillar), `scripts/magenta_smoke.py` (Magenta RT 2 sound-design/jam pillar), the `models/` store, and corpus-exempt routing into `local/candidates/genai/`; recipes in `music/packs/melodic-progressive-techno/generation-recipes.md`.
 
 Acceptance:
 
 - One repo-local environment; models join via dependency groups, never per-model virtualenvs.
-- Candidates land in `candidates/genai/` and never enter the corpus summary.
+- Candidates land in `local/candidates/genai/` and never enter the corpus summary.
 - The same anatomize/score instruments grade reference tracks and candidates alike.
 - GenAI covers melody, motif, atmosphere, and texture lanes; groove and low-end safety stay rule-based.
 - Every candidate routes to the human listening gate; scores are technical distance only.

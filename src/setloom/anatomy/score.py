@@ -195,8 +195,8 @@ def load_row(track: str, out_dir: Path) -> tuple[dict, dict] | None:
 def score_track(
     audio: Path,
     pack: StylePack,
-    out_dir: Path = Path("anatomy/_dossiers"),
-    stems_dir: Path = Path("anatomy/_stems"),
+    out_dir: Path = Path("local/corpus/dossiers"),
+    stems_dir: Path = Path("local/corpus/stems"),
 ) -> tuple[ScoreReport, Path]:
     """Score one audio file, creating its dossier first when not cached.
 

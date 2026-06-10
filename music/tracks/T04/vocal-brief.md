@@ -67,7 +67,7 @@ artists are vocabulary only, never imitation targets.
 Locked facts from take 3 (measured, not chosen): 123 bpm, **D minor** (the
 model drifted from the A-minor meta; the vocal wins, the spec follows), vocal
 active bars 1-17, 20-21, 24-25, 28-35, 39-43 of ~61; demucs vocal stem at
-`anatomy/_stems/latin-vocal-take3/vocals.wav`.
+`local/corpus/stems/latin-vocal-take3/vocals.wav`.
 
 After the voice gate: transcribe the vocal melody to MIDI, derive the lead
 motif from its contour, and build the two-cycle club arrangement per

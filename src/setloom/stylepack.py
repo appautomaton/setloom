@@ -56,8 +56,8 @@ class StylePack:
 
 
 def load_style_pack(pack_id: str, root: str | Path = ".") -> StylePack:
-    """Load ``style-packs/<pack_id>/style.yml`` under ``root``."""
-    path = Path(root) / "style-packs" / pack_id / "style.yml"
+    """Load ``music/packs/<pack_id>/style.yml`` under ``root``."""
+    path = Path(root) / "music/packs" / pack_id / "style.yml"
     if not path.is_file():
         raise FileNotFoundError(f"style pack '{pack_id}' not found at {path}")
     raw = yaml.safe_load(path.read_text(encoding="utf-8"))

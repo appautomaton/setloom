@@ -4,7 +4,7 @@
 
 A documented local experiment recipe, not a product surface: candidates are
 reference material for the taste owner, scored by ``setloom score`` and judged
-at the listening gate. See style-packs/melodic-progressive-techno/generation-recipes.md.
+at the listening gate. See music/packs/melodic-progressive-techno/generation-recipes.md.
 
 Run from the repo root (requires the genai dependency group):
 
@@ -29,7 +29,7 @@ ROOT = Path(__file__).resolve().parent.parent
 os.environ.setdefault("ACESTEP_CHECKPOINTS_DIR", str(ROOT / "models" / "acestep"))
 os.environ.setdefault("HF_HUB_CACHE", str(ROOT / "models" / "hf"))
 
-CANDIDATES = ROOT / "candidates" / "genai"
+CANDIDATES = ROOT / "local" / "candidates" / "genai"
 
 # Style grammar in prose: hypnotic pedal groove, dark pads, motif, midpoint
 # break — mirrors style.yml targets without naming artists.

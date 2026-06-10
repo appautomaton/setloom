@@ -27,8 +27,8 @@ AUDIO_SUFFIXES = {".mp3", ".wav", ".flac", ".aiff", ".aif", ".m4a"}
 START_BPM = 124.0
 PYIN_VOICED_MIN = 0.4
 
-DEFAULT_OUT = Path("anatomy/_dossiers")
-DEFAULT_STEMS = Path("anatomy/_stems")
+DEFAULT_OUT = Path("local/corpus/dossiers")
+DEFAULT_STEMS = Path("local/corpus/stems")
 
 
 @dataclass
@@ -304,13 +304,12 @@ def stem_pass(track: str, stem_dir: Path, grid: Grid, out_dir: Path) -> dict:
 def collect_audio(target: Path) -> list[Path]:
     if target.is_file():
         return [target] if target.suffix.lower() in AUDIO_SUFFIXES else []
+    skip = {"stems", "stems53", "dossiers", "candidates", "_stems", "_stems53", "_dossiers", "_candidates"}
     return sorted(
         p
         for p in target.rglob("*")
         if p.suffix.lower() in AUDIO_SUFFIXES and not p.name.startswith(".")
-        and "_stems" not in p.parts and "_dossiers" not in p.parts
-        and "_stems53" not in p.parts
-        and "_candidates" not in p.parts
+        and not skip & set(p.parts)
     )
 
 
@@ -337,7 +336,7 @@ def run(
     stems_dir: Path = DEFAULT_STEMS,
     separate: bool = True,
     layers: bool = False,
-    layer_stems_dir: Path = Path("anatomy/_stems53"),
+    layer_stems_dir: Path = Path("local/corpus/stems53"),
     models_dir: Path = Path("models/roformer"),
     summary: bool = True,
 ) -> dict:

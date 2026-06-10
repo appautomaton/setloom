@@ -2,7 +2,7 @@
 
 # Research Plan
 
-Status: executed — outputs live under `style-packs/melodic-progressive-techno/` and `style-packs/melodic-progressive-techno/style.yml`.
+Status: executed — outputs live under `music/packs/melodic-progressive-techno/` and `music/packs/melodic-progressive-techno/style.yml`.
 
 The first research pass is a deep survey, but the deliverable is a style grammar, not a long report.
 

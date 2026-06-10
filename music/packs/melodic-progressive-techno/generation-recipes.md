@@ -26,10 +26,10 @@ Weights download on first use into the gitignored **project model store**:
 
 ```sh
 uv run --no-sync python scripts/generate_candidate.py --seed 42 --duration 360
-uv run --no-sync setloom score "candidates/genai/acestep-candidate-01.wav"
+uv run --no-sync setloom score "local/candidates/genai/acestep-candidate-01.wav"
 ```
 
-The script pins the style brief: instrumental, 123 bpm, minor key, hypnotic-pedal caption mirroring the grammar (no named artists). Candidates land in `candidates/genai/` — structurally exempt from `corpus-summary.yml`, so scoring them never pollutes the corpus aggregate. Iterate by seed and caption; the score report says where each candidate sits against the grammar, and your ears say whether it matters.
+The script pins the style brief: instrumental, 123 bpm, minor key, hypnotic-pedal caption mirroring the grammar (no named artists). Candidates land in `local/candidates/genai/` — structurally exempt from `corpus-summary.yml`, so scoring them never pollutes the corpus aggregate. Iterate by seed and caption; the score report says where each candidate sits against the grammar, and your ears say whether it matters.
 
 Reproducibility contract (verified 2026-06-10):
 

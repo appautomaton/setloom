@@ -44,11 +44,13 @@ Humans make the listening decision.
 ```text
 AGENTS.md             High-signal instructions for coding agents.
 docs/                 Charter, roadmap, licensing, style grammar, and workflow notes.
-style-packs/          Per-lane style packs: executable grammar plus the research that produced it.
+music/packs/          Per-lane style packs: executable grammar plus the research that produced it.
+music/tracks/         Track registry: spec, brief, and listening notes per track.
 src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
 scripts/              Local genai candidate and smoke-clip scripts.
-tracks/               Committed track registry: specs, briefs, listening notes, release records.
 tests/                Schema, gate, generator, conductor, audio, part, and render tests.
+local/                Machine-local material (gitignored): corpus lab, candidates, releases.
+models/               Model weights store (gitignored).
 pyproject.toml        uv-managed Python package definition and CLI entry point.
 LICENSE               AGPL-3.0-only text for the core project.
 LICENSES/             Canonical license texts used by the project.

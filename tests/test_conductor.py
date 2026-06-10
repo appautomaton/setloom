@@ -6,7 +6,7 @@ from setloom.conductor import build_conductor
 from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-T02 = REPO_ROOT / "tracks" / "T02" / "spec.yml"
+T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
 
 
 def test_conductor_exposes_shared_phrase_and_harmony_clock() -> None:

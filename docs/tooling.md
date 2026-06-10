@@ -51,7 +51,7 @@ Never override `HF_HOME`: it holds the user's Hugging Face login token. Route ca
 
 Upstream reference clones under `.references/` are read-only working aids; their conflicting Python and torch pins are exactly why models are ported into this environment instead of run in theirs. Stale upstream pins are resolved in `pyproject.toml` (`[tool.uv] override-dependencies`, `[[tool.uv.dependency-metadata]]`) with the reasoning kept next to each override.
 
-Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — separation, generation, transcription — run one at a time, never concurrently. Generation recipes and the candidate loop live in `style-packs/melodic-progressive-techno/generation-recipes.md`.
+Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — separation, generation, transcription — run one at a time, never concurrently. Generation recipes and the candidate loop live in `music/packs/melodic-progressive-techno/generation-recipes.md`.
 
 ## GenAI Boundary
 

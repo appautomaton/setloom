@@ -44,7 +44,7 @@ Constraint-like statements only; every claim cites corpus files. Values the meta
 
 ## Rejection Rules (rationale)
 
-Encoded machine-readable in `style-packs/melodic-progressive-techno/style.yml` `rejection_rules`:
+Encoded machine-readable in `music/packs/melodic-progressive-techno/style.yml` `rejection_rules`:
 
 1. **bpm-out-of-lane** (evidence): outside 120–125 without explicit spec override — corpus span above.
 2. **club-length** (evidence): final club edits under 5:00 or over 9:00 — duration span above.

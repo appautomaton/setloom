@@ -2,7 +2,7 @@
 
 # Anatomy Findings: 8-Track Local Reference Corpus
 
-Measured 2026-06-10 with `setloom anatomize` (demucs `htdemucs` stems; librosa beat/chroma/pyin; pyloudnorm). Corpus: seven 8Kays tracks (including collaborations and one remix) plus one Miss Monique track, supplied locally and never committed. Aggregates live in `corpus-summary.yml` next to the change artifacts (`.agent/work/2026-06-10-anatomy-pipeline-corpus-grammar/`); per-track dossiers are local-only under `anatomy/_dossiers/`. Read metrics via `dossier-guide.md`.
+Measured 2026-06-10 with `setloom anatomize` (demucs `htdemucs` stems; librosa beat/chroma/pyin; pyloudnorm). Corpus: seven 8Kays tracks (including collaborations and one remix) plus one Miss Monique track, supplied locally and never committed. Aggregates live in `corpus-summary.yml` next to the change artifacts (`.agent/work/2026-06-10-anatomy-pipeline-corpus-grammar/`); per-track dossiers are local-only under `local/corpus/dossiers/`. Read metrics via `dossier-guide.md`.
 
 ## The Five Rules
 

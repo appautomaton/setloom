@@ -11,27 +11,17 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 .venv/
-
-/candidates/
-
-# Frozen release packages: masters, artwork, upload notes. Local only.
-/releases/
+.cache/
 
 node_modules/
 dist/
 build/
 
-renders/
-outputs/
-tmp/
-cache/
-.cache/
+# Machine-local material: corpus audio (copyrighted, never committed),
+# separation caches, analysis dossiers, candidates, release packages.
+/local/
 
-# Local reference audio for style anatomy; copyrighted, never committed.
-# Root-anchored: src/setloom/anatomy/ is code and must stay tracked.
-/anatomy/
-
-# Project model store: generation and separation weights (HF_HUB_CACHE target). Never committed.
+# Model weights store (HF_HUB_CACHE target). Never committed.
 /models/
 
 # Read-only reference clones of upstream projects; local working aid only.
@@ -44,4 +34,3 @@ cache/
 *.mp3
 *.mid
 *.midi
-

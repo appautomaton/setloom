@@ -213,8 +213,8 @@ class TestCli:
 
         args = build_parser().parse_args(["anatomize", "somewhere", "--no-separate"])
         assert args.no_separate is True
-        assert args.out == "anatomy/_dossiers"
-        assert args.stems_dir == "anatomy/_stems"
+        assert args.out == "local/corpus/dossiers"
+        assert args.stems_dir == "local/corpus/stems"
         assert callable(args.func)
 
 
