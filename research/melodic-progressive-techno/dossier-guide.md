@@ -40,6 +40,19 @@ Extracted by the MVSep Mega BS-RoFormer checkpoint into named layers, cached und
 | `melodic.<layer>.*` | Same note-stats schema as `bass.*`, computed per layer (synth is high-passed at 120 Hz first — it duplicates the bassline). `tonic_candidate` agreement with `bass.tonic_candidate` is a good sanity signal. |
 | `<track>.<layer>.mid` | Transcription per melodic layer. **Monophonic dominant line only** (torchfcpe): chords and overlapping voices collapse to the loudest line. Read riffs and contours, not full voicings. |
 
+## `<track>.score.yml` — grammar score (`setloom score <audio>`)
+
+Measures a track's dossier against the style-pack targets in `style.yml` and reports per-metric distance. Works on any anatomized audio — corpus reference or generated candidate (candidates never enter `corpus-summary.yml`). A score is the technical half of review only; it never overrides the listening gate, and the report says so on its last line.
+
+| Field | Meaning |
+| --- | --- |
+| `metrics[].status` | `in` / `out` of the target window, or `missing` (no measured value or no target in the pack — never a crash). |
+| `metrics[].distance` | Signed: negative below the window, positive above, `0.0` inside. How far, not how bad. |
+| `metrics[].provenance` | Trust grade of the *target*: `corpus` (measured from reference audio) > `evidence` (corroborated survey/metadata) > `assumption` (taste knob or model knowledge, pending listening). Distance from an assumption is not distance from the grammar. |
+| `metrics[].source` | Which dossier field produced the measured value — every mapping is auditable. |
+
+Calibration note (2026-06-10, 8-track corpus): bpm 8/8 in, bass occupancy 8/8, break window 7/8 (Magma 0.30 is the known outlier), lufs outs match the measured master spread, vocal outs are exactly the featured-collab tracks. `duration_minutes` reads low on most corpus files — they are short edits, while the evidence-backed window describes extended club mixes; that disagreement is real and stays visible.
+
 ## Confidence limits
 
 - Bass transcription uses pyin with a 0.4 voiced-fraction threshold per 16th; heavily effected or sub-only passages read as unvoiced (occupancy underestimates). The MIDI range top can include bleed — distrust notes above ~MIDI 60.

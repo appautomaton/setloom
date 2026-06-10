@@ -122,6 +122,27 @@ def _cmd_anatomize(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_score(args: argparse.Namespace) -> int:
+    from setloom.anatomy.score import report_lines, score_track
+    from setloom.stylepack import load_style_pack
+
+    audio = Path(args.audio)
+    if not audio.is_file():
+        print(f"score failed: {audio} is not a file", file=sys.stderr)
+        return 1
+    try:
+        pack = load_style_pack(args.pack)
+    except FileNotFoundError as exc:
+        print(f"score failed: {exc}", file=sys.stderr)
+        return 1
+    report, score_path = score_track(
+        audio, pack, out_dir=Path(args.out), stems_dir=Path(args.stems_dir)
+    )
+    print("\n".join(report_lines(report)))
+    print(f"score: {score_path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="setloom", description="Setloom track and set harness")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -169,6 +190,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="skip stem separation when stems are missing (full-mix pass only)",
     )
     p_anatomize.set_defaults(func=_cmd_anatomize)
+
+    p_score = sub.add_parser(
+        "score", help="score an anatomized track against style-pack grammar targets"
+    )
+    p_score.add_argument("audio", help="audio file to score (dossier created if missing)")
+    p_score.add_argument(
+        "--pack",
+        default="melodic-progressive-techno",
+        help="style pack id (default melodic-progressive-techno)",
+    )
+    p_score.add_argument(
+        "--out", default="anatomy/_dossiers", help="dossier root (default anatomy/_dossiers)"
+    )
+    p_score.add_argument(
+        "--stems-dir",
+        dest="stems_dir",
+        default="anatomy/_stems",
+        help="stem cache root (default anatomy/_stems)",
+    )
+    p_score.set_defaults(func=_cmd_score)
 
     return parser
 
