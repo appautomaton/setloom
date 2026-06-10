@@ -49,6 +49,16 @@ def main() -> int:
     parser.add_argument("--bpm", type=int, default=123)
     parser.add_argument("--keyscale", default="A minor")
     parser.add_argument("--caption", default=DEFAULT_CAPTION)
+    parser.add_argument(
+        "--lyrics-file",
+        default=None,
+        help="path to a lyrics text file; presence switches to vocal generation",
+    )
+    parser.add_argument(
+        "--vocal-language",
+        default="unknown",
+        help="language code for vocals (e.g. la, en); used only with --lyrics-file",
+    )
     parser.add_argument("--no-thinking", action="store_true", help="skip the 5Hz LM pass")
     args = parser.parse_args()
 
@@ -86,9 +96,12 @@ def main() -> int:
             device="auto",
         )
 
+    lyrics = Path(args.lyrics_file).read_text(encoding="utf-8") if args.lyrics_file else ""
     params = GenerationParams(
         caption=args.caption,
-        instrumental=True,
+        lyrics=lyrics,
+        instrumental=not lyrics,
+        vocal_language=args.vocal_language,
         bpm=args.bpm,
         keyscale=args.keyscale,
         duration=args.duration,
