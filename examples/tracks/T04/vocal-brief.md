@@ -50,9 +50,21 @@ dark pads + rolling low end.
 
 | Take | Seed | Verdict |
 | --- | --- | --- |
-| latin-vocal-take1 | 4101 | pending |
-| latin-vocal-take2 | 4102 | pending |
-| latin-vocal-take3 | 4103 | pending |
+| latin-vocal-take1 | 4101 | reject — vocals smeared across the whole take, no structure |
+| latin-vocal-take2 | 4102 | backup ("2 is good too") — strongest vocal presence, but front-loaded structure |
+| latin-vocal-take3 | 4103 | **keep** — voice gate winner, 2026-06-10 |
 
-After the voice gate: separate the chosen vocal, transcribe melody to MIDI,
-measure key/BPM, and pin them as T04 spec constants.
+Voice gate verdict (taste owner): "i like take 3 lol feels like 'in the name of
+love' Bebe Rexha vibe lol but 2 is good to!" — review-vocabulary read: emotive,
+anthemic female vocal with melodic lift; spec sets melodic_emotion 8. Reference
+artists are vocabulary only, never imitation targets.
+
+Locked facts from take 3 (measured, not chosen): 123 bpm, **D minor** (the
+model drifted from the A-minor meta; the vocal wins, the spec follows), vocal
+active bars 1-17, 20-21, 24-25, 28-35, 39-43 of ~61; demucs vocal stem at
+`anatomy/_stems/latin-vocal-take3/vocals.wav`.
+
+After the voice gate: transcribe the vocal melody to MIDI, derive the lead
+motif from its contour, and build the two-cycle club arrangement per
+`spec.yml` — verse in break_2 (the main break), hook chops in break_1/drop_1,
+hook return at peak.

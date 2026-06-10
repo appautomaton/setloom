@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# T04: vocal-first design. The lead vocal (latin-vocal-take3, "Ad Auroram"
+# verse, D minor, ethereal female) was chosen at the voice gate before any
+# arrangement existed; key and bpm below are measured from that take, not
+# chosen. Two-cycle club form: break_1 teases the hook, break_2 is the main
+# break carrying the full sung verse, peak returns the hook. A ~4:00
+# streaming edit is generated natively later (T02 pattern, never trimmed).
+
+id: T04
+title: ad-auroram
+style_pack: melodic-progressive-techno
+duration_profile: club_extended
+seed: 4103
+bpm: 123
+key: D minor
+energy: 7
+duration_bars: 176
+
+intent:
+  summary: "Emotive Latin vocal over dark hypnotic roller: hook tease at drop one, full verse in the main break, anthemic hook return at peak."
+  avoid:
+    - "festival-pop drop"
+    - "overcrowded bassline"
+    - "wall-to-wall vocals; the voice lives in the breaks and drops only"
+
+sections:
+  intro: 16
+  groove_a: 16
+  break_1: 8
+  drop_1: 32
+  groove_b: 8
+  break_2: 24
+  peak: 40
+  outro: 32
+
+palette:
+  kick: "deep short saturated"
+  bass: "rolling mono-aware sixteenth pedal"
+  drums: "tight hats, restrained percussion, phrase-aware fills"
+  chords: "minor stabs with controlled reverb"
+  pad: "dark evolving analog atmosphere"
+  lead: "vocal-derived motif, emotive and sparse"
+  vocal: "ethereal female Latin verse, anthemic lift, hook chops"
+  fx: "noise risers, impacts, reverse swells"
+
+style_vector:
+  darkness: 7
+  melodic_emotion: 8
+  groove_hypnosis: 8
+  cinematic_tension: 7
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 5
+  vocal_presence: 3
+  organic_texture: 1
+  peak_time_pressure: 6
+
+render_targets:
+  midi:
+    - drums
+    - bass
+    - chords
+    - arp
+    - lead
+    - counterline
+    - fills
+    - pad
+    - shaker
+    - clap_ride
+    - fx
+  stems:
+    - kick
+    - bass
+    - drums
+    - chords
+    - pad
+    - lead
+    - vocal
+    - fx
+  demo_mix: true
+
+human_gate:
+  required: true
