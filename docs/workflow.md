@@ -5,7 +5,7 @@
 Setloom uses an agentic co-production loop.
 
 ```text
-spec -> candidates -> render -> automated review -> human listening -> typed revision -> next candidates
+spec -> candidates (deterministic MIDI or genai audio) -> render/separate -> anatomize -> score -> human listening -> typed revision -> next candidates
 ```
 
 ## Human Role
@@ -16,7 +16,7 @@ The human does not need to click through a DAW, browse folders, operate a plug-i
 
 The listening gate is no-click capable. Agents should use Python and CLI automation to prepare, route, and play audition audio when possible, then ask for comments. Candidate reports are still useful records, but they are not a substitute for agent-operated playback.
 
-When the user has Logic Pro installed, agents may inspect it as a local reference surface for timbre vocabulary, preset categories, or short audition targets. Logic Pro is not the Setloom final renderer or candidate-output chain unless the user explicitly asks for that separate local experiment. Avoid routing the user through additional third-party GUI tools for timbre discovery; prefer Python automation and file-based handoff.
+Logic Pro and other user-owned proprietary tools are local reference surfaces only, never the Setloom output path; the full policy lives in `docs/tooling.md`.
 
 Example notes:
 
@@ -42,22 +42,23 @@ requests:
 
 ## Artifact Shape
 
-Target layout:
+Current layout:
 
 ```text
-tracks/T01/spec.yml
-tracks/T01/listening-notes.yml
-renders/T01/takes/take-001/
-renders/T01/takes/take-001/stems/
-renders/T01/takes/take-001/demo.wav
-reports/T01/take-001.md
-sets/S01/spec.yml
-sets/S01/sequence.yml
+examples/tracks/TNN/spec.yml            # committed track specs and listening notes
+candidates/                             # generated MIDI/audio candidates (gitignored)
+anatomy/<artist>/                       # local reference audio (gitignored)
+anatomy/_dossiers/<track>.quick.yml     # anatomize dossiers (.quick/.stems/.layers/.score)
+anatomy/_stems/                         # stem separation cache
+anatomy/_candidates/                    # genai candidates; never enter the corpus summary
+models/                                 # generation model weights (gitignored)
 ```
+
+The fuller `tracks/`–`renders/`–`reports/`–`sets/` layout remains the Spec 7-era target; `examples/tracks/` already follows its spec-plus-notes shape.
 
 ## Review Gates
 
-Automated checks can catch technical and structural problems.
+Automated checks can catch technical and structural problems. `setloom score` is the shipped technical check: grammar distance against the style-pack targets, with provenance per metric. It is never a taste verdict.
 
 Human listening catches musical judgment.
 

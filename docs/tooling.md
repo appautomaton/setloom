@@ -16,7 +16,6 @@ Do not install new Homebrew packages for this project. Python work must use the 
 | --- | --- | --- |
 | MIDI generation | Python, Mido, pretty_midi, music21 | Generate editable drums, bass, chords, arps, motifs, and fills. |
 | Alignment and automation | Python packages, CLI scripts, file-based manifests | Analyze timing, route candidates, prepare audition files, and keep the human gate no-click capable. |
-| Pattern systems | TidalCycles, Strudel | Explore club-functional rhythm and phrase patterns. |
 | Synthesis and rendering | Headless, scriptable renderers orchestrated by Python | Render reproducible stems and demo mixes without a required DAW export path. |
 | DSP and mixing | Python audio packages, Faust, LV2 plugins, SoX, FFmpeg | Build and apply effects, meters, exports, and checks. |
 | DAW/reference surface | Optional Logic Pro inspection when installed; scriptable open-source paths when needed | Reference timbre categories and audition targets. Do not treat DAW bounces as Setloom core output. |
@@ -34,6 +33,24 @@ Setloom uses Python as the control plane for production automation. The first pr
 | `librosa` | Music/audio analysis: tempo, onset, chroma, spectral features, and reference diagnostics. |
 
 Use this stack before reaching for ad hoc shell-only processing. SoX and FFmpeg remain useful export and inspection tools, but they should not be the only mix architecture.
+
+## ML Environment
+
+All machine learning runs in the one repo-local `uv` environment. Model integrations join it through dependency groups (`uv sync --group anatomy --group genai`); per-model virtualenvs are never created.
+
+Model weights live in the gitignored project store:
+
+| Store | Path | Routed by |
+| --- | --- | --- |
+| ACE-Step weights | `models/acestep/` | `ACESTEP_CHECKPOINTS_DIR` |
+| Magenta RT weights | `models/magenta/` | `MAGENTA_HOME` |
+| Hugging Face hub cache | `models/hf/` | `HF_HUB_CACHE` |
+
+Never override `HF_HOME`: it holds the user's Hugging Face login token. Route caches with `HF_HUB_CACHE` only.
+
+Upstream reference clones under `.references/` are read-only working aids; their conflicting Python and torch pins are exactly why models are ported into this environment instead of run in theirs. Stale upstream pins are resolved in `pyproject.toml` (`[tool.uv] override-dependencies`, `[[tool.uv.dependency-metadata]]`) with the reasoning kept next to each override.
+
+Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — separation, generation, transcription — run one at a time, never concurrently. Generation recipes and the candidate loop live in `research/melodic-progressive-techno/generation-recipes.md`.
 
 ## GenAI Boundary
 

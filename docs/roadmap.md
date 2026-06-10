@@ -8,6 +8,8 @@ Setloom tracks progress as a series of shipped specs and working harness behavio
 
 Define the project boundary.
 
+Status: shipped — `AGENTS.md`, `docs/licensing.md`, `CONTRIBUTING.md` (DCO).
+
 Acceptance:
 
 - English-only docs and harness prompts.
@@ -20,6 +22,8 @@ Acceptance:
 
 Build a bounded deep survey from tracks and DJ sets.
 
+Status: shipped — corpus and findings under `research/melodic-progressive-techno/`.
+
 Acceptance:
 
 - Reference corpus for starting anchors.
@@ -29,6 +33,8 @@ Acceptance:
 ## Spec 2: Style Grammar
 
 Convert references into measurable constraints.
+
+Status: shipped — `style-packs/melodic-progressive-techno/style.yml` with corpus-annotated targets; `research/melodic-progressive-techno/taste-lexicon.md`.
 
 Acceptance:
 
@@ -42,16 +48,20 @@ Acceptance:
 
 Define the file format for generated tracks.
 
+Status: shipped — `setloom validate`, `src/setloom/schema.py`, `examples/tracks/`.
+
 Acceptance:
 
 - YAML or JSON schema for title, BPM, key, energy, duration, sections, palette, style vector, and render targets.
 - Example track spec.
 - Example listening notes.
-- Validation command planned or implemented.
+- Validation command (`setloom validate`).
 
 ## Spec 4: MIDI Candidate Generator
 
 Generate editable musical candidates.
+
+Status: shipped — `setloom generate` (deterministic seeds, multiple variants), `src/setloom/parts/`, `src/setloom/conductor.py`.
 
 Acceptance:
 
@@ -64,6 +74,8 @@ Acceptance:
 
 Render stems from specs and MIDI.
 
+Status: shipped — `src/setloom/scrender.py` and `render/patches.scd` (SuperCollider path).
+
 Acceptance:
 
 - Open-source synthesis path.
@@ -74,6 +86,8 @@ Acceptance:
 ## Spec 6: Review Gate
 
 Separate automated checks from human taste decisions.
+
+Status: shipped — technical half is `setloom anatomize` and `setloom score` (`src/setloom/anatomy/`); the human half stays listening notes with keep/revise/reject.
 
 Acceptance:
 
@@ -86,6 +100,8 @@ Acceptance:
 
 Sequence tracks into a DJ set plan.
 
+Status: not started.
+
 Acceptance:
 
 - BPM, key, energy, mood, and transition compatibility scoring.
@@ -96,6 +112,8 @@ Acceptance:
 ## Spec 8: Style Pack Expansion
 
 Support more club lanes through new style grammars.
+
+Status: in progress — first pack shipped; expansion lanes not started.
 
 Acceptance:
 
