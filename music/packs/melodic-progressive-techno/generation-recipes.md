@@ -50,7 +50,12 @@ sang wall-to-wall, stretching the lyric). At one strong syllable per beat, a
 4-line 8-syllable stanza is 8 bars and a 2-line hook is 4 bars; at 123 bpm
 that is ~24 s sung plus breath and tail ≈ a 30 s canvas, not 50 and never 120.
 Voice-only takes are cheaper, faster to audition, and need no stem separation —
-the artifact tax disappears when there is no band to peel away. Full-mix vocal
+the artifact tax disappears when there is no band to peel away. Two measured
+caveats (2026-06-10): the model fills the tail to the canvas edge, so leave
+the last note room or rescue it by fading the dry voice into a reverb send;
+and "no instruments" still leaks a sub-180 Hz drone bed (62% of energy in one
+take) — a ~190 Hz sinc high-pass removes it cleanly since sung female
+fundamentals sit above D4. Full-mix vocal
 generation (the T04 take-3 path) remains the fallback when the composer needs
 band context to phrase against.
 
