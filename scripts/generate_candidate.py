@@ -60,6 +60,16 @@ def main() -> int:
         help="language code for vocals (e.g. la, en); used only with --lyrics-file",
     )
     parser.add_argument("--no-thinking", action="store_true", help="skip the 5Hz LM pass")
+    parser.add_argument(
+        "--dit-config",
+        default="acestep-v15-turbo",
+        help="DiT config name (e.g. acestep-v15-xl-turbo for the XL renderer)",
+    )
+    parser.add_argument(
+        "--lm-model",
+        default=None,
+        help="5Hz LM model name (e.g. acestep-5Hz-lm-4B); default: package default",
+    )
     args = parser.parse_args()
 
     # Heavy imports after env routing so weights land in the project store.
@@ -79,19 +89,20 @@ def main() -> int:
         return 1
 
     dit = AceStepHandler()
-    print("Initializing DiT (acestep-v15-turbo)...")
+    print(f"Initializing DiT ({args.dit_config})...")
     dit.initialize_service(
         project_root=str(ROOT),
-        config_path="acestep-v15-turbo",
+        config_path=args.dit_config,
         device="auto",
     )
 
     llm = LLMHandler()
     if not args.no_thinking:
-        print(f"Initializing 5Hz LM ({DEFAULT_LM_MODEL}, mlx backend)...")
+        lm_model = args.lm_model or DEFAULT_LM_MODEL
+        print(f"Initializing 5Hz LM ({lm_model}, mlx backend)...")
         llm.initialize(
             checkpoint_dir=str(ckpt),
-            lm_model_path=DEFAULT_LM_MODEL,
+            lm_model_path=lm_model,
             backend="mlx",
             device="auto",
         )
