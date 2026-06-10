@@ -39,6 +39,17 @@ Reproducibility contract (verified 2026-06-10):
 - **Default to thinking for musical candidates.** The LM is the composition engine (upstream capability table: CoT metas, query rewrite, composition); DiT-only is upstream's low-VRAM fallback. Retention means keeping the WAV — revision flows from saved artifacts (repaint/retake/cover tasks), not from re-running seeds. Reach for `--no-thinking` only for engineering runs (determinism tests, knob attribution) or as a brief-fidelity fallback when the rewrite keeps drifting the mood.
 - Quality levers above the current `acestep-5Hz-lm-1.7B` + 2B turbo DiT: the 4B LM ("strong" composition tier) and the XL DiT both fit this machine's unified memory; trying them is its own change.
 
+## Recipe 1b — Vocal lane: generate the voice, only the voice
+
+Taste-owner rule (2026-06-10): when the target is a vocal lead, do not generate
+a full band around it. Caption an a cappella take ("solo female vocal, a
+cappella, minimal atmosphere") with `--lyrics-file` and `--vocal-language`,
+and size `--duration` to the lyric (a 4-line stanza needs ~45-60 s, not 120 s).
+Voice-only takes are cheaper, faster to audition, and need no stem separation —
+the artifact tax disappears when there is no band to peel away. Full-mix vocal
+generation (the T04 take-3 path) remains the fallback when the composer needs
+band context to phrase against.
+
 ## Recipe 2 — Magenta RT 2: jam-pillar smoke clip
 
 ```sh
