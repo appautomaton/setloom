@@ -6,6 +6,7 @@ from setloom.parts.base import PartGenerator, part_rng
 from setloom.parts.bass import BassGenerator
 from setloom.parts.chords import ChordsGenerator
 from setloom.parts.clap_ride import ClapRideGenerator
+from setloom.parts.counterline import CounterlineGenerator
 from setloom.parts.drums import DrumsGenerator
 from setloom.parts.fills import FillsGenerator
 from setloom.parts.fx import FxGenerator
@@ -21,6 +22,7 @@ ALL_PARTS: dict[str, PartGenerator] = {
         ChordsGenerator(),
         ArpGenerator(),
         LeadGenerator(),
+        CounterlineGenerator(),
         FillsGenerator(),
         PadGenerator(),
         ShakerGenerator(),

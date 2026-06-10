@@ -67,6 +67,7 @@ def test_all_parts_registered_and_nonempty(spec) -> None:
         "chords",
         "arp",
         "lead",
+        "counterline",
         "fills",
         "pad",
         "shaker",
@@ -250,36 +251,67 @@ def test_arp_rests_at_phrase_boundaries(spec) -> None:
     assert checked, "T01 spec must contain a full 16-bar arp phrase"
 
 
-def test_lead_motif_repeats_then_varies(spec) -> None:
-    """Each full 16-bar lead phrase repeats one 2-bar statement, then varies it."""
+def test_lead_period_has_phrase_level_question_answer_structure(spec) -> None:
+    """Each full 16-bar lead period has four 4-bar phrases with repeat variation."""
     lead_events = _events(spec, "lead")
     assert lead_events, "lead produced no events"
-    slot_ticks = 2 * midi.TICKS_PER_BAR
+    phrase_ticks = 4 * midi.TICKS_PER_BAR
     phrases_checked = 0
     for section, (start_bar, bars) in midi.section_layout(spec).items():
         if not section.startswith(("break", "peak")):
             continue
         for phrase_start in range(0, bars - 15, 16):
-            phrase_lo = midi.bar_to_tick(start_bar + phrase_start)
-            phrase_hi = phrase_lo + 16 * midi.TICKS_PER_BAR
+            period_lo = midi.bar_to_tick(start_bar + phrase_start)
+            period_hi = period_lo + 16 * midi.TICKS_PER_BAR
             statements: dict[int, list[tuple[int, int, int]]] = {}
             for event in lead_events:
-                if not phrase_lo <= event.start_tick < phrase_hi:
+                if not period_lo <= event.start_tick < period_hi:
                     continue
-                slot, offset = divmod(event.start_tick - phrase_lo, slot_ticks)
+                slot, offset = divmod(event.start_tick - period_lo, phrase_ticks)
                 statements.setdefault(slot, []).append(
                     (offset, event.note, event.duration_ticks)
                 )
+            assert set(statements) == {0, 1, 2, 3}, (
+                f"{section}: incomplete 16-bar lead period at bar {phrase_start}"
+            )
             fingerprints = Counter(tuple(sorted(notes)) for notes in statements.values())
-            assert fingerprints, f"{section}: empty 16-bar lead phrase at bar {phrase_start}"
-            assert fingerprints.most_common(1)[0][1] >= 2, (
-                f"{section}: motif not repeated within the phrase at bar {phrase_start}"
-            )
             assert len(fingerprints) >= 2, (
-                f"{section}: motif never varied within the phrase at bar {phrase_start}"
+                f"{section}: period never varies across A/A'/B/A'' at bar {phrase_start}"
             )
+            assert max(
+                duration for notes in statements.values() for _offset, _note, duration in notes
+            ) >= 8 * midi.SIXTEENTH_TICKS
             phrases_checked += 1
-    assert phrases_checked, "T01 spec must contain a full 16-bar lead phrase"
+    assert phrases_checked, "T01 spec must contain a full 16-bar lead period"
+
+
+def test_counterline_answers_in_lead_rest_windows(spec) -> None:
+    lead = _events(spec, "lead")
+    counter = _events(spec, "counterline")
+    assert counter, "counterline produced no events"
+    overlaps = 0
+    for answer in counter:
+        for event in lead:
+            if event.start_tick < answer.start_tick + answer.duration_ticks and answer.start_tick < event.start_tick + event.duration_ticks:
+                overlaps += 1
+                break
+    assert overlaps / len(counter) <= 0.30
+
+
+def test_sub_bass_stays_on_tonic_pedal(spec) -> None:
+    tonic = root_note(spec.key, 2) % 12
+    bass = _events(spec, "bass")
+    assert bass
+    for section, (start_bar, bars) in midi.section_layout(spec).items():
+        if not section.startswith(("groove", "drop", "peak")):
+            continue
+        checked = 0
+        for bar in range(start_bar, min(start_bar + bars, start_bar + 8)):
+            notes = [event.note % 12 for event in bass if midi.bar_to_tick(bar) <= event.start_tick < midi.bar_to_tick(bar + 1)]
+            assert notes, f"no bass in {section} bar {bar}"
+            assert set(notes) == {tonic}
+            checked += 1
+        assert checked
 
 
 # --- Part roster expansion invariants (roster SPEC AC1) ---

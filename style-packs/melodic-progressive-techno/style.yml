@@ -62,7 +62,9 @@ generation_defaults:
     ambiguous_or_suspended: 0.08
   club_edit_duration_minutes: [5.5, 8.5]  # evidence: 16 sourced durations 5:37-8:35, median ~6:38 (findings.md "Duration")
   meter: "4/4"             # assumption: genre norm, not verified per-track
-  phrase_lengths_bars: [16, 32]  # assumption: pending listening; no structure evidence in corpus
+  phrase_grid_bars: 8     # evidence: local reference anatomy 2026-06-09; strong 8-bar change grid
+  phrase_lengths_bars: [16, 32]  # evidence: local reference anatomy 2026-06-09; larger changes land on 16/32-bar boundaries
+  major_boundary_bars: [16, 32, 64]  # evidence: local reference anatomy 2026-06-09
   section_model_default: club_default_224  # assumption: model-knowledge (cross-model review 2026-06-07)
   section_model_presets:
     # assumption: model-knowledge (cross-model review 2026-06-07). Supersedes the
@@ -123,10 +125,25 @@ groove:
     duck_on_kick_beats: true
     recovery_shape: medium_slow
   percussion:
-    offbeat_open_hat: optional
+    offbeat_open_hat: required
     closed_hat_16th_bed: section_dependent
+    shaker_top_groove: section_dependent
+    room_or_far_drum_layer: section_dependent
+    phrase_impacts: required
     random_percussion: phrase_patterned_only
     swing_amount: [0.00, 0.06]
+  low_end_family:
+    # evidence: local reference anatomy + Opus review 2026-06-09.
+    # Do not collapse these into one bass stem during production review.
+    kick_body_transient: required
+    sub: required
+    rumble_or_kick_tail: required
+    mid_bass_or_rolling_bass: required
+  production_glue:
+    deterministic_sidechain_pump: required
+    low_end_mono_safety: required
+    parallel_drum_bus: required
+    parallel_low_bus: required
 
 harmony_and_melody:
   # assumption: model-knowledge (cross-model review 2026-06-07) — hooks work through
@@ -144,7 +161,35 @@ harmony_and_melody:
     peak: medium_with_repetition
   motif_policy:
     repeat_then_vary: true
+    phrase_arc_bars: [8, 16]
+    short_loop_only: reject
+    call_response_required_when_no_vocal: true
+    counter_melody_or_tonal_response_required_when_no_vocal: true
+    classical_reference_must_be_recomposed: true
     max_competing_melodic_layers: 2
+  no_vocal_identity:
+    # evidence: local reference anatomy + user listening gate 2026-06-09.
+    # If there is no vocal, melodic identity must carry the emotional foreground.
+    lead_as_vocal_substitute: true
+    requires_longer_phrase_line: true
+    requires_variation_across_repeats: true
+    avoid_mechanical_two_bar_motif: true
+    avoid_unprocessed_classical_loop: true
+
+composition_conductor:
+  # evidence: local listening + Fable consultation 2026-06-09.
+  required: true
+  shared_lanes:
+    - phrase_clock
+    - harmonic_timeline
+    - energy_curve
+    - space_plan
+  lead_period_bars: 16
+  lead_period_shape: "A-A'-B-A''"
+  sub_rumble_pedal_safe: true
+  mid_bass_or_tonal_support_follows_harmonic_root: true
+  counterline_in_lead_rests: true
+  independent_part_phrase_logic: reject
 
 arrangement_tension:
   # assumption: model-knowledge (cross-model review 2026-06-07) — breakdown/drop
@@ -164,6 +209,19 @@ arrangement_tension:
     - reverb_send
     - delay_feedback
     - arp_density
+    - low_end_presence
+    - per_band_stereo_width
+    - shared_space_send
+    - lead_distance
+  reference_derived_energy_rules:
+    # evidence: local reference anatomy 2026-06-09.
+    low_end_removal_restoration_is_primary_drama: true
+    break_low_end_collapses_upper_space_widens: true
+    drop_low_end_returns_centered_upper_material_controlled_wide: true
+    peak_opens_presence_air_without_overriding_low_end: true
+    layer_roles_rotate_not_all_maximal: true
+    static_global_reverb: reject
+    independent_background_layers: reject
 
 rules:
   # Normative design rules. Corpus structure evidence is pending (findings.md);
@@ -182,11 +240,15 @@ rules:
     - "Keep hooks sparse enough to survive repetition."
     - "Use GenAI for melodic variants, not final approval."
     - "Repeat, then vary; never stack more than two foreground melodic layers."  # assumption: model-knowledge (cross-model review 2026-06-07)
+    - "When there is no vocal, write the lead as the emotional foreground: a phrase-level line with call-response, counterline, and repeat variation."
+    - "Reject a lead that only repeats a short classical or MIDI-like motif without recomposition."
   arrangement:
     - "Preserve mixable intro and outro sections."
     - "Use long-form energy movement."
     - "Breakdowns may be emotional but should not collapse dancefloor motion."
     - "Fills exist to mark phrase and section transitions, not to fire on a timer."  # assumption: model-knowledge (cross-model review 2026-06-07)
+    - "Treat 8-bar phrases as the local grid and 16/32-bar boundaries as payoff points."
+    - "Use one shared space concept per section; avoid background layers that sound like separate songs."
 
 review_vocabulary:
   # Definitional reviewer vocabulary; calibration examples route through listening.
@@ -202,6 +264,9 @@ review_vocabulary:
   break_loses_floor: "Breakdown removes too much pulse or takes too long to re-enter."  # assumption: model-knowledge (cross-model review 2026-06-07)
   no_phrase_payoff: "Energy changes do not land on clear 16/32-bar boundaries."  # assumption: model-knowledge (cross-model review 2026-06-07)
   palette_incoherence: "Timbres pull from different families instead of varying within one spectrum."  # evidence: ears (listening take-7, 2026-06-07) — maturity = variety within one spectrum
+  tech_minimal_collapse: "Low end and groove work, but the melodic identity is too short, too static, or too underdeveloped for melodic techno."  # evidence: ears (listening 2026-06-09)
+  independent_backgrounds: "Atmosphere, classical material, and FX feel like separate parts instead of one arrangement system."  # evidence: ears (listening 2026-06-09)
+  drum_monotony: "Kick/body is strong, but percussion lacks near/far depth, phrase accents, or evolving top-groove roles."  # evidence: ears (listening 2026-06-09)
 
 rejection_rules:
   # Candidate auto-reject conditions for the Spec 6 review gate (rationale: findings.md).
@@ -237,6 +302,15 @@ rejection_rules:
   - id: unphrased-fills
     rule: "Reject fills that occur mechanically without section or phrase-transition purpose."
     basis: assumption  # model-knowledge (cross-model review 2026-06-07)
+  - id: tech-minimal-collapse
+    rule: "Reject no-vocal candidates whose lead/melodic layer is only a short repeated motif without phrase-level development, call-response, or counter-melody."
+    basis: evidence  # local listening + reference anatomy, 2026-06-09
+  - id: independent-backgrounds
+    rule: "Reject candidates where atmosphere, classical material, FX, and percussion feel like independent loops instead of one shared phrase/space system."
+    basis: evidence  # local listening + reference anatomy, 2026-06-09
+  - id: drum-monotony
+    rule: "Reject candidates where drums are loud but lack role-separated top groove, near/far space, phrase accents, or transition-purpose fills."
+    basis: evidence  # local listening + reference anatomy, 2026-06-09
 
 approval:
   human_listening_required: true

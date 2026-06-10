@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # First real listening note (2026-06-07). Replaces the scaffold placeholder.
+# Historical log: candidate paths below may point to ignored local artifacts
+# that were later cleaned. Treat this file as review provenance, not current
+# candidate inventory. Current T02 upload artifacts live under candidates/T02/
+# when present locally.
 
 track_id: T01
 take: seed-1001 generator-v2 (Logic Pro audition)

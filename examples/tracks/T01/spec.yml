@@ -56,6 +56,7 @@ render_targets:
     - chords
     - arp
     - lead
+    - counterline
     - fills
     - pad
     - shaker
@@ -73,4 +74,3 @@ render_targets:
 
 human_gate:
   required: true
-

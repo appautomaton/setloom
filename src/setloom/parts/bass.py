@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Bass: one seeded articulation profile per run, sidechain-aware (channel 1).
+"""Bass: one seeded articulation profile per run, pedal-safe and sidechain-aware.
 
 Three profiles cover the lane's articulation range: ``rolling_16th_sub``
 (16th root pulses that skip every beat tick), ``offbeat_eighth_pulse``
@@ -9,8 +9,11 @@ spec's style vector; the final pick is one seeded draw.
 
 Hard invariant for all profiles: bass onsets never land on a beat tick, so
 they can never share a tick with kick onsets, and every note ends strictly
-before the next beat tick to leave sidechain-shaped space for the kick
-(style.yml groove.sidechain: duck_on_kick_beats).
+before the next beat tick to leave sidechain-shaped space for the kick.
+This lane is the sub/low-end anchor. It deliberately stays on the tonic
+pedal root; harmonic movement belongs in mid-bass, chords, arp, or lead lanes.
+Moving the sub directly through the chord progression makes the low end
+unstable and can read as a puffy transient effect after master processing.
 """
 
 import random
@@ -25,8 +28,8 @@ from setloom.midi import (
     beat_to_tick,
     section_layout,
 )
-from setloom.parts.base import root_note
 from setloom.schema import StyleVector, TrackSpec
+from setloom.parts.base import root_note
 
 BASS_OCTAVE = 2  # D minor -> D2 = 38
 

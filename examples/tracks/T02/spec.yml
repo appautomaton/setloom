@@ -57,6 +57,7 @@ render_targets:
     - chords
     - arp
     - lead
+    - counterline
     - fills
     - pad
     - shaker

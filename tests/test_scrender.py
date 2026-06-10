@@ -73,6 +73,8 @@ def test_build_scd_contains_patch_and_score() -> None:
     events = vibe_events(spec, spec.seed, 1)
     scd = build_scd("bass", export_score(events["bass"], spec.bpm), spec.bpm, 247.7, "/tmp/x.wav")
     assert "vibe_bass" in scd and "recordNRT" in scd and "patches.scd" in scd
+    assert 'oscFilePath: "/tmp/x.wav.osc"' in scd
+    assert 'File.delete("/tmp/x.wav.osc")' in scd
     assert scd == build_scd(
         "bass", export_score(events["bass"], spec.bpm), spec.bpm, 247.7, "/tmp/x.wav"
     )

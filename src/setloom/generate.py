@@ -14,6 +14,7 @@ so the same spec + seed always produce byte-identical MIDI.
 from dataclasses import dataclass
 from pathlib import Path
 
+from setloom.conductor import build_conductor
 from setloom.midi import TICKS_PER_BAR, NoteEvent, section_layout, write_part_midi
 from setloom.parts import ALL_PARTS, part_rng
 from setloom.parts.bass import select_articulation_profile
@@ -23,7 +24,7 @@ from setloom.stylepack import GateResult, StylePack, evaluate_gate, spec_duratio
 # Foreground melodic streams only — pad is deliberately excluded: it is a
 # harmonic BED, and the melodic-layer-overload review rule counts foreground
 # layers (see style.yml; ears datapoint 2026-06-07).
-MELODIC_PARTS = ("chords", "arp", "lead")
+MELODIC_PARTS = ("chords", "arp", "lead", "counterline")
 
 HUMAN_GATE_NOTICE = (
     "These candidates are NOT final. Per the Setloom workflow, no candidate "
@@ -49,6 +50,8 @@ class VariantResult:
     bass_profile: str
     melodic_layers: dict[str, int]  # section type -> active melodic layer count
     fill_bars: list[int]
+    conductor_progression: tuple[int, ...]
+    conductor_chord_color: str
 
 
 @dataclass(frozen=True)
@@ -133,6 +136,8 @@ def generate_candidates(
                 bass_profile=bass_profile,
                 melodic_layers=_melodic_layers(spec, part_events),
                 fill_bars=_fill_bars(part_events.get("fills", [])),
+                conductor_progression=build_conductor(spec).progression,
+                conductor_chord_color=build_conductor(spec).chord_color,
             )
         )
 
@@ -176,6 +181,10 @@ def _render_report(
         layers = ", ".join(f"{kind} {n}" for kind, n in variant.melodic_layers.items())
         fills = ", ".join(str(bar) for bar in variant.fill_bars) or "none"
         lines.append(f"- variant-{variant.index:02d} [rng (seed={seed}, variant={variant.index})]: {counts}")
+        lines.append(
+            "  - conductor harmony: "
+            f"degrees {variant.conductor_progression}, color {variant.conductor_chord_color}"
+        )
         lines.append(f"  - bass articulation: {variant.bass_profile}")
         lines.append(f"  - melodic layers by section: {layers}")
         lines.append(f"  - fill bars: {fills}")
