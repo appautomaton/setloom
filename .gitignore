@@ -22,6 +22,7 @@ renders/
 outputs/
 tmp/
 cache/
+.cache/
 
 # Local reference audio for style anatomy; copyrighted, never committed.
 # Root-anchored: src/setloom/anatomy/ is code and must stay tracked.
