@@ -53,6 +53,11 @@ dark pads + rolling low end.
 | latin-vocal-take1 | 4101 | reject — vocals smeared across the whole take, no structure |
 | latin-vocal-take2 | 4102 | backup ("2 is good too") — strongest vocal presence, but front-loaded structure |
 | latin-vocal-take3 | 4103 | **keep** — voice gate winner, 2026-06-10 |
+| latin-vocal-xl4b-take1 | 4103 | tier A/B only (4B LM + XL DiT): drifted D major, off-brief; current tier stays default, big tier staged for atmosphere work |
+
+Stem acceptance (taste owner, 2026-06-10): take-3 demucs isolation approved —
+"normal distortion, fixable with 混音 (mix effects) at mixdown." No xl-base
+re-extraction needed unless the final mix gate says otherwise.
 
 Voice gate verdict (taste owner): "i like take 3 lol feels like 'in the name of
 love' Bebe Rexha vibe lol but 2 is good to!" — review-vocabulary read: emotive,
