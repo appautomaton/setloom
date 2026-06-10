@@ -15,6 +15,9 @@ clips:
   - clip: "deterministic drop_1, 1:50-2:18 of candidates/T03/seed-3001/variant-02 vibe mix"
     comment: "second one is more elaborated. i think it has more than bass? it has more components than the first"
     reading: "Correct. Six audible layers: rolling-16th bassline loudest (-13.9 dB), then kick -20.2, pad -23.7, arp -29.6, lead -31.4, chords -35.7. The dominant pitched element is the bass pedal."
+  - clip: "genai melodic peak, 4:00-4:28 of anatomy/_candidates/acestep-t03-seed3001.wav"
+    comment: "i think this song we played is more tropical lol what is the instrument playing? still no lyric no?"
+    reading: "Instrument: a synthesized pluck (model's own caption aimed at oud/sitar-like plucked-string timbre). 'Tropical' is a fair read — short-decay plucks sit near steel-pan/kalimba territory. Gate-relevant: tropical is OFF the T03 brief (darkness 7, dark evolving atmosphere). No lyrics confirmed: instrumental=True and vocal stem measures silent (-51 to -57 dB) across the track."
 
 notes:
   scope: "User heard exactly the two clips played; nothing was missed."
