@@ -95,7 +95,14 @@ def main() -> int:
         seed=args.seed,
         thinking=not args.no_thinking,
     )
-    config = GenerationConfig(batch_size=1, audio_format="wav")
+    # use_random_seed=False + explicit seeds: the config default (True) silently
+    # discards params.seed and rolls a fresh seed every run.
+    config = GenerationConfig(
+        batch_size=1,
+        audio_format="wav",
+        use_random_seed=False,
+        seeds=[args.seed],
+    )
 
     CANDIDATES.mkdir(parents=True, exist_ok=True)
     result = generate_music(dit, llm, params, config, save_dir=str(CANDIDATES))

@@ -31,6 +31,12 @@ uv run --no-sync setloom score "anatomy/_candidates/acestep-candidate-01.wav"
 
 The script pins the style brief: instrumental, 123 bpm, minor key, hypnotic-pedal caption mirroring the grammar (no named artists). Candidates land in `anatomy/_candidates/` — structurally exempt from `corpus-summary.yml`, so scoring them never pollutes the corpus aggregate. Iterate by seed and caption; the score report says where each candidate sits against the grammar, and your ears say whether it matters.
 
+Reproducibility contract (verified 2026-06-10):
+
+- The script passes `use_random_seed=False` + explicit `seeds`; the upstream config default silently discards the seed otherwise.
+- `--no-thinking` runs are byte-reproducible per seed, and the caption reaches the DiT verbatim.
+- Thinking runs are **one-offs**: the 5Hz LM's MLX sampler is unseeded upstream, and the LM rewrites the caption (observed drift: melodic-techno brief → deep-house/oud/vocal-chop caption). Use thinking for exploration, `--no-thinking` for seed iteration and A/B work.
+
 ## Recipe 2 — Magenta RT 2: jam-pillar smoke clip
 
 ```sh
