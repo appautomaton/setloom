@@ -4,31 +4,33 @@
 
 Setloom is an open-source, keyboard-first tool and agentic harness for generating, tuning, mixing, and sequencing club tracks and DJ sets.
 
-The working GitHub target is `appautomaton/setloom`. Public branding is `Setloom by AppAutomaton`.
-
-Setloom starts with melodic/progressive techno as the first style grammar, then expands toward house, tech house, and adjacent electronic music lanes.
+The working GitHub target is `appautomaton/setloom`; public branding is `Setloom by AppAutomaton`. The first style grammar is melodic/progressive techno, expanding toward house, tech house, and adjacent electronic lanes.
 
 ## Product Posture
 
-- Setloom is a tool and agentic harness, not a traditional DAW clone.
-- Setloom is not a one-click music generator.
+- Setloom is a tool and agentic harness, not a traditional DAW clone, and not a one-click music generator.
 - Setloom is built for rhythm-aware creators who have taste and listening judgment, but do not want to learn a full professional DAW workflow before creating.
 - The human is the taste owner. Agents create candidates, revise them, and explain tradeoffs.
-- Progress is roadmap progress: shipped specs, prompts, schemas, harness behavior, tests, renders, and review gates. Do not frame progress as a human-compatible time estimate.
+- Progress is roadmap progress: shipped specs, schemas, harness behavior, tests, renders, and review gates — never a human-compatible time estimate.
+- Write everything — docs, prompts, specs, schemas, comments, public copy — in clear, direct, high-signal English; define domain terms without turning docs into theory lectures.
 
-## Language
+## Working Surfaces
 
-- Project docs, prompts, specs, schemas, comments, and public-facing copy must be written in clear, elegant English.
-- Keep writing direct and high-signal.
-- Define domain terms when needed, but do not turn docs into music theory lectures.
+- `setloom validate <spec>` — check a track spec YAML against schema and style pack.
+- `setloom generate <spec>` — deterministic MIDI candidate variants into `candidates/`.
+- `setloom anatomize [path]` — stem separation and anatomy dossiers into `anatomy/_dossiers/`; `--layers` adds the 53-stem lens.
+- `setloom score <audio>` — grammar distance against the style pack, written beside the dossier.
+- `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai candidates into `anatomy/_candidates/`.
 
 ## Context Routing
 
-- Read `docs/README.md` first when orienting.
-- Read `docs/project-charter.md` for product intent, audience, and non-goals.
+- Read `docs/README.md` first when orienting; `docs/project-charter.md` for product intent, audience, and non-goals.
 - Read `docs/roadmap.md` before adding or changing roadmap scope.
 - Read `docs/style-grammar.md` and `style-packs/*/style.yml` for music-generation behavior.
 - Read `docs/workflow.md` for candidate, render, review, and listening-gate flow.
+- Read `research/melodic-progressive-techno/dossier-guide.md` to interpret anatomize and score output.
+- Read `research/melodic-progressive-techno/generation-recipes.md` before genai generation or model-store work.
+- Read `research/melodic-progressive-techno/component-glossary.md` and `research/melodic-progressive-techno/taste-lexicon.md` for listening-note and review vocabulary.
 - Read `docs/licensing.md`, `CONTRIBUTING.md`, and `TRADEMARKS.md` for policy-sensitive changes.
 - Read only the prompt file under `harness/prompts/` that matches the agent role being changed.
 
@@ -36,24 +38,28 @@ Setloom starts with melodic/progressive techno as the first style grammar, then 
 
 - Use GenAI primarily for melody, motif, harmonic direction, atmosphere, and variation.
 - Use deterministic or rule-based systems for groove, kick, bass, timing, arrangement structure, and low-end safety.
-- Never treat a generated mix as final without a human listening gate.
+- Never treat a generated mix as final without a human listening gate. Scores are technical distance, never the taste verdict.
 - Do not imitate named artists. Use reference artists only to extract style grammar and review vocabulary.
 - Favor club-functional arrangements: mixable intros/outros, clear phrase structure, controlled low end, and long-form energy flow.
 - Treat `style-packs/*/style.yml` as executable style grammar. Treat `docs/style-grammar.md` as explanatory context.
 
 ## Tooling Rules
 
-- Prefer open-source, CLI-controllable tools for the public core workflow.
-- Do not require Logic Pro, Ableton Live, Pro Tools, or other proprietary DAWs for the public core workflow.
-- Use Python packages as the control plane for alignment, MIDI, analysis, automation, render orchestration, reports, and candidate routing.
-- User-owned proprietary tools may be inspected as local reference surfaces when they help identify professional timbre vocabulary, preset categories, or audition targets. Logic Pro may be used this way when the user has it installed, but it is not the Setloom final renderer, project-output chain, or required production dependency.
-- Do not describe Logic-rendered audio, Logic project exports, or DAW bounces as the core Setloom output path unless the user explicitly asks for that separate local experiment.
-- Do not install, launch, or route work through tacky third-party GUI synths, preset browsers, or DAWs for timbre discovery without explicit user approval. If a GUI reference check is unavoidable, prefer the user's existing Logic Pro setup over adding another GUI tool.
-- Do not install new Homebrew packages for this project. Use the repo-local `uv` environment only for Python work; if Node tooling is needed, keep `node_modules` inside this project.
-- Keep the workflow keyboard-first where possible. Prefer Python, CLI, file import/export, MIDI, scripts, or other automation over manual clicking.
-- The human listening gate must be no-click capable: agents prepare, route, and play audition audio when possible; the human only needs to listen and give typed comments.
-- Open-source preference is not open-source purity: it must not block the user from using paid tools they already own for local, ignored candidate artifacts.
-- Generated project artifacts should be file-based and reproducible where possible: specs, MIDI, stems, renders, reports, and listening notes.
+- Prefer open-source, CLI-controllable tools for the public core workflow; Python is the control plane. Paid tools the user already owns may serve local, ignored candidate artifacts.
+- Proprietary DAWs (Logic Pro, Ableton Live, Pro Tools) are never required; they are local reference surfaces only, never the Setloom output path. Do not add other GUI tools without explicit approval. Full policy: `docs/tooling.md`.
+- Do not install new Homebrew packages. Use the repo-local `uv` environment for Python work; keep any Node tooling inside this project.
+- Keep the workflow keyboard-first: prefer Python, CLI, file import/export, MIDI, and scripts over manual clicking.
+- The human listening gate must be no-click capable: agents prepare, route, and play audition audio; the human only listens and types comments.
+- Generated artifacts should be file-based and reproducible: specs, MIDI, stems, renders, reports, and listening notes.
+
+## ML Environment
+
+- One repo-local `uv` environment for everything; models join through dependency groups (`anatomy`, `genai`). Never create per-model virtualenvs.
+- Model weights live in the gitignored `models/` store; never commit audio, MIDI, or weights. Never override `HF_HOME` — it holds the user's Hugging Face login.
+- `.references/` upstream clones are read-only working aids.
+- Serialize heavy ML jobs — separation, generation, transcription — one at a time.
+- Committed configs pin stock PyPI `torch`; machine-tuned wheels are local-only installs behind capability checks.
+- Genai candidates go to `anatomy/_candidates/` and never enter the corpus summary. Routing details and recipes: `docs/tooling.md`, `research/melodic-progressive-techno/generation-recipes.md`.
 
 ## Licensing Rules
 
