@@ -3,7 +3,7 @@
 
 Python derives the same seeded part events as ``setloom generate``, converts
 them into deterministic NRT scores, renders designed stems through
-``render/patches.scd`` via ``sclang``, then mixes them with SoX into
+``src/setloom/patches.scd`` via ``sclang``, then mixes them with SoX into
 ``vibe_mix.wav``.
 
 Usage: ``uv run python -m setloom.scrender <spec.yml> <variant-dir> [--seed S] [--variant N]``
@@ -25,7 +25,7 @@ from setloom.parts.base import SCALES, parse_key
 from setloom.schema import TrackSpec, load_spec
 
 SC_APP_SCLANG = "/Applications/SuperCollider.app/Contents/MacOS/sclang"
-PATCHES = Path(__file__).resolve().parents[2] / "render" / "patches.scd"
+PATCHES = Path(__file__).resolve().parent / "patches.scd"
 
 KICK_NOTE = 36
 

@@ -74,7 +74,7 @@ Acceptance:
 
 Render stems from specs and MIDI.
 
-Status: shipped — `src/setloom/scrender.py` and `render/patches.scd` (SuperCollider path).
+Status: shipped — `src/setloom/scrender.py` and its `src/setloom/patches.scd` synth definitions (SuperCollider path).
 
 Acceptance:
 

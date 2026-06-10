@@ -47,8 +47,7 @@ docs/                 Charter, roadmap, licensing, style grammar, and workflow n
 harness/prompts/      Initial prompt specs for the agentic harness.
 style-packs/          Executable style grammar files.
 research/             Reference corpus, findings, and review memos for style packs.
-src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration.
-render/               Open-source render patch assets.
+src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
 scripts/              Local genai candidate and smoke-clip scripts.
 examples/             Example track specs and listening notes.
 tests/                Schema, gate, generator, conductor, audio, part, and render tests.
