@@ -20,7 +20,7 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 - `setloom generate <spec>` — deterministic MIDI candidate variants into `candidates/`.
 - `setloom anatomize [path]` — stem separation and anatomy dossiers into `anatomy/_dossiers/`; `--layers` adds the 53-stem lens.
 - `setloom score <audio>` — grammar distance against the style pack, written beside the dossier.
-- `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai candidates into `anatomy/_candidates/`.
+- `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai candidates into `candidates/genai/`.
 
 ## Context Routing
 
@@ -59,7 +59,7 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 - `.references/` upstream clones are read-only working aids.
 - Serialize heavy ML jobs — separation, generation, transcription — one at a time.
 - Committed configs pin stock PyPI `torch`; machine-tuned wheels are local-only installs behind capability checks.
-- Genai candidates go to `anatomy/_candidates/` and never enter the corpus summary. Routing details and recipes: `docs/tooling.md`, `research/melodic-progressive-techno/generation-recipes.md`.
+- Genai candidates go to `candidates/genai/` and never enter the corpus summary. Routing details and recipes: `docs/tooling.md`, `research/melodic-progressive-techno/generation-recipes.md`.
 
 ## Licensing Rules
 
@@ -78,3 +78,4 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 4. When generating candidates, produce multiple options and a compact review report.
 5. When reviewing candidates, separate technical checks from human taste decisions.
 6. Do not hide uncertainty. If a musical choice requires listening, say so and route it to the listening gate.
+7. Implement only the design stage the human commissioned; an approved artifact is not permission to start the next stage.

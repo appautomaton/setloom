@@ -390,11 +390,13 @@ class TestCandidateSummaryExemption:
         from setloom.anatomy import pipeline as pl
 
         audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
-        cand = tmp_path / "_candidates" / audio.name
-        cand.parent.mkdir()
-        audio.rename(cand)
+        for dirname in ("candidates", "_candidates"):  # current home + pre-move layouts
+            cand = tmp_path / dirname / audio.name
+            cand.parent.mkdir()
+            audio.rename(cand)
 
-        statuses = pl.run(cand, out_dir=out_dir, stems_dir=stems_dir, separate=False)
-        assert "fake" in statuses
-        assert "corpus-summary" not in statuses
-        assert not (out_dir / "corpus-summary.yml").exists()
+            statuses = pl.run(cand, out_dir=out_dir, stems_dir=stems_dir, separate=False)
+            assert "fake" in statuses
+            assert "corpus-summary" not in statuses
+            assert not (out_dir / "corpus-summary.yml").exists()
+            cand.rename(audio)

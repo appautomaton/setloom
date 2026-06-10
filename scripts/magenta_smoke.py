@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent.parent
 os.environ.setdefault("MAGENTA_HOME", str(ROOT / "models" / "magenta"))
 os.environ.setdefault("HF_HUB_CACHE", str(ROOT / "models" / "hf"))
 
-OUT_DIR = ROOT / "anatomy" / "_candidates"
+OUT_DIR = ROOT / "candidates" / "genai"
 
 DEFAULT_PROMPT = (
     "dark hypnotic melodic techno groove, rolling sixteenth-note bassline, "

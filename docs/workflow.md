@@ -46,12 +46,12 @@ Current layout:
 
 ```text
 examples/tracks/TNN/spec.yml            # committed track specs and listening notes
-candidates/                             # generated MIDI/audio candidates (gitignored)
+candidates/                             # all candidates (gitignored): TNN/ deterministic MIDI + renders
+candidates/genai/                       # genai audio candidates; never enter the corpus summary
 releases/TNN/                           # frozen release packages: master, artwork, upload notes (gitignored)
 anatomy/<artist>/                       # local reference audio (gitignored)
 anatomy/_dossiers/<track>.quick.yml     # anatomize dossiers (.quick/.stems/.layers/.score)
 anatomy/_stems/                         # stem separation cache
-anatomy/_candidates/                    # genai candidates; never enter the corpus summary
 models/                                 # model weights: generation and separation (gitignored)
 ```
 

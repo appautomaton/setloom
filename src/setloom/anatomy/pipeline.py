@@ -388,8 +388,9 @@ def run(
             _write_yaml_if_changed(stem_yml, stems)
             # Candidates get dossiers but never corpus-summary rows, even as
             # explicit file targets — the exemption is structural, not a
-            # directory-scan side effect.
-            if "_candidates" not in audio.parts:
+            # directory-scan side effect. "candidates" is the current home;
+            # "_candidates" covers pre-move local layouts.
+            if not {"candidates", "_candidates"} & set(audio.parts):
                 rows.append(co.track_row(quick, stems))
 
         if layers:
