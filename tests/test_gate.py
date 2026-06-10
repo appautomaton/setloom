@@ -10,7 +10,7 @@ from setloom.schema import TrackSpec, load_spec
 from setloom.stylepack import evaluate_gate, load_style_pack
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-T01 = REPO_ROOT / "examples" / "tracks" / "T01" / "spec.yml"
+T01 = REPO_ROOT / "tracks" / "T01" / "spec.yml"
 
 
 @pytest.fixture(scope="module")

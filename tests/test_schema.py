@@ -10,7 +10,7 @@ from setloom import cli
 from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-T01 = REPO_ROOT / "examples" / "tracks" / "T01" / "spec.yml"
+T01 = REPO_ROOT / "tracks" / "T01" / "spec.yml"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 
 
@@ -58,7 +58,7 @@ def test_broken_fixture_cli_exit_nonzero(
 
 # --- Duration profiles: T02 streaming edit (change 2026-06-07-duration-profiles) ---
 
-T02 = REPO_ROOT / "examples" / "tracks" / "T02" / "spec.yml"
+T02 = REPO_ROOT / "tracks" / "T02" / "spec.yml"
 
 
 def test_t02_validates_streaming_profile() -> None:

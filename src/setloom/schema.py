@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Track spec schema (Spec 3).
 
-Formalizes the shape established by examples/tracks/T01/spec.yml.
+Formalizes the shape established by tracks/T01/spec.yml.
 Validation errors point at the offending field; grammar-level checks
 (style-pack ranges) live in the CLI and style-pack loader, not here.
 

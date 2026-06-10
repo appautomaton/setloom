@@ -12,7 +12,7 @@ Status: shipped — `AGENTS.md`, `docs/licensing.md`, `CONTRIBUTING.md` (DCO).
 
 Acceptance:
 
-- English-only docs and harness prompts.
+- English-only docs, specs, and public copy.
 - Open-source-first tooling posture.
 - AGPL-3.0-only core license.
 - Human listening gate required for final approval.
@@ -48,7 +48,7 @@ Acceptance:
 
 Define the file format for generated tracks.
 
-Status: shipped — `setloom validate`, `src/setloom/schema.py`, `examples/tracks/`.
+Status: shipped — `setloom validate`, `src/setloom/schema.py`, `tracks/`.
 
 Acceptance:
 

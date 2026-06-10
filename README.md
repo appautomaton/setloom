@@ -48,7 +48,7 @@ style-packs/          Executable style grammar files.
 research/             Reference corpus, findings, and review memos for style packs.
 src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
 scripts/              Local genai candidate and smoke-clip scripts.
-examples/             Example track specs and listening notes.
+tracks/               Committed track registry: specs, briefs, listening notes, release records.
 tests/                Schema, gate, generator, conductor, audio, part, and render tests.
 pyproject.toml        uv-managed Python package definition and CLI entry point.
 LICENSE               AGPL-3.0-only text for the core project.

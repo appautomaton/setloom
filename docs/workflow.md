@@ -45,7 +45,7 @@ requests:
 Current layout:
 
 ```text
-examples/tracks/TNN/spec.yml            # committed track specs and listening notes
+tracks/TNN/spec.yml                     # committed track specs, briefs, and listening notes
 candidates/                             # all candidates (gitignored): TNN/ deterministic MIDI + renders
 candidates/genai/                       # genai audio candidates; never enter the corpus summary
 releases/TNN/                           # frozen release packages: master, artwork, upload notes (gitignored)
@@ -55,7 +55,7 @@ anatomy/_stems/                         # stem separation cache
 models/                                 # model weights: generation and separation (gitignored)
 ```
 
-The fuller `tracks/`–`renders/`–`reports/`–`sets/` layout remains the Spec 7-era target; `examples/tracks/` already follows its spec-plus-notes shape.
+The fuller `renders/`–`reports/`–`sets/` companions remain the Spec 7-era target; `tracks/` already follows the spec-plus-notes shape.
 
 ## Review Gates
 

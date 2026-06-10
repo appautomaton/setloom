@@ -40,7 +40,7 @@ from setloom.scrender import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-T02 = REPO_ROOT / "examples" / "tracks" / "T02" / "spec.yml"
+T02 = REPO_ROOT / "tracks" / "T02" / "spec.yml"
 
 
 def test_ticks_to_seconds_at_124() -> None:

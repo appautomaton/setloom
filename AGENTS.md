@@ -78,4 +78,4 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 5. When reviewing candidates, separate technical checks from human taste decisions.
 6. Do not hide uncertainty. If a musical choice requires listening, say so and route it to the listening gate.
 7. Implement only the design stage the human commissioned; an approved artifact is not permission to start the next stage.
-8. Never hoard. The tree carries only what serves current context: git history is the bookkeeping, and generated artifacts are regenerable from spec, seed, and recipe.
+8. Never hoard. The tree carries only what serves current context — git history is the bookkeeping, generated artifacts are regenerable from spec, seed, and recipe, and every name says what a thing is today, not what it was scaffolded to be.
