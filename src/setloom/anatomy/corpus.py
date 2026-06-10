@@ -41,6 +41,19 @@ def track_row(quick: dict, stem: dict) -> dict:
     }
 
 
+def merge_rows(existing: list[dict], new: list[dict]) -> list[dict]:
+    """Merge freshly analyzed rows into an existing summary's rows.
+
+    Rows are keyed by ``track``: existing rows update in place (file order
+    preserved), unseen tracks append in run order. Subset runs therefore
+    never shrink the corpus aggregate (the old behavior was last-run-wins).
+    """
+    fresh = {r["track"]: r for r in new}
+    merged = [fresh.pop(r["track"], r) for r in existing]
+    merged.extend(r for r in new if r["track"] in fresh)
+    return merged
+
+
 def corpus_stats(rows: list[dict]) -> dict:
     def col(key: str) -> list[float]:
         return [r[key] for r in rows if isinstance(r.get(key), (int, float))]

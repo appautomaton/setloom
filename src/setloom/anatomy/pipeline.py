@@ -305,6 +305,7 @@ def collect_audio(target: Path) -> list[Path]:
         if p.suffix.lower() in AUDIO_SUFFIXES and not p.name.startswith(".")
         and "_stems" not in p.parts and "_dossiers" not in p.parts
         and "_stems53" not in p.parts and "_models" not in p.parts
+        and "_candidates" not in p.parts
     )
 
 
@@ -316,6 +317,15 @@ def _write_yaml_if_changed(path: Path, data: dict) -> bool:
     return True
 
 
+def _write_summary(out_dir: Path, rows: list[dict]) -> bool:
+    """Merge this run's rows into the corpus summary and write if changed."""
+    path = out_dir / "corpus-summary.yml"
+    if path.is_file():
+        existing = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        rows = co.merge_rows(existing.get("tracks") or [], rows)
+    return _write_yaml_if_changed(path, {"tracks": rows, "corpus": co.corpus_stats(rows)})
+
+
 def run(
     target: Path,
     out_dir: Path = DEFAULT_OUT,
@@ -324,6 +334,7 @@ def run(
     layers: bool = False,
     layer_stems_dir: Path = Path("anatomy/_stems53"),
     models_dir: Path = Path("anatomy/_models"),
+    summary: bool = True,
 ) -> dict:
     """Run the pipeline over a file or directory. Returns a per-track status map."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -385,8 +396,7 @@ def run(
         _write_yaml_if_changed(quick_path, quick)
         statuses[track] = status
 
-    if rows:
-        summary = {"tracks": rows, "corpus": co.corpus_stats(rows)}
-        changed = _write_yaml_if_changed(out_dir / "corpus-summary.yml", summary)
+    if rows and summary:
+        changed = _write_summary(out_dir, rows)
         statuses["corpus-summary"] = ["written" if changed else "unchanged"]
     return statuses

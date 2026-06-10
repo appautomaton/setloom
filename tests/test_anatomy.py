@@ -193,6 +193,19 @@ class TestCorpus:
         assert stats["bass_occupancy_mean"] == 0.85
         assert stats["main_break_len_bars_values"] == [10, 20]
 
+    def test_merge_rows_updates_in_place_and_appends(self):
+        existing = [{"track": "a", "bpm": 120.0}, {"track": "b", "bpm": 121.0}]
+        new = [{"track": "c", "bpm": 124.0}, {"track": "b", "bpm": 123.0}]
+        merged = co.merge_rows(existing, new)
+        assert [r["track"] for r in merged] == ["a", "b", "c"]  # subset never shrinks
+        assert merged[1]["bpm"] == 123.0  # updated in place
+        assert merged[0]["bpm"] == 120.0  # untouched row survives
+
+    def test_merge_rows_identity_on_full_rerun(self):
+        rows = [{"track": "a", "bpm": 120.0}, {"track": "b", "bpm": 121.0}]
+        assert co.merge_rows(rows, [dict(r) for r in rows]) == rows
+        assert co.merge_rows([], rows) == rows
+
 
 class TestCli:
     def test_anatomize_registered(self):
@@ -275,3 +288,69 @@ class TestPipelineIntegration:
         assert dossier["sections"]
         assert isinstance(dossier["integrated_lufs"], float)
         assert dossier["key_estimate"].endswith("minor")
+
+
+def _fake_cached_track(tmp_path, track="fake"):
+    """A fully cached track: run() touches no audio, only YAML and wav existence."""
+    import yaml
+
+    audio = tmp_path / "art" / f"{track}.mp3"
+    audio.parent.mkdir()
+    audio.touch()
+    out_dir = tmp_path / "dossiers"
+    out_dir.mkdir()
+    quick = {
+        **_quick_fixture(),
+        "first_beat_s": 0.0,
+        "bars_estimated": 100,
+        "tempo_suspect": False,
+        "stem_model": "htdemucs",
+    }
+    (out_dir / f"{track}.quick.yml").write_text(yaml.safe_dump(quick), encoding="utf-8")
+    stems = _stem_fixture(track, 100, ["40-49"], 0.9, 0.7)
+    (out_dir / f"{track}.stems.yml").write_text(yaml.safe_dump(stems), encoding="utf-8")
+    stems_dir = tmp_path / "stems"
+    (stems_dir / track).mkdir(parents=True)
+    for name in ("drums", "bass", "other", "vocals"):
+        (stems_dir / track / f"{name}.wav").touch()
+    return audio, out_dir, stems_dir
+
+
+class TestSummaryMerge:
+    def test_subset_run_merges_into_existing_summary(self, tmp_path):
+        import yaml
+
+        from setloom.anatomy import pipeline as pl
+
+        audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
+        other_row = {"track": "other-track", "bpm": 121.0, "main_break_len_bars": 8}
+        (out_dir / "corpus-summary.yml").write_text(
+            yaml.safe_dump({"tracks": [other_row], "corpus": {}}), encoding="utf-8"
+        )
+
+        statuses = pl.run(audio, out_dir=out_dir, stems_dir=stems_dir, separate=False)
+        assert statuses["corpus-summary"] == ["written"]
+        summary = yaml.safe_load((out_dir / "corpus-summary.yml").read_text(encoding="utf-8"))
+        assert [r["track"] for r in summary["tracks"]] == ["other-track", "fake"]
+        assert summary["tracks"][0] == other_row  # subset run no longer shrinks the aggregate
+
+    def test_summary_false_skips_summary_write(self, tmp_path):
+        from setloom.anatomy import pipeline as pl
+
+        audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
+        statuses = pl.run(
+            audio, out_dir=out_dir, stems_dir=stems_dir, separate=False, summary=False
+        )
+        assert "corpus-summary" not in statuses
+        assert not (out_dir / "corpus-summary.yml").exists()
+
+    def test_collect_audio_skips_candidates_but_takes_file_target(self, tmp_path):
+        from setloom.anatomy import pipeline as pl
+
+        (tmp_path / "art").mkdir()
+        (tmp_path / "art" / "a.mp3").touch()
+        cand = tmp_path / "_candidates" / "c.wav"
+        cand.parent.mkdir()
+        cand.touch()
+        assert [p.name for p in pl.collect_audio(tmp_path)] == ["a.mp3"]
+        assert pl.collect_audio(cand) == [cand]
