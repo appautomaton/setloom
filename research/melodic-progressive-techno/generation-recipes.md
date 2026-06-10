@@ -37,13 +37,13 @@ The script pins the style brief: instrumental, 123 bpm, minor key, hypnotic-peda
 uv run --no-sync python scripts/magenta_smoke.py --duration 16
 ```
 
-A short MLX-generated clip proving the realtime pillar runs in this env. Magenta RT 2 has **no PyTorch path** — it is MLX (plus a C++ engine) on Apple Silicon. The actual jam workflow (live audio routing, MIDI steering from an instrument) is its own future change; do not score smoke clips against full-track grammar.
+A short MLX-generated clip proving the realtime pillar runs in this env. Lane assignment (2026-06-10): Magenta RT 2 owns the **sound-design / ambient / pad lane** — textures, beds, and pads — alongside its future realtime-jam role. Magenta RT 2 has **no PyTorch path** — it is MLX (plus a C++ engine) on Apple Silicon. The actual jam workflow (live audio routing, MIDI steering from an instrument) is its own future change; do not score smoke clips against full-track grammar.
 
 ## Licensing and provenance
 
 - ACE-Step 1.5: MIT code, model-card-licensed training data (v1.5). Pinned in `pyproject.toml` at the upstream rev; its stale `<3.13` Python cap is overridden there with a documented `[[tool.uv.dependency-metadata]]` block.
 - Magenta RT 2: Apache-2.0 code, CC-BY model weights, from PyPI (`magenta-rt[mlx]`).
-- Stable Audio 3 (sound-design pillar) is **deferred**: hard pins (`python <3.11`, `torch==2.7.1`) cannot join the unified env today; it returns as a dedicated porting effort.
+- Stable Audio 3 is **deferred**: hard pins (`python <3.11`, `torch==2.7.1`) cannot join the unified env today; it returns as a dedicated porting effort. Until then, Magenta RT 2 covers its sound-design lane.
 - Generated audio belongs to its creator subject to each model's terms; treat outputs as local experiment material with non-commercial intent.
 
 ## The loop this enables
