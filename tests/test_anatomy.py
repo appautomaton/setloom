@@ -192,3 +192,86 @@ class TestCorpus:
         assert stats["bpm_values"] == [123.0]
         assert stats["bass_occupancy_mean"] == 0.85
         assert stats["main_break_len_bars_values"] == [10, 20]
+
+
+class TestCli:
+    def test_anatomize_registered(self):
+        from setloom.cli import build_parser
+
+        args = build_parser().parse_args(["anatomize", "somewhere", "--no-separate"])
+        assert args.no_separate is True
+        assert args.out == "anatomy/_dossiers"
+        assert args.stems_dir == "anatomy/_stems"
+        assert callable(args.func)
+
+
+def _synthesize_stems(stem_dir, sr=22050, bpm=120.0, n_bars=8):
+    """Hermetic 8-bar A-minor techno skeleton: no models, no real audio."""
+    import soundfile as sf
+
+    bar_dur = 4.0 * 60.0 / bpm
+    total = int(n_bars * bar_dur * sr)
+    t = np.arange(total) / sr
+
+    drums = np.zeros(total)
+    burst = np.sin(2 * np.pi * 60.0 * np.arange(int(0.08 * sr)) / sr)
+    burst *= np.exp(-np.linspace(0, 6, len(burst)))
+    for beat in range(n_bars * 4):
+        start = int(beat * (bar_dur / 4) * sr)
+        drums[start : start + len(burst)] += 0.9 * burst[: total - start]
+    rng = np.random.default_rng(11)
+    click = rng.standard_normal(int(0.02 * sr)) * 0.3
+    for beat in range(n_bars * 4):
+        start = int((beat + 0.5) * (bar_dur / 4) * sr)
+        if start + len(click) < total:
+            drums[start : start + len(click)] += click
+
+    bass = 0.4 * np.sin(2 * np.pi * 110.0 * t)  # A2 pedal
+    other = 0.2 * (
+        np.sin(2 * np.pi * 220.0 * t)
+        + np.sin(2 * np.pi * 261.63 * t)
+        + np.sin(2 * np.pi * 329.63 * t)
+    )  # A minor triad
+    vocals = np.zeros(total)
+
+    stem_dir.mkdir(parents=True, exist_ok=True)
+    for name, y in [("drums", drums), ("bass", bass), ("other", other), ("vocals", vocals)]:
+        sf.write(stem_dir / f"{name}.wav", y, sr)
+    return drums + bass + other
+
+
+class TestPipelineIntegration:
+    def test_stem_pass_on_synthetic_stems(self, tmp_path):
+        from setloom.anatomy import pipeline as pl
+
+        stem_dir = tmp_path / "stems" / "synthetic"
+        _synthesize_stems(stem_dir, sr=pl.SR)
+        out_dir = tmp_path / "out"
+        out_dir.mkdir()
+        grid = pl.Grid(bpm=120.0, t0=0.0, n_bars=8)
+
+        dossier = pl.stem_pass("synthetic", stem_dir, grid, out_dir)
+        assert dossier["drums"]["kick_bars_present"] == 8
+        assert dossier["drums"]["kick_gap_bars"] == []
+        assert dossier["bass"]["tonic_candidate"] == "A"
+        assert dossier["bass"]["step_occupancy"] > 0.8
+        chords = [c for c in dossier["other"]["chords_per_2bars"] if c]
+        assert chords and max(set(chords), key=chords.count) == "Am"
+        assert dossier["vocals"]["active_bar_ranges"] == []
+        assert (out_dir / "synthetic.bass.mid").is_file()
+
+    def test_fullmix_pass_on_synthetic_mix(self, tmp_path):
+        import soundfile as sf
+
+        from setloom.anatomy import pipeline as pl
+
+        mix = _synthesize_stems(tmp_path / "stems", sr=pl.SR)
+        wav = tmp_path / "synthetic.wav"
+        sf.write(wav, mix, pl.SR)
+
+        dossier = pl.fullmix_pass(wav)
+        assert 100.0 <= dossier["bpm_estimate"] <= 160.0
+        assert dossier["bars_estimated"] >= 6
+        assert dossier["sections"]
+        assert isinstance(dossier["integrated_lufs"], float)
+        assert dossier["key_estimate"].endswith("minor")

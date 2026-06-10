@@ -98,6 +98,29 @@ def _cmd_generate(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_anatomize(args: argparse.Namespace) -> int:
+    from setloom.anatomy.pipeline import collect_audio, run as run_anatomy
+
+    target = Path(args.path)
+    if not target.exists():
+        print(f"anatomize failed: {target} does not exist", file=sys.stderr)
+        return 1
+    if not collect_audio(target):
+        print(f"anatomize failed: no audio files under {target}", file=sys.stderr)
+        return 1
+    statuses = run_anatomy(
+        target,
+        out_dir=Path(args.out),
+        stems_dir=Path(args.stems_dir),
+        separate=not args.no_separate,
+    )
+    for track, status in statuses.items():
+        print(f"{track}: {', '.join(status)}")
+    print(f"dossiers: {args.out}")
+    print("reminder: dossiers are technical evidence; musical judgment stays with the listening gate")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="setloom", description="Setloom track and set harness")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -118,6 +141,28 @@ def build_parser() -> argparse.ArgumentParser:
         help="override a named rejection rule (repeatable); overrides are recorded in the report",
     )
     p_generate.set_defaults(func=_cmd_generate)
+
+    p_anatomize = sub.add_parser(
+        "anatomize", help="dissect local reference audio into anatomy dossiers"
+    )
+    p_anatomize.add_argument(
+        "path", nargs="?", default="anatomy", help="audio file or directory (default anatomy/)"
+    )
+    p_anatomize.add_argument(
+        "--out", default="anatomy/_dossiers", help="dossier output root (default anatomy/_dossiers)"
+    )
+    p_anatomize.add_argument(
+        "--stems-dir",
+        dest="stems_dir",
+        default="anatomy/_stems",
+        help="stem cache root (default anatomy/_stems)",
+    )
+    p_anatomize.add_argument(
+        "--no-separate",
+        action="store_true",
+        help="skip stem separation when stems are missing (full-mix pass only)",
+    )
+    p_anatomize.set_defaults(func=_cmd_anatomize)
 
     return parser
 
