@@ -1,0 +1,79 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# T03 is the first full open-path proving run: deterministic MIDI and genai
+# audio candidates for the same spec, anatomized and scored by the same
+# instruments, judged at the listening gate. New musical identity (A minor),
+# not a dark-orbit family edit.
+
+id: T03
+title: night-vector
+style_pack: melodic-progressive-techno
+duration_profile: club_extended
+seed: 3001
+bpm: 123
+key: A minor
+energy: 7
+duration_bars: 176
+
+intent:
+  summary: "Hypnotic A-minor club roller: patient two-break arc, glassy arp motif over a rolling bass pedal, mixable edges."
+  avoid:
+    - "festival-pop drop"
+    - "overcrowded bassline"
+    - "static loop fatigue"
+
+sections:
+  intro: 16
+  groove_a: 24
+  break_1: 16
+  drop_1: 32
+  groove_b: 16
+  break_2: 16
+  peak: 32
+  outro: 24
+
+palette:
+  kick: "deep short saturated"
+  bass: "rolling mono-aware sixteenth pedal"
+  drums: "tight hats, restrained percussion, phrase-aware fills"
+  chords: "minor stabs with controlled reverb"
+  pad: "dark evolving analog atmosphere"
+  lead: "glassy arpeggiated motif, sparse and emotional"
+  fx: "noise risers, impacts, reverse swells"
+
+style_vector:
+  darkness: 7
+  melodic_emotion: 7
+  groove_hypnosis: 9
+  cinematic_tension: 6
+  bass_aggression: 6
+  arrangement_patience: 9
+  hook_density: 4
+  vocal_presence: 0
+  organic_texture: 1
+  peak_time_pressure: 6
+
+render_targets:
+  midi:
+    - drums
+    - bass
+    - chords
+    - arp
+    - lead
+    - counterline
+    - fills
+    - pad
+    - shaker
+    - clap_ride
+    - fx
+  stems:
+    - kick
+    - bass
+    - drums
+    - chords
+    - pad
+    - lead
+    - fx
+  demo_mix: true
+
+human_gate:
+  required: true
