@@ -27,6 +27,12 @@ cache/
 # Root-anchored: src/setloom/anatomy/ is code and must stay tracked.
 /anatomy/
 
+# Project model store: generation weights (HF_HUB_CACHE target). Never committed.
+/models/
+
+# Read-only reference clones of upstream projects; local working aid only.
+/.references/
+
 *.wav
 *.aiff
 *.aif
