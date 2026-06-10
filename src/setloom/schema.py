@@ -4,6 +4,11 @@
 Formalizes the shape established by examples/tracks/T01/spec.yml.
 Validation errors point at the offending field; grammar-level checks
 (style-pack ranges) live in the CLI and style-pack loader, not here.
+
+Some fields are declared ahead of consumption: `energy`, `intent`, `palette`,
+and `human_gate` are not read by any generator yet, and only `bass_aggression`
+and `peak_time_pressure` from `style_vector` steer generation today. They
+document creator intent and reserve the contract for future wiring.
 """
 
 from pathlib import Path

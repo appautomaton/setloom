@@ -43,9 +43,16 @@ Setloom starts with melodic/progressive techno as the first style grammar, then 
 
 ## Tooling Rules
 
-- Prefer open-source, CLI-controllable tools.
-- Do not require Logic Pro, Ableton Live, Pro Tools, or other proprietary DAWs for the core workflow.
-- Keep the workflow keyboard-first. UI tools may be optional inspection aids, not required production steps.
+- Prefer open-source, CLI-controllable tools for the public core workflow.
+- Do not require Logic Pro, Ableton Live, Pro Tools, or other proprietary DAWs for the public core workflow.
+- Use Python packages as the control plane for alignment, MIDI, analysis, automation, render orchestration, reports, and candidate routing.
+- User-owned proprietary tools may be inspected as local reference surfaces when they help identify professional timbre vocabulary, preset categories, or audition targets. Logic Pro may be used this way when the user has it installed, but it is not the Setloom final renderer, project-output chain, or required production dependency.
+- Do not describe Logic-rendered audio, Logic project exports, or DAW bounces as the core Setloom output path unless the user explicitly asks for that separate local experiment.
+- Do not install, launch, or route work through tacky third-party GUI synths, preset browsers, or DAWs for timbre discovery without explicit user approval. If a GUI reference check is unavoidable, prefer the user's existing Logic Pro setup over adding another GUI tool.
+- Do not install new Homebrew packages for this project. Use the repo-local `uv` environment only for Python work; if Node tooling is needed, keep `node_modules` inside this project.
+- Keep the workflow keyboard-first where possible. Prefer Python, CLI, file import/export, MIDI, scripts, or other automation over manual clicking.
+- The human listening gate must be no-click capable: agents prepare, route, and play audition audio when possible; the human only needs to listen and give typed comments.
+- Open-source preference is not open-source purity: it must not block the user from using paid tools they already own for local, ignored candidate artifacts.
 - Generated project artifacts should be file-based and reproducible where possible: specs, MIDI, stems, renders, reports, and listening notes.
 
 ## Licensing Rules

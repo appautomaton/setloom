@@ -12,7 +12,11 @@ spec -> candidates -> render -> automated review -> human listening -> typed rev
 
 The human is the taste owner.
 
-The human does not need to click through a DAW or understand every studio engineering term. The human must listen, decide, and give direction.
+The human does not need to click through a DAW, browse folders, operate a plug-in UI, or understand every studio engineering term. The human must be able to listen, decide, and give typed direction.
+
+The listening gate is no-click capable. Agents should use Python and CLI automation to prepare, route, and play audition audio when possible, then ask for comments. Candidate reports are still useful records, but they are not a substitute for agent-operated playback.
+
+When the user has Logic Pro installed, agents may inspect it as a local reference surface for timbre vocabulary, preset categories, or short audition targets. Logic Pro is not the Setloom final renderer or candidate-output chain unless the user explicitly asks for that separate local experiment. Avoid routing the user through additional third-party GUI tools for timbre discovery; prefer Python automation and file-based handoff.
 
 Example notes:
 
@@ -42,7 +46,7 @@ Target layout:
 
 ```text
 tracks/T01/spec.yml
-tracks/T01/reviews/listening-notes.yml
+tracks/T01/listening-notes.yml
 renders/T01/takes/take-001/
 renders/T01/takes/take-001/stems/
 renders/T01/takes/take-001/demo.wav
@@ -58,4 +62,3 @@ Automated checks can catch technical and structural problems.
 Human listening catches musical judgment.
 
 Both are required.
-

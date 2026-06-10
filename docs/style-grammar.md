@@ -8,6 +8,8 @@ Setloom does not ask agents to copy artists. It extracts musical dimensions from
 
 Executable style packs live under `style-packs/`. This document explains the first grammar; it is not the source of truth for automation.
 
+Today the generators and the rejection gate consume only part of the pack: `generation_defaults.bpm_range`, `generation_defaults.duration_profiles`, and `rejection_rules`. The remaining sections carry review vocabulary and target constraints that are not yet machine-enforced.
+
 ## Starting Style Pack
 
 ```text
@@ -62,12 +64,38 @@ Starting defaults:
 
 - BPM: 122 to 126.
 - Meter: 4/4.
-- Phrase length: 16 or 32 bars.
+- Phrase grid: 8-bar local movement, with larger payoffs on 16/32-bar boundaries.
 - Kick: four-on-the-floor, stable, controlled, not generative-chaotic.
-- Bass: mono-aware, rhythmically locked, sidechain-friendly.
-- Melody: motif-based, sparse enough to survive club repetition.
+- Bass: mono-aware, rhythmically locked, sidechain-friendly, split into kick, sub, rumble, and mid-bass roles.
+- Melody: motif-based, sparse enough to survive club repetition, but never reduced to a short mechanical loop when there is no vocal.
 - Breaks: emotional, but not so long that the set loses motion.
 - Arrangement: intro and outro must be DJ-mixable.
+
+## Reference-Derived Production Rules
+
+The first melodic/progressive techno grammar now treats production as an ensemble system, not a pile of isolated tracks.
+
+Reference anatomy and listening gates showed these hard rules:
+
+- Low-end removal and restoration are the main dramatic device.
+- Breaks should collapse or thin the low end while widening upper atmosphere.
+- Drops should restore centered, mono-compatible low end while keeping upper material controlled-wide.
+- Peak sections should open presence and air without sacrificing low-end safety.
+- Layers must rotate roles. They should not all become maximal at the same time.
+- Reverb and delay should usually live on shared, ducked space returns, not as static global wash.
+- Drum production needs role separation: near kick/body, top groove, offbeat/open hat, shaker motion, far/room accents, fills, impacts.
+- If the track has no vocal, the lead must act as the emotional foreground. A two-bar classical or MIDI-like motif is not enough; it needs phrase-level development, call-response, counterline, and repeat variation.
+
+## Conductor-First Writing
+
+Melodic/progressive techno generation should be driven by a shared conductor, not independent part loops. The conductor owns:
+
+- `PhraseClock`: 8-bar local grid plus 16/32-bar payoff boundaries.
+- `HarmonicTimeline`: chord degree, color, and harmonic rhythm by bar.
+- `EnergyCurve`: section and phrase-level lift.
+- `SpacePlan`: which section owns foreground, motion, bed, and shared ambience.
+
+Part generators should read this shared state. Chords, lead, counterline, arp, drums, FX, and tonal bass support should not each invent their own phrase logic. The sub/rumble lane is the exception: it must stay pedal-safe and mono-stable while higher bass or tonal support carries harmonic movement. A candidate with impressive sound design but no shared conductor tends to collapse into tech-minimal: strong groove, weak melodic identity.
 
 ## Review Vocabulary
 
@@ -79,3 +107,6 @@ Use these terms consistently:
 - Too static: loop works but does not evolve.
 - Not club-functional: the track is hard to mix, weak on low end, or lacks phrase clarity.
 - Low-end conflict: kick and bass compete in timing, tuning, length, or spectral space.
+- Tech-minimal collapse: groove and low end work, but melodic identity is too short, static, or underdeveloped for melodic techno.
+- Independent backgrounds: atmosphere, classical material, and FX feel like separate loops rather than one arrangement system.
+- Drum monotony: drums are loud or heavy, but lack near/far depth, phrase accents, top-groove evolution, or transition-purpose fills.
