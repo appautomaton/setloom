@@ -1,6 +1,10 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
-# T04 Vocal Brief: "Ad Auroram"
+# T04 Vocal Brief: "Nova Flamma"
+
+Track name chosen at the naming gate (2026-06-10): **Nova Flamma** ("a new
+flame", verse line 2). The sung hook remains "ad auroram" — title and hook
+are deliberately different phrases.
 
 Vocal-first design (2026-06-10). The sung lead is designed and locked before
 any arrangement; groove, bass, and structure get built around it afterward.
