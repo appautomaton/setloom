@@ -44,7 +44,6 @@ Humans make the listening decision.
 ```text
 AGENTS.md             High-signal instructions for coding agents.
 docs/                 Charter, roadmap, licensing, style grammar, and workflow notes.
-harness/prompts/      Initial prompt specs for the agentic harness.
 style-packs/          Executable style grammar files.
 research/             Reference corpus, findings, and review memos for style packs.
 src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.

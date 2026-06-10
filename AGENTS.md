@@ -32,7 +32,6 @@ The working GitHub target is `appautomaton/setloom`; public branding is `Setloom
 - Read `research/melodic-progressive-techno/generation-recipes.md` before genai generation or model-store work.
 - Read `research/melodic-progressive-techno/component-glossary.md` and `research/melodic-progressive-techno/taste-lexicon.md` for listening-note and review vocabulary.
 - Read `docs/licensing.md`, `CONTRIBUTING.md`, and `TRADEMARKS.md` for policy-sensitive changes.
-- Read only the prompt file under `harness/prompts/` that matches the agent role being changed.
 
 ## Musical Rules
 
