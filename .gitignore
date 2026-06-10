@@ -23,6 +23,9 @@ outputs/
 tmp/
 cache/
 
+# Local reference audio for style anatomy; copyrighted, never committed.
+anatomy/
+
 *.wav
 *.aiff
 *.aif
