@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# T04 listening notes: first full-mix gate on the vocal-first build.
+
+track_id: T04
+take: variant-01 render + take-3 vocal placement (break_2 verse, peak hook)
+date: 2026-06-10
+decision: revise
+
+clips:
+  - clip: "main break verse entry, 2:40-3:08 of t04-adauroram-v01.wav"
+    comment: "okay found the culpit stem-lead-main is horrible ... whatever that shit plays in the background sounds horrible"
+  - clip: "peak hook return, 3:20-3:46 of t04-adauroram-v01.wav"
+    comment: "candidates/T04/seed-4103/variant-01/stem-lead.wav 质量低到可怕 不知道是什么合成器，出来的音色质量低到吐血"
+
+verdict:
+  lead_bus: "reject — the entire SC lead family (main/fx/atmos) is removed from the mix. The vocal is the lead; the synth lead was a redundant competitor with unacceptable timbre."
+  remix: "t04-adauroram-v01r2.wav rebuilt via scrender.mix() without the lead parts (official gain staging + master chain), vocal re-placed; re-auditioned same windows."
+
+technical:
+  score_v01: "5 in / 2 out — main_break_start_frac 0.46 (in window), vocal_share 0.11 (in lane); misses: lufs -11.4 (unmastered), bass_occupancy 0.68."
+  placement: "verse cut at source downbeat 23.17s (16 bars) -> bar 84; hook cut 83.66s (8 bars) -> bar 104 (peak entry)."
+
+routing:
+  - "Lead synth quality -> own change against Spec 5: redesign patches.scd lead family or replace with genai/sample-based lead (task filed)."
+  - "Mastering pass (loudness to -9..-8 LUFS) and bass occupancy lift -> mix revision after the no-lead version passes the gate."

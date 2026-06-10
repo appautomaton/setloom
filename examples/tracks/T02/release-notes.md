@@ -6,6 +6,12 @@ Committed safety copy of the release record. The package itself (master WAV,
 320k preview MP3, cover art, raw reports) is local-only under `releases/T02/`
 and never committed.
 
+Quality posture (taste owner, 2026-06-10): T02 is a **placeholder release
+only** — not a production-quality reference for sound, beat, or lead. It is
+never used as a style or quality target; all reference targets come from the
+measured corpus under `anatomy/` and `research/melodic-progressive-techno/`.
+T02's shortcomings are why the corpus study exists.
+
 - Track: Anima Ex Machina
 - Artist: App Automaton
 - Format: melodic techno / progressive techno demo master
