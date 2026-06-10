@@ -24,7 +24,8 @@ tmp/
 cache/
 
 # Local reference audio for style anatomy; copyrighted, never committed.
-anatomy/
+# Root-anchored: src/setloom/anatomy/ is code and must stay tracked.
+/anatomy/
 
 *.wav
 *.aiff
