@@ -53,9 +53,12 @@ Voice-only takes are cheaper, faster to audition, and need no stem separation �
 the artifact tax disappears when there is no band to peel away. Two measured
 caveats (2026-06-10): the model fills the tail to the canvas edge, so leave
 the last note room or rescue it by fading the dry voice into a reverb send;
-and "no instruments" still leaks a sub-180 Hz drone bed (62% of energy in one
-take) — a ~190 Hz sinc high-pass removes it cleanly since sung female
-fundamentals sit above D4. Full-mix vocal
+and "a cappella, no instruments" still leaks a quiet band (one take measured
+synth/bass at -19 dBFS and kick/drums at -27/-28 under the voice) — the
+voice-only deliverable is the 53-stem lens's lead-vocal + vocal layers, which
+took it to 0.0% sub-180 Hz energy and 0.2% transients. A plain high-pass only
+hides the bed below the voice; it cannot remove instruments that share the
+vocal band. Full-mix vocal
 generation (the T04 take-3 path) remains the fallback when the composer needs
 band context to phrase against.
 

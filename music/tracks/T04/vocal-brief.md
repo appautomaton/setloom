@@ -97,7 +97,7 @@ dark pads + rolling low end.
 | latin-vocal-clean-take3 | 4203 | awaiting gate — 50 s (oversized canvas), sparse anthemic F4/A4, ~3 notes/bar |
 | latin-vocal-clean-take4 | 4204 | passed over at gate (take 6 chosen) — 30 s, melody D4-A4, arrived pre-cut into 15.7 s verse + 11.7 s hook |
 | latin-vocal-clean-take5 | 4205 | passed over at gate (take 6 chosen) — 30 s, melody D4-F4 |
-| latin-vocal-clean-take6 | 4206 | **keep** — voice gate winner 2026-06-10 ("good style", melody approved); melody D4-G5, 99% D minor. Two raw-take defects, both fixed deterministically in `latin-vocal-clean-take6-tailfix.wav` (34.5 s): a sub-180 Hz drone bed (62% of energy; model ignored "no instruments") removed with a 190 Hz sinc high-pass — safe because the sung melody never drops below D4 — and the canvas-edge cutoff dissolved by fading the dry voice into an unfaded reverb send over the last second. Pending ear-check |
+| latin-vocal-clean-take6 | 4206 | **keep** — voice gate winner 2026-06-10 ("good style", melody approved); melody D4-G5, 99% D minor. Raw take leaked instruments despite the a-cappella caption (53-stem lens measured synth -19, bass -19, kick -27, drums -28 dBFS under the voice). Fix in `latin-vocal-clean-take6-tailfix.wav` (34.5 s): RoFormer lead-vocal + vocal layers only (sub-180 Hz now 0.0%, transients 0.2%), canvas-edge cutoff dissolved by fading the dry voice into an unfaded reverb send. Ear-check passed on the ending 2026-06-10 — **this file is the locked T04 voice lead**; it stays dry, spatial treatment is per-placement at mix time |
 
 Stem acceptance (taste owner, 2026-06-10): take-3 demucs isolation approved —
 "normal distortion, fixable with 混音 (mix effects) at mixdown." No xl-base
