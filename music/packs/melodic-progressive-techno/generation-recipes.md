@@ -44,7 +44,11 @@ Reproducibility contract (verified 2026-06-10):
 Taste-owner rule (2026-06-10): when the target is a vocal lead, do not generate
 a full band around it. Caption an a cappella take ("solo female vocal, a
 cappella, minimal atmosphere") with `--lyrics-file` and `--vocal-language`,
-and size `--duration` to the lyric (a 4-line stanza needs ~45-60 s, not 120 s).
+and size `--duration` to the lyric by beat math, not generosity: the model
+fills whatever canvas it gets (measured 2026-06-10 — 50 s a-cappella takes all
+sang wall-to-wall, stretching the lyric). At one strong syllable per beat, a
+4-line 8-syllable stanza is 8 bars and a 2-line hook is 4 bars; at 123 bpm
+that is ~24 s sung plus breath and tail ≈ a 30 s canvas, not 50 and never 120.
 Voice-only takes are cheaper, faster to audition, and need no stem separation —
 the artifact tax disappears when there is no band to peel away. Full-mix vocal
 generation (the T04 take-3 path) remains the fallback when the composer needs

@@ -23,6 +23,21 @@ The taste owner delegated stanza, voice, and length decisions to the agent.
   hook returns at the drop; total vocal share stays inside the grammar's
   ≤ 0.15 lane. Repetition is the arrangement's job, not the lyric's.
 
+## Vocal placement budget (132-bar / 4:18 streaming edit, 2026-06-10)
+
+Taste-owner rule: the voice visits the track, never carries it ("we are NOT
+making a pop song"). Budget: 0.15 × 132 = 19 vocal-active bars, all cut from
+the one locked take. Intro ghost and outro echo are optional garnish only if
+the total stays under budget.
+
+| Placement | Bars | Material |
+| --- | --- | --- |
+| break_1 tease | 2 | chopped "ad auroram" accents, dry |
+| drop_1 accents | 3 | sparse hook chops inside the groove |
+| break_2 verse | 8 | the full stanza, once, intimate |
+| peak hook return | 6 | whole hook, widest treatment |
+| **total** | **19** | **0.14 share — inside the lane** |
+
 ## Reusable generation prompt (the sound-world constant)
 
 Variation comes from seeds only; this caption is the controlled knob. If a
@@ -40,6 +55,25 @@ vocal hook returns, controlled low end, mixable club arrangement
 Metas: bpm 123, keyscale A minor, vocal_language `la`, duration 120 (sketch),
 thinking on (composition mode; takes are one-offs by design — keep the WAV).
 
+## Vocal-lane caption (Recipe 1b, derived 2026-06-10)
+
+Taste-owner directive: take 3's prompt is the asset — reuse it, but regenerate
+voice-only at lyric length ("the generated audio is 2 minutes like 30s voice
+for real"); melody differences across regens are accepted. Derivation: the
+sound-world clauses kept, the band clauses swapped for a cappella. Lyrics are
+`lyrics.la.txt` with the `[inst]` blocks stripped (verse + chorus only).
+
+```
+hypnotic melodic techno, dark and cinematic, ethereal female vocal singing a
+short Latin verse, a cappella, voice only, no drums, no bass, no instruments,
+intimate verse, anthemic vocal hook return, mixable club vocal lead
+```
+
+Metas: bpm 123, keyscale d minor (locked from take 3), vocal_language `la`,
+duration 30 (beat math: 8-bar verse + 4-bar hook + tail at 123 bpm ≈ 28 s;
+the first rolls at 50 s sang wall-to-wall — the model fills the canvas),
+thinking on.
+
 ## Voice rationale
 
 Ethereal female lead: corpus-anchored (the 8Kays & Delhia De France track in
@@ -54,6 +88,12 @@ dark pads + rolling low end.
 | latin-vocal-take2 | 4102 | backup ("2 is good too") — strongest vocal presence, but front-loaded structure |
 | latin-vocal-take3 | 4103 | **keep** — voice gate winner, 2026-06-10 |
 | latin-vocal-xl4b-take1 | 4103 | tier A/B only (4B LM + XL DiT): drifted D major, off-brief; current tier stays default, big tier staged for atmosphere work |
+| latin-vocal-clean-take1 | 4201 | technical flag — 50 s, no confident melodic line above 200 Hz (low drone, not a female vocal); pre-gate analysis, not a taste verdict |
+| latin-vocal-clean-take2 | 4202 | awaiting gate — 50 s (oversized canvas: lyric stretched wall-to-wall), busiest melody D4-G4, ~5 notes/bar |
+| latin-vocal-clean-take3 | 4203 | awaiting gate — 50 s (oversized canvas), sparse anthemic F4/A4, ~3 notes/bar |
+| latin-vocal-clean-take4 | 4204 | passed over at gate (take 6 chosen) — 30 s, melody D4-A4, arrived pre-cut into 15.7 s verse + 11.7 s hook |
+| latin-vocal-clean-take5 | 4205 | passed over at gate (take 6 chosen) — 30 s, melody D4-F4 |
+| latin-vocal-clean-take6 | 4206 | **keep** — voice gate winner 2026-06-10 ("good style"); melody D4-G5, 99% D minor; final note clipped by the canvas edge, rescued with a spliced reverb tail (`latin-vocal-clean-take6-tailfix.wav`, 33.5 s) pending ear-check |
 
 Stem acceptance (taste owner, 2026-06-10): take-3 demucs isolation approved —
 "normal distortion, fixable with 混音 (mix effects) at mixdown." No xl-base

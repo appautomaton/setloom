@@ -1,20 +1,22 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-# T04: vocal-first design. The lead vocal (latin-vocal-take3, "Ad Auroram"
-# verse, D minor, ethereal female) was chosen at the voice gate before any
-# arrangement existed; key and bpm below are measured from that take, not
-# chosen. Two-cycle club form: break_1 teases the hook, break_2 is the main
-# break carrying the full sung verse, peak returns the hook. A ~4:00
-# streaming edit is generated natively later (T02 pattern, never trimmed).
+# T04: vocal-first design. The voice lead ("Ad Auroram" verse, D minor,
+# ethereal female, Recipe 1b voice-only takes) is chosen at the voice gate
+# before any arrangement exists; key and bpm below are measured from the
+# voice, not chosen. Taste-owner target (2026-06-10): ~4:20 total — 132 bars
+# at 123 is 4:18, the phrase grid's closest fit inside the streaming window.
+# Two-cycle form kept at this length: break_1 teases the hook, break_2 is the
+# main break carrying the full sung verse, peak returns the hook. The voice
+# visits the track (vocal share <= 0.15 of bars); never wall-to-wall.
 
 id: T04
 title: ad-auroram
 style_pack: melodic-progressive-techno
-duration_profile: club_extended
+duration_profile: streaming_edit
 seed: 4103
 bpm: 123
 key: D minor
 energy: 7
-duration_bars: 176
+duration_bars: 132
 
 intent:
   summary: "Emotive Latin vocal over dark hypnotic roller: hook tease at drop one, full verse in the main break, anthemic hook return at peak."
@@ -24,14 +26,14 @@ intent:
     - "wall-to-wall vocals; the voice lives in the breaks and drops only"
 
 sections:
-  intro: 16
+  intro: 8
   groove_a: 16
   break_1: 8
   drop_1: 32
   groove_b: 8
-  break_2: 24
-  peak: 40
-  outro: 32
+  break_2: 16
+  peak: 32
+  outro: 12
 
 palette:
   kick: "deep short saturated"
