@@ -2,7 +2,7 @@
 
 # Dossier Guide: Reading `setloom anatomize` Output
 
-One dossier pair per track under `anatomy/_dossiers/` (local-only): `<track>.quick.yml` (full mix), `<track>.stems.yml` (per stem), plus `<track>.bass.mid` (bass transcription, never committed) and a corpus-wide `corpus-summary.yml`.
+One dossier pair per track under `anatomy/_dossiers/` (local-only): `<track>.quick.yml` (full mix), `<track>.stems.yml` (per stem), plus `<track>.bass.mid` (bass transcription, never committed) and a corpus-wide `corpus-summary.yml`. With `--layers`, each track also gets `<track>.layers.yml` and per-layer MIDI (see the layer-lens section below).
 
 ## `<track>.quick.yml` — full-mix pass
 
@@ -26,6 +26,19 @@ One dossier pair per track under `anatomy/_dossiers/` (local-only): `<track>.qui
 | `bass.note_len_16ths_median`, `share_one_step_notes` | 2.0 median = 8th-note pulse; high one-step share = 16th-note movement. |
 | `other.chords_per_2bars`, `harmonic_changes_per_16bars` | Harmony skeleton from the chords/lead/pad stem. Major/minor flips on the same root are usually template flicker; read change *rate*, not exact labels. ≈2/16 bars = static-pedal mode, ≈4–5 = slow-progression mode. |
 | `vocals.active_share`, `active_bar_ranges` | How much, and exactly where, vocal material sits. Short 2–3-bar islands = landmark fragments; large share = vocal collaboration. |
+
+## `<track>.layers.yml` — 53-stem layer lens (opt-in: `anatomize --layers`)
+
+Extracted by the MVSep Mega BS-RoFormer checkpoint into named layers, cached under `anatomy/_stems53/<track>/`. Two contracts to keep straight:
+
+- **Layers are overlapping extractions, not a partition.** The same content can appear in several layers (the synth layer carries the bassline too). Energy-accounting metrics stay on the demucs stems above; layer metrics describe each layer in isolation.
+- **Weights caveat:** the upstream checkpoint's license is unstated. The weights live in gitignored `anatomy/_models/`, are used for local analysis only, and are never committed or redistributed.
+
+| Field | Musical meaning |
+| --- | --- |
+| `kept_layers[]` | Layers above the −40 dBFS keep threshold. The per-track `manifest.yml` in the stems cache lists *all 53* with RMS/activity, so dropped layers are auditable, never silently lost. |
+| `melodic.<layer>.*` | Same note-stats schema as `bass.*`, computed per layer (synth is high-passed at 120 Hz first — it duplicates the bassline). `tonic_candidate` agreement with `bass.tonic_candidate` is a good sanity signal. |
+| `<track>.<layer>.mid` | Transcription per melodic layer. **Monophonic dominant line only** (torchfcpe): chords and overlapping voices collapse to the loudest line. Read riffs and contours, not full voicings. |
 
 ## Confidence limits
 

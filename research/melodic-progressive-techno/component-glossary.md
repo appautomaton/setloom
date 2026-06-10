@@ -39,7 +39,7 @@ One prerequisite term: **timbre** is the character of a sound — what makes two
 
 ## The "other" bucket
 
-Everything in layers 2–3 collapses into one demucs stem. Anatomy currently measures the foundation precisely and the emotional core coarsely; finer decomposition of "other" (by register, pitch tracking, and timbre descriptors) is a named follow-up change.
+Everything in layers 2–3 collapses into one demucs stem for energy accounting. Since the layer lens shipped (`setloom anatomize --layers`, change 2026-06-10-anatomy-layer-lens), the lump is also dissected per track into named layers — synth, keys, kick, snare, hh, toms and more — with per-layer dossiers and melodic MIDI. The lens layers are overlapping extractions (not a partition), so demucs keeps the accounting job; see `dossier-guide.md` for how to read both.
 
 ## Using this in listening notes
 
