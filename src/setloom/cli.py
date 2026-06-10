@@ -113,6 +113,7 @@ def _cmd_anatomize(args: argparse.Namespace) -> int:
         out_dir=Path(args.out),
         stems_dir=Path(args.stems_dir),
         separate=not args.no_separate,
+        layers=args.layers,
     )
     for track, status in statuses.items():
         print(f"{track}: {', '.join(status)}")
@@ -156,6 +157,11 @@ def build_parser() -> argparse.ArgumentParser:
         dest="stems_dir",
         default="anatomy/_stems",
         help="stem cache root (default anatomy/_stems)",
+    )
+    p_anatomize.add_argument(
+        "--layers",
+        action="store_true",
+        help="also run the 53-stem layer lens (downloads ~1.3 GB weights on first use)",
     )
     p_anatomize.add_argument(
         "--no-separate",

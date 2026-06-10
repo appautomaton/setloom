@@ -81,7 +81,9 @@ def separate(
         x = torch.nn.functional.pad(x, (border, border), mode="reflect")
 
     result = torch.zeros((len(names),) + x.shape, dtype=torch.float32)
-    counter = torch.zeros_like(result)
+    # The fade window is identical across stems and channels, so a 1-D counter
+    # suffices — at 53 stems the full-shape counter would waste gigabytes.
+    counter = torch.zeros(x.shape[-1], dtype=torch.float32)
 
     with torch.inference_mode():
         batch: list[torch.Tensor] = []
@@ -107,7 +109,7 @@ def separate(
                     win[-fade_size:] = 1
                 for j, (start, seg) in enumerate(locations):
                     result[..., start : start + seg] += out[j, ..., :seg].cpu() * win[:seg]
-                    counter[..., start : start + seg] += win[:seg]
+                    counter[start : start + seg] += win[:seg]
                 batch.clear()
                 locations.clear()
 

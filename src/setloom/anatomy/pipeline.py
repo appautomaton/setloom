@@ -304,6 +304,7 @@ def collect_audio(target: Path) -> list[Path]:
         for p in target.rglob("*")
         if p.suffix.lower() in AUDIO_SUFFIXES and not p.name.startswith(".")
         and "_stems" not in p.parts and "_dossiers" not in p.parts
+        and "_stems53" not in p.parts and "_models" not in p.parts
     )
 
 
@@ -320,6 +321,9 @@ def run(
     out_dir: Path = DEFAULT_OUT,
     stems_dir: Path = DEFAULT_STEMS,
     separate: bool = True,
+    layers: bool = False,
+    layer_stems_dir: Path = Path("anatomy/_stems53"),
+    models_dir: Path = Path("anatomy/_models"),
 ) -> dict:
     """Run the pipeline over a file or directory. Returns a per-track status map."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -367,6 +371,16 @@ def run(
                 status.append("stempass:analyzed")
             _write_yaml_if_changed(stem_yml, stems)
             rows.append(co.track_row(quick, stems))
+
+        if layers:
+            # Lazy import: the layer lens is torch-heavy and opt-in. Runs after
+            # the stem pass so heavy models never overlap (unified-memory rule).
+            from setloom.anatomy import layers as layer_lens
+
+            grid_l = Grid(quick["bpm_estimate"], quick["first_beat_s"], quick["bars_estimated"])
+            status += layer_lens.layer_pass(
+                audio, track, grid_l, out_dir, layer_stems_dir, models_dir
+            )
 
         _write_yaml_if_changed(quick_path, quick)
         statuses[track] = status
