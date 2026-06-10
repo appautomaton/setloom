@@ -33,7 +33,7 @@ _RELEASE = (
 CONFIG_URL = f"{_RELEASE}/mvsep_mega_model_bs_roformer_53_stems.yaml"
 CKPT_URL = f"{_RELEASE}/mvsep_mega_model_bs_roformer_53_stems_v1.ckpt"
 
-DEFAULT_MODELS = Path("anatomy/_models")
+DEFAULT_MODELS = Path("models/roformer")
 DEFAULT_LAYER_STEMS = Path("anatomy/_stems53")
 
 KEEP_RMS_DBFS = -40.0  # calibrated on Magma: keeps real layers, drops orchestral bleed

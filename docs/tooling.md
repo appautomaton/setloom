@@ -45,6 +45,7 @@ Model weights live in the gitignored project store:
 | ACE-Step weights | `models/acestep/` | `ACESTEP_CHECKPOINTS_DIR` |
 | Magenta RT weights | `models/magenta/` | `MAGENTA_HOME` |
 | Hugging Face hub cache | `models/hf/` | `HF_HUB_CACHE` |
+| 53-stem BS-RoFormer weights | `models/roformer/` | `anatomize --layers` code default |
 
 Never override `HF_HOME`: it holds the user's Hugging Face login token. Route caches with `HF_HUB_CACHE` only.
 

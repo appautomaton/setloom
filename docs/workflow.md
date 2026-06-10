@@ -47,11 +47,12 @@ Current layout:
 ```text
 examples/tracks/TNN/spec.yml            # committed track specs and listening notes
 candidates/                             # generated MIDI/audio candidates (gitignored)
+releases/TNN/                           # frozen release packages: master, artwork, upload notes (gitignored)
 anatomy/<artist>/                       # local reference audio (gitignored)
 anatomy/_dossiers/<track>.quick.yml     # anatomize dossiers (.quick/.stems/.layers/.score)
 anatomy/_stems/                         # stem separation cache
 anatomy/_candidates/                    # genai candidates; never enter the corpus summary
-models/                                 # generation model weights (gitignored)
+models/                                 # model weights: generation and separation (gitignored)
 ```
 
 The fuller `tracks/`–`renders/`–`reports/`–`sets/` layout remains the Spec 7-era target; `examples/tracks/` already follows its spec-plus-notes shape.

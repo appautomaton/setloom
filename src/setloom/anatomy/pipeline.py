@@ -304,7 +304,7 @@ def collect_audio(target: Path) -> list[Path]:
         for p in target.rglob("*")
         if p.suffix.lower() in AUDIO_SUFFIXES and not p.name.startswith(".")
         and "_stems" not in p.parts and "_dossiers" not in p.parts
-        and "_stems53" not in p.parts and "_models" not in p.parts
+        and "_stems53" not in p.parts
         and "_candidates" not in p.parts
     )
 
@@ -333,7 +333,7 @@ def run(
     separate: bool = True,
     layers: bool = False,
     layer_stems_dir: Path = Path("anatomy/_stems53"),
-    models_dir: Path = Path("anatomy/_models"),
+    models_dir: Path = Path("models/roformer"),
     summary: bool = True,
 ) -> dict:
     """Run the pipeline over a file or directory. Returns a per-track status map."""

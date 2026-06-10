@@ -32,7 +32,7 @@ One dossier pair per track under `anatomy/_dossiers/` (local-only): `<track>.qui
 Extracted by the MVSep Mega BS-RoFormer checkpoint into named layers, cached under `anatomy/_stems53/<track>/`. Two contracts to keep straight:
 
 - **Layers are overlapping extractions, not a partition.** The same content can appear in several layers (the synth layer carries the bassline too). Energy-accounting metrics stay on the demucs stems above; layer metrics describe each layer in isolation.
-- **Weights caveat:** the upstream checkpoint's license is unstated. The weights live in gitignored `anatomy/_models/`, are used for local analysis only, and are never committed or redistributed.
+- **Weights caveat:** the upstream checkpoint's license is unstated. The weights live in the gitignored model store at `models/roformer/`, are used for local analysis only, and are never committed or redistributed.
 
 | Field | Musical meaning |
 | --- | --- |

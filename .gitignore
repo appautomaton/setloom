@@ -12,7 +12,10 @@ __pycache__/
 .mypy_cache/
 .venv/
 
-candidates/
+/candidates/
+
+# Frozen release packages: masters, artwork, upload notes. Local only.
+/releases/
 
 node_modules/
 dist/
@@ -28,7 +31,7 @@ cache/
 # Root-anchored: src/setloom/anatomy/ is code and must stay tracked.
 /anatomy/
 
-# Project model store: generation weights (HF_HUB_CACHE target). Never committed.
+# Project model store: generation and separation weights (HF_HUB_CACHE target). Never committed.
 /models/
 
 # Read-only reference clones of upstream projects; local working aid only.
