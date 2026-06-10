@@ -22,6 +22,10 @@ dependencies = [
 setloom = "setloom.cli:run"
 
 [dependency-groups]
+anatomy = [
+    "demucs>=4.0.1",
+    "essentia==2.1b6.dev1389",
+]
 dev = [
     "pytest>=8.0",
     "ruff>=0.4",
