@@ -6,7 +6,12 @@
 track_id: T03
 take: proving-run excerpt audition — acestep-t03-seed3001 (genai) vs seed-3001/variant-02 (deterministic)
 date: 2026-06-10
-decision: pending
+decision: retired
+
+verdicts:
+  acestep-t03-seed3001: "reject — competent but a mood miss: reads tropical/playful against the dark hypnotic brief (LM caption drift made audible; taste owner: 'more tropical lol')."
+  seed-3001-variant-02: "parked — groove skeleton kept as raw material; no emotional verdict was requested or given."
+  disposition: "T03 retires as the loop-proving track, superseded by T04's vocal-first direction. It did its job: surfaced the discarded-seed bug (fixed), LM caption drift (documented in generation-recipes), and the vocal_share scorer bug (fix filed)."
 
 clips:
   - clip: "genai post-break re-entry, 2:30-2:58 of anatomy/_candidates/acestep-t03-seed3001.wav"
