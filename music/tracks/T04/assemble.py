@@ -122,15 +122,15 @@ PIECE_DEFS = {
 # Placements: (piece, bar, gain). Budget per vocal-brief: break_1 tease 2 /
 # drop_1 accents 3 / break_2 verse 8 / peak hook 6 vocal-active bars.
 PLACEMENTS = [
-    ("tease", 28.0, 1.00),
+    ("tease", 28.0, 0.87),
     ("chop", 40.0, 5.70),
     ("chop", 56.0, 5.70),
     ("fullverse", 74.0, 1.25),  # the whole stanza, once, intimate; dissolve
                                 # tail rings across the bar-88 peak downbeat
     ("hook1", 96.0, 3.90),
-    ("hook2", 98.0, 3.90),
+    ("hook2", 98.0, 2.95),
     ("hook1", 104.0, 3.90),
-    ("hook2", 106.0, 3.90),
+    ("hook2", 106.0, 2.95),
 ]
 VOICE_PRE_ROLL_S = 0.15  # sung onset lands on the bar tick
 
