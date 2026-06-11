@@ -105,13 +105,13 @@ PAD_EDGE_FADE_BARS = 1.0
 BODY_EQ = ["equalizer", "280", "1q", "+3", "equalizer", "3000", "1.2q", "+2.5",
            "equalizer", "4000", "1q", "+1.5"]
 PIECE_DEFS = {
-    "tease":  (4.52, 4.60, ["gain", "-5", "highpass", "200", "pad", "0", "3",
-                            "reverb", "45", "50", "100", "15", "gain", "-2"]),
+    "tease":  (4.52, 6.50, ["gain", "-5", *BODY_EQ, "pad", "0", "2",
+                            "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
     "fullverse": (4.52, 29.98, ["gain", "-5", *BODY_EQ, "pad", "0", "2",
                                 "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
     "chop":   (18.73, 1.10, ["gain", "-5", "highpass", "350", "pad", "0", "3",
                              "echo", "0.7", "0.6", "366", "0.5", "732", "0.3", "gain", "-3"]),
-    "hook1":  (23.19, 3.26, ["gain", "-5", *BODY_EQ, "pad", "0", "3",
+    "hook1":  (23.19, 4.00, ["gain", "-5", *BODY_EQ, "pad", "0", "3",
                              "echo", "0.8", "0.5", "366", "0.35", "732", "0.18",
                              "reverb", "55", "40", "100", "20"]),
     "hook2":  (27.13, 7.37, ["gain", "-5", *BODY_EQ, "pad", "0", "3",
@@ -122,7 +122,7 @@ PIECE_DEFS = {
 # Placements: (piece, bar, gain). Budget per vocal-brief: break_1 tease 2 /
 # drop_1 accents 3 / break_2 verse 8 / peak hook 6 vocal-active bars.
 PLACEMENTS = [
-    ("tease", 28.0, 1.60),
+    ("tease", 28.0, 1.00),
     ("chop", 40.0, 5.70),
     ("chop", 56.0, 5.70),
     ("fullverse", 74.0, 1.25),  # the whole stanza, once, intimate; dissolve
@@ -138,7 +138,7 @@ VOICE_PRE_ROLL_S = 0.15  # sung onset lands on the bar tick
 # ride down while kick/bass keep the groove. Depth/length per piece kind.
 DUCK_LANES = ("chords", "arp", "pad")
 DUCK_BY_PIECE = {  # piece -> (depth dB, window bars)
-    "tease": (-4.0, 2.4),
+    "tease": (-4.5, 3.4),
     "chop": (-2.5, 1.5),
     "fullverse": (-5.0, 14.0),
     "hook1": (-5.0, 1.7), "hook2": (-5.0, 4.0),
@@ -193,8 +193,9 @@ def cut_voice_pieces() -> None:
     PIECES.mkdir(parents=True, exist_ok=True)
     for name, (start, length, chain) in PIECE_DEFS.items():
         out = PIECES / f"{name}.wav"
+        fade_out = "0.06" if name == "chop" else "1.2"
         cmd = ["sox", str(VOICE), str(out), "trim", f"{start}", f"{length}",
-               "fade", "t", "0.03", "0", "0.06", *chain]
+               "fade", "t", "0.03", "0", fade_out, *chain]
         subprocess.run(cmd, check=True, capture_output=True, text=True)
 
 
