@@ -41,8 +41,7 @@ palette:
   drums: "tight hats, restrained percussion, phrase-aware fills"
   chords: "minor stabs with controlled reverb"
   pad: "dark evolving analog atmosphere"
-  lead: "vocal-derived motif, emotive and sparse"
-  vocal: "ethereal female Latin verse, anthemic lift, hook chops"
+  vocal: "ethereal female Latin verse — THE lead; instruments stay supporting"
   fx: "noise risers, impacts, reverse swells"
 
 style_vector:
@@ -63,7 +62,6 @@ render_targets:
     - bass
     - chords
     - arp
-    - lead
     - counterline
     - fills
     - pad
@@ -76,7 +74,6 @@ render_targets:
     - drums
     - chords
     - pad
-    - lead
     - vocal
     - fx
   demo_mix: true
