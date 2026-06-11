@@ -46,9 +46,9 @@ STEM_GAINS = {
     "kick": 1.00,
     "bass": 0.50,
     "perc": 3.00,
-    "chords": 1.60,
-    "arp": 0.90,
-    "pad": 0.55,  # engine pad: conductor-harmony glue, all sections
+    "chords": 1.30,
+    "arp": 0.70,
+    "pad": 0.45,  # engine pad: conductor-harmony glue, all sections
     "fx": 1.00,
 }
 
@@ -92,21 +92,24 @@ PLACEMENTS = [
     ("chop", 40.0, 3.20),
     ("chop", 48.0, 3.20),
     ("chop", 56.0, 3.20),
-    ("verse1", 76.0, 0.78),
-    ("verse2", 79.0, 0.78),
-    ("verse3", 83.0, 0.78),
-    ("hook1", 96.0, 2.60),
-    ("hook2", 98.0, 2.60),
-    ("hook1", 104.0, 2.60),
-    ("hook2", 106.0, 2.60),
+    ("verse1", 76.0, 0.70),
+    ("verse2", 79.0, 0.70),
+    ("verse3", 83.0, 0.70),
+    ("hook1", 96.0, 2.20),
+    ("hook2", 98.0, 2.20),
+    ("hook1", 104.0, 2.20),
+    ("hook2", 106.0, 2.20),
 ]
 VOICE_PRE_ROLL_S = 0.15  # sung onset lands on the bar tick
 
-# Mix automation: open a mid-range window for the drop chops by riding the
-# harmonic lanes down while kick/bass keep the groove.
-DUCK_LANES = ("chords", "arp")
-DUCK_DB = -2.5
-DUCK_BARS = 1.5  # duck window per chop, half-bar smooth edges
+# Mix automation: every vocal placement opens a window — the harmonic lanes
+# ride down while kick/bass keep the groove. Depth/length per piece kind.
+DUCK_LANES = ("chords", "arp", "pad")
+DUCK_BY_PIECE = {  # piece -> (depth dB, window bars)
+    "chop": (-2.5, 1.5),
+    "verse1": (-3.5, 2.4), "verse2": (-3.5, 3.4), "verse3": (-3.5, 2.0),
+    "hook1": (-3.5, 1.7), "hook2": (-3.5, 4.0),
+}
 
 
 def bar_to_sample(bar: float) -> int:
@@ -163,18 +166,19 @@ def cut_voice_pieces() -> None:
 
 
 def duck_envelope(length: int) -> np.ndarray:
-    """Gain envelope dipping to DUCK_DB over each chop placement window."""
+    """Gain envelope dipping under each vocal placement window."""
     env = np.ones(length)
-    dip = 10 ** (DUCK_DB / 20)
     edge = bar_to_sample(0.5)
     for piece, bar, _gain in PLACEMENTS:
-        if piece != "chop":
+        if piece not in DUCK_BY_PIECE:
             continue
+        depth_db, bars = DUCK_BY_PIECE[piece]
+        dip = 10 ** (depth_db / 20)
         s0 = bar_to_sample(bar) - int(VOICE_PRE_ROLL_S * SR)
-        s1 = s0 + bar_to_sample(DUCK_BARS)
-        env[s0:s1] = dip
-        env[s0 - edge : s0] = np.linspace(1, dip, edge)
-        env[s1 : s1 + edge] = np.linspace(dip, 1, edge)
+        s1 = s0 + bar_to_sample(bars)
+        env[s0:s1] = np.minimum(env[s0:s1], dip)
+        env[s0 - edge : s0] = np.minimum(env[s0 - edge : s0], np.linspace(1, dip, edge))
+        env[s1 : s1 + edge] = np.minimum(env[s1 : s1 + edge], np.linspace(dip, 1, edge))
     return env
 
 
@@ -200,6 +204,7 @@ def main() -> int:
         bed = crossfade_loop(pads[asset], s1 - s0, offset=i * 7 * SR % len(pads[asset]))
         bed = highpass(bed, PAD_HPF_HZ)
         bed = edge_fades(bed, PAD_EDGE_FADE_BARS)
+        bed *= duck[s0:s1, None]
         mix[s0:s1] += bed * gain
 
     for piece, bar, gain in PLACEMENTS:
@@ -218,13 +223,15 @@ def main() -> int:
     return 0
 
 
-# Club master: glue compression, then a 4x-oversampled limiter so true peak
-# stays under -0.9 dBFS at corpus loudness (-8.9 LUFS integrated, LRA ~11).
+# Club master: glue compression, then a 4x-oversampled limiter. Drive is kept
+# moderate on purpose: the corpus-loud version (level_in 15.5dB, -8.9 LUFS)
+# flattened section contrast to 1 dB and buried the voice — taste-owner
+# rejected. Contrast preserved beats loudness matched.
 # alimiter's auto-`level` must stay disabled or it re-normalizes to 0 dBFS.
 MASTER_CHAIN = (
     "acompressor=threshold=-18dB:ratio=2:attack=20:release=250:makeup=4dB,"
     "aresample=176400,"
-    "alimiter=level_in=15.5dB:limit=0.871:attack=5:release=100:level=disabled,"
+    "alimiter=level_in=8dB:limit=0.871:attack=5:release=100:level=disabled,"
     "aresample=44100"
 )
 
