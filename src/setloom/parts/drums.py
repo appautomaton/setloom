@@ -53,6 +53,24 @@ PERC_PATTERNS = (
 )
 
 
+def _track_drums_plan(spec: TrackSpec):
+    groove = getattr(spec, "groove", None)
+    if groove is None or groove.drums is None:
+        return None
+    return groove.drums
+
+
+def _custom_perc_patterns(spec: TrackSpec):
+    plan = _track_drums_plan(spec)
+    if plan is None or not plan.percussion_patterns:
+        return None
+    return tuple(
+        tuple(tuple(int(step) for step in bar) for bar in pattern)
+        for pattern in plan.percussion_patterns
+        if pattern
+    )
+
+
 class DrumsGenerator:
     name = "drums"
 
@@ -60,7 +78,11 @@ class DrumsGenerator:
         self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
     ) -> list[NoteEvent]:
         vocab = groove_vocabulary(pack) or {}
-        phrase_bars = vocab.get("phrase_bars", 8)
+        plan = _track_drums_plan(spec)
+        phrase_bars = (plan.phrase_bars if plan and plan.phrase_bars else None) or vocab.get(
+            "phrase_bars", 8
+        )
+        perc_patterns = _custom_perc_patterns(spec) or PERC_PATTERNS
         drums_vocab = vocab.get("drums", {})
         phrase_end_vocab = drums_vocab.get("phrase_end", {})
         hat_breath = bool(phrase_end_vocab.get("groove_hat_breath"))
@@ -81,7 +103,7 @@ class DrumsGenerator:
                 else set()
             )
             # Exactly one rng draw per section keeps draw counts structural.
-            pattern = rng.choice(PERC_PATTERNS)
+            pattern = rng.choice(perc_patterns)
             for bar_in_section in range(bars):
                 bar = start_bar + bar_in_section
                 phrase_end = bar_in_section % phrase_bars == phrase_bars - 1
@@ -136,6 +158,8 @@ class DrumsGenerator:
                                 )
                             )
                 for step in pattern[bar_in_section % len(pattern)]:
+                    if step % 4 == 0:
+                        continue
                     tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
                     events.append(
                         NoteEvent(DRUM_CHANNEL, PERC, PERC_VELOCITY, tick, SIXTEENTH_TICKS)

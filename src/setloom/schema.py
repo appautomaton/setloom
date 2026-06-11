@@ -53,6 +53,86 @@ class HumanGate(BaseModel):
     required: bool = True
 
 
+class BassGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-bass"
+    phrase_bars: int = Field(default=8, gt=0)
+    velocity_swell_per_bar: int = Field(default=0, ge=0)
+    bars: list[list[tuple[int, int, int]]]
+    phrase_end_bar: list[tuple[int, int, int]] | None = None
+    neighbor_steps: list[int] = Field(default_factory=list)
+    neighbor_interval: int = -2
+    first_phrase_tonic: bool = True
+
+    @model_validator(mode="after")
+    def _bass_steps_are_safe(self) -> "BassGroovePlan":
+        if not self.bars:
+            raise ValueError("bass groove requires at least one bar")
+
+        def validate_note(name: str, note: tuple[int, int, int]) -> None:
+            step, velocity, length = note
+            if not 0 <= step < 16:
+                raise ValueError(f"{name} step {step} must be in the 0..15 sixteenth grid")
+            if step % 4 == 0:
+                raise ValueError(f"{name} step {step} is on a beat tick reserved for kick space")
+            if not 1 <= velocity <= 127:
+                raise ValueError(f"{name} velocity {velocity} must be in 1..127")
+            if length <= 0:
+                raise ValueError(f"{name} length {length} must be positive")
+
+        for bar_index, bar in enumerate(self.bars):
+            if not bar:
+                raise ValueError(f"bass bars[{bar_index}] must contain at least one note")
+            for note in bar:
+                validate_note(f"bass bars[{bar_index}]", note)
+        for note in self.phrase_end_bar or []:
+            validate_note("bass phrase_end_bar", note)
+        for step in self.neighbor_steps:
+            if not 0 <= step < 16:
+                raise ValueError(f"bass neighbor step {step} must be in the 0..15 sixteenth grid")
+            if step % 4 == 0:
+                raise ValueError(
+                    f"bass neighbor step {step} is on a beat tick reserved for kick space"
+                )
+        return self
+
+
+class DrumsGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-drums"
+    phrase_bars: int | None = Field(default=None, gt=0)
+    percussion_patterns: list[list[list[int]]] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _percussion_steps_are_safe(self) -> "DrumsGroovePlan":
+        for pattern_index, pattern in enumerate(self.percussion_patterns):
+            if not pattern:
+                raise ValueError(f"percussion pattern {pattern_index} must contain at least one bar")
+            for bar_index, bar in enumerate(pattern):
+                for step in bar:
+                    if not 0 <= step < 16:
+                        raise ValueError(
+                            f"percussion pattern {pattern_index} bar {bar_index} step {step} "
+                            "must be in the 0..15 sixteenth grid"
+                        )
+                    if step % 4 == 0:
+                        raise ValueError(
+                            f"percussion pattern {pattern_index} bar {bar_index} step {step} "
+                            "is on a beat tick reserved for kick space"
+                        )
+        return self
+
+
+class GroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    summary: str = ""
+    bass: BassGroovePlan | None = None
+    drums: DrumsGroovePlan | None = None
+
+
 class TrackSpec(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -69,6 +149,7 @@ class TrackSpec(BaseModel):
     sections: dict[str, int]
     palette: dict[str, str]
     style_vector: StyleVector
+    groove: GroovePlan | None = None
     render_targets: RenderTargets
     human_gate: HumanGate
 

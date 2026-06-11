@@ -10,6 +10,12 @@ Executable style packs live under `music/packs/`. This document explains the fir
 
 Today the generators and the rejection gate consume only part of the pack: `generation_defaults.bpm_range`, `generation_defaults.duration_profiles`, and `rejection_rules`. The remaining sections carry review vocabulary and target constraints that are not yet machine-enforced.
 
+Style packs are not per-song arrangement plans. Reference-derived metrics such
+as bass occupancy, phrase grid, and low-end safety constrain candidates, but a
+track's `spec.yml` owns its specific groove/generator choices. When a track
+needs a distinct drum or bass identity, encode that as a track-level groove
+plan instead of stretching one style-pack cell across every song.
+
 ## Starting Style Pack
 
 ```text
@@ -96,6 +102,12 @@ Melodic/progressive techno generation should be driven by a shared conductor, no
 - `SpacePlan`: which section owns foreground, motion, bed, and shared ambience.
 
 Part generators should read this shared state. Chords, lead, counterline, arp, drums, FX, and tonal bass support should not each invent their own phrase logic. The sub/rumble lane is the exception: it must stay pedal-safe and mono-stable while higher bass or tonal support carries harmonic movement. A candidate with impressive sound design but no shared conductor tends to collapse into tech-minimal: strong groove, weak melodic identity.
+
+Track-specific groove plans are the bridge between corpus grammar and actual
+composition. They may customize bass cells, percussion phrase patterns, and
+section-level variation while preserving kick/bass separation and sidechain
+space. A generator should reject unsafe timing, not erase a track's identity by
+falling back to the same global loop.
 
 ## Review Vocabulary
 

@@ -15,6 +15,7 @@ from setloom.parts.bass import (
     HIGH_PRESSURE_WEIGHTS,
     LOW_PRESSURE_WEIGHTS,
     articulation_weights,
+    bass_generation_label,
     select_articulation_profile,
 )
 from setloom.parts.clap_ride import CLAP, RIDE
@@ -24,6 +25,8 @@ from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T01 = Path(__file__).resolve().parent / "fixtures" / "spec-t01.yml"
+T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
+T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
 
 KICK = 36
 
@@ -47,6 +50,11 @@ def _events(spec, part: str, seed: int | None = None, variant: int = 0):
     return ALL_PARTS[part].generate(spec, rng)
 
 
+def _events_with_pack(spec, part: str, pack, seed: int | None = None, variant: int = 1):
+    rng = part_rng(spec.seed if seed is None else seed, variant, part)
+    return ALL_PARTS[part].generate(spec, rng, pack=pack)
+
+
 def _kick_onsets(spec) -> set[int]:
     return {e.start_tick for e in _events(spec, "drums") if e.note == KICK}
 
@@ -58,6 +66,15 @@ def _vector_spec(spec, updates: dict[str, int]):
     return spec.model_copy(
         update={"style_vector": spec.style_vector.model_copy(update=updates)}
     )
+
+
+def _bar_signatures(events) -> set[tuple[tuple[int, int, int, int], ...]]:
+    by_bar: dict[int, list[tuple[int, int, int, int]]] = {}
+    for event in events:
+        bar, offset = divmod(event.start_tick, midi.TICKS_PER_BAR)
+        step = offset // midi.SIXTEENTH_TICKS
+        by_bar.setdefault(bar, []).append((step, event.note, event.duration_ticks, event.velocity))
+    return {tuple(sorted(rows)) for rows in by_bar.values()}
 
 
 def test_all_parts_registered_and_nonempty(spec) -> None:
@@ -199,8 +216,8 @@ def test_fills_only_in_final_two_bars_of_sections(spec) -> None:
             )
 
 
-def test_perc_pattern_repeats_within_section(spec) -> None:
-    """Percussion uses one repeating 2/4/8-bar pattern per section, off beat ticks."""
+def test_perc_pattern_keeps_kick_lane_clear(spec) -> None:
+    """Percussion may vary by track, but it must stay off beat ticks."""
     perc_steps_by_bar: dict[int, set[int]] = {}
     for event in _events(spec, "drums"):
         if event.note != PERC:
@@ -208,12 +225,7 @@ def test_perc_pattern_repeats_within_section(spec) -> None:
         assert event.start_tick % midi.PPQ != 0, f"perc on a beat tick: {event}"
         bar, offset = divmod(event.start_tick, midi.TICKS_PER_BAR)
         perc_steps_by_bar.setdefault(bar, set()).add(offset // midi.SIXTEENTH_TICKS)
-    for section, (start_bar, bars) in midi.section_layout(spec).items():
-        for bar_in_section in range(bars - 8):
-            bar = start_bar + bar_in_section
-            assert perc_steps_by_bar.get(bar, set()) == perc_steps_by_bar.get(bar + 8, set()), (
-                f"{section}: perc pattern not repeating between bars {bar} and {bar + 8}"
-            )
+    assert perc_steps_by_bar
 
 
 def test_chords_follow_a_progression_in_drops(spec) -> None:
@@ -498,9 +510,57 @@ def pack():
     return load_style_pack("melodic-progressive-techno", root=REPO_ROOT)
 
 
+@pytest.fixture(scope="module")
+def t02_spec():
+    return load_spec(T02)
+
+
+@pytest.fixture(scope="module")
+def t04_spec():
+    return load_spec(T04)
+
+
 def _bar_events(events, bar):
     lo, hi = midi.bar_to_tick(bar), midi.bar_to_tick(bar + 1)
     return [e for e in events if lo <= e.start_tick < hi]
+
+
+def test_track_specific_bass_plan_is_reported(t04_spec, pack):
+    label = bass_generation_label(t04_spec, part_rng(t04_spec.seed, 1, "bass"), pack)
+    assert label == "track:t04-vocal-answer-roller"
+
+
+def test_t04_bass_generation_not_t02_template(t02_spec, t04_spec, pack):
+    """T04 must not silently reuse the same generated bass cell set as T02."""
+    t02 = _events_with_pack(t02_spec, "bass", pack, variant=1)
+    t04 = _events_with_pack(t04_spec, "bass", pack, variant=1)
+    assert _bar_signatures(t04) != _bar_signatures(t02)
+
+
+def test_track_bass_plan_can_override_first_phrase_tonic_rule(t04_spec, pack):
+    bass = _events_with_pack(t04_spec, "bass", pack, variant=1)
+    tonic = root_note(t04_spec.key, 2) % 12
+    layout = midi.section_layout(t04_spec)
+    start_bar, _ = layout["groove_a"]
+    first_phrase = [
+        e
+        for e in bass
+        if midi.bar_to_tick(start_bar) <= e.start_tick < midi.bar_to_tick(start_bar + 8)
+    ]
+    assert any(e.note % 12 != tonic for e in first_phrase)
+
+
+def test_track_drum_plan_breaks_eight_bar_copy_loop(t04_spec, pack):
+    drums = _events_with_pack(t04_spec, "drums", pack, variant=1)
+    layout = midi.section_layout(t04_spec)
+    start_bar, _ = layout["drop_1"]
+    bar_0 = {e.start_tick % midi.TICKS_PER_BAR for e in _bar_events(drums, start_bar) if e.note == PERC}
+    bar_8 = {
+        e.start_tick % midi.TICKS_PER_BAR
+        for e in _bar_events(drums, start_bar + 8)
+        if e.note == PERC
+    }
+    assert bar_0 != bar_8
 
 
 def test_vocab_bass_keeps_alignment_invariants(spec, pack):

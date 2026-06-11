@@ -21,6 +21,8 @@ Setloom is an open-source, keyboard-first tool and agentic harness for generatin
 ## Musical Rules
 
 - GenAI owns melody, motif, atmosphere, and variation; deterministic systems own groove, kick, bass, timing, structure, and low-end safety.
+- Style packs provide grammar, constraints, and review vocabulary; each track spec owns song-specific groove/generator choices. Do not claim a bespoke groove unless `spec.yml` or the generator path actually differs for that track.
+- Reference anatomy is evidence, not a loop library. Convert it into constraints and track-level plans, never into one global kick/bass template reused across songs.
 - Nothing is final without the human listening gate; scores are technical distance, never the taste verdict.
 - Never imitate named artists; references exist to extract grammar and review vocabulary.
 - Favor club-functional arrangements: mixable edges, clear phrase structure, controlled low end, long-form energy flow.
@@ -37,7 +39,9 @@ Setloom is an open-source, keyboard-first tool and agentic harness for generatin
 
 - Models join the one `uv` env via dependency groups (`anatomy`, `genai`); never per-model virtualenvs. `.references/` clones are read-only.
 - Weights live in gitignored `models/`; never commit audio, MIDI, weights, or proprietary samples. Never override `HF_HOME` — it holds the user's Hugging Face login.
-- Serialize heavy ML jobs — separation, generation, transcription — one at a time.
+- GPU use is allowed when it materially improves analysis or generation, but serialize heavy ML jobs — separation, generation, transcription, and GPU rendering — one at a time.
+- Stage disposable ML/render scratch in `/tmp` or another temp root, then clean it after use; retain only named candidate artifacts in `local/candidates/`.
+- Keep unified-memory headroom during heavy jobs and avoid workflows likely to approach the 80-90 GB danger zone on this machine.
 - Committed configs pin stock PyPI `torch`; machine-tuned wheels stay local behind capability checks.
 - Genai candidates land in `local/candidates/genai/` and never enter the corpus summary.
 

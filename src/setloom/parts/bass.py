@@ -28,7 +28,7 @@ from setloom.midi import (
     beat_to_tick,
     section_layout,
 )
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from setloom.schema import StyleVector, TrackSpec
 
@@ -138,33 +138,60 @@ def _clamped_duration(tick: int, length_16ths: int) -> int:
     return min(length_16ths * SIXTEENTH_TICKS, to_next_beat) - SIDECHAIN_GAP_TICKS
 
 
+def _cell_value(cell: Any, key: str, default: Any = None) -> Any:
+    if isinstance(cell, dict):
+        return cell.get(key, default)
+    return getattr(cell, key, default)
+
+
+def _track_bass_plan(spec: TrackSpec) -> Any | None:
+    groove = getattr(spec, "groove", None)
+    if groove is None or groove.bass is None:
+        return None
+    return groove.bass
+
+
+def bass_generation_label(
+    spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+) -> str:
+    """Human-readable bass source used in candidate reports."""
+    plan = _track_bass_plan(spec)
+    if plan is not None:
+        return f"track:{plan.label}"
+    return select_articulation_profile(spec, rng)
+
+
 def _vocab_bar(
     root: int,
     bar: int,
     bar_in_section: int,
-    cell: dict,
+    cell: Any,
     phrase_bars: int,
     swell: int,
+    neighbor_interval: int,
+    first_phrase_tonic: bool,
 ) -> list[NoteEvent]:
     """One bar from a pack vocabulary cell. The engine enforces alignment
     (off-beat-tick onsets, sidechain-gapped durations, pure tonic in a
     section's first phrase); the cell supplies the pattern content."""
     bar_in_phrase = bar_in_section % phrase_bars
     phrase_end = bar_in_phrase == phrase_bars - 1
-    if phrase_end and cell.get("phrase_end_bar"):
-        steps = cell["phrase_end_bar"]
+    phrase_end_bar = _cell_value(cell, "phrase_end_bar")
+    if phrase_end and phrase_end_bar:
+        steps = phrase_end_bar
     else:
-        cell_bars = cell["bars"]
+        cell_bars = _cell_value(cell, "bars")
         steps = cell_bars[bar_in_section % len(cell_bars)]
-    neighbor_steps = set(cell.get("neighbor_steps", ()))
+    neighbor_steps = set(_cell_value(cell, "neighbor_steps", ()))
     second_phrase_on = bar_in_section >= phrase_bars
     events = []
     for step, velocity, length in steps:
         if step % 4 == 0:
             continue  # invariant: never on a beat tick (kick territory)
         note = root
-        if phrase_end and second_phrase_on and step in neighbor_steps:
-            note = root + NEIGHBOR_INTERVAL
+        neighbor_allowed = (not first_phrase_tonic) or second_phrase_on
+        if phrase_end and neighbor_allowed and step in neighbor_steps:
+            note = root + neighbor_interval
         tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
         vel = min(127, velocity + swell * bar_in_phrase)
         events.append(NoteEvent(1, note, vel, tick, _clamped_duration(tick, length)))
@@ -181,9 +208,19 @@ class BassGenerator:
         profile = select_articulation_profile(spec, rng)
         root = root_note(spec.key, BASS_OCTAVE)
         vocab = groove_vocabulary(pack)
-        cell = (vocab or {}).get("bass_cells", {}).get(profile)
-        phrase_bars = (vocab or {}).get("phrase_bars", 8)
-        swell = (vocab or {}).get("velocity_swell_per_bar", 0)
+        track_plan = _track_bass_plan(spec)
+        if track_plan is not None:
+            cell = track_plan
+            phrase_bars = track_plan.phrase_bars
+            swell = track_plan.velocity_swell_per_bar
+            neighbor_interval = track_plan.neighbor_interval
+            first_phrase_tonic = track_plan.first_phrase_tonic
+        else:
+            cell = (vocab or {}).get("bass_cells", {}).get(profile)
+            phrase_bars = (vocab or {}).get("phrase_bars", 8)
+            swell = (vocab or {}).get("velocity_swell_per_bar", 0)
+            neighbor_interval = NEIGHBOR_INTERVAL
+            first_phrase_tonic = True
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():
             if not section.startswith(("groove", "drop", "peak")):
@@ -192,7 +229,16 @@ class BassGenerator:
                 bar = start_bar + bar_in_section
                 if cell:
                     events.extend(
-                        _vocab_bar(root, bar, bar_in_section, cell, phrase_bars, swell)
+                        _vocab_bar(
+                            root,
+                            bar,
+                            bar_in_section,
+                            cell,
+                            phrase_bars,
+                            swell,
+                            neighbor_interval,
+                            first_phrase_tonic,
+                        )
                     )
                 elif profile == "rolling_16th_sub":
                     events.extend(_rolling_bar(root, bar))

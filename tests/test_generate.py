@@ -11,6 +11,7 @@ from setloom.parts.base import parse_key, root_note
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T01 = Path(__file__).resolve().parent / "fixtures" / "spec-t01.yml"
+T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
 GATE_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "gate-bpm-138.yml"
 PARTS = (
     "drums",
@@ -111,6 +112,15 @@ def test_report_carries_human_gate_notice(tmp_path: Path) -> None:
     report = (tmp_path / "T01" / "seed-1001" / "report.md").read_text(encoding="utf-8")
     assert "human listening notes" in report
     assert "keep" in report and "revise" in report and "reject" in report
+
+
+def test_t04_report_names_track_specific_bass_source(tmp_path: Path) -> None:
+    assert (
+        cli.main(["generate", str(T04), "--variants", "1", "--seed", "4103", "--out", str(tmp_path)])
+        == 0
+    )
+    report = (tmp_path / "T04" / "seed-4103" / "report.md").read_text(encoding="utf-8")
+    assert "bass articulation: track:t04-vocal-answer-roller" in report
 
 
 # --- parse_key coverage (Slice 3 quality-review fold-in) ---

@@ -8,6 +8,11 @@ Setloom uses an agentic co-production loop.
 spec -> candidates (deterministic MIDI or genai audio) -> render/separate -> anatomize -> score -> human listening -> typed revision -> next candidates
 ```
 
+The track spec is the authority for song-specific generator choices. A style
+pack supplies grammar, constraints, and review vocabulary; it must not become a
+single reusable groove bed for every track. If a candidate is described as a
+custom groove, the spec or generator path must show the custom bass/drum plan.
+
 ## Human Role
 
 The human is the taste owner.

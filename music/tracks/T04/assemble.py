@@ -1,157 +1,101 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""T04 'Nova Flamma' assembly recipe: stems + genai pads + voice lead -> full mix.
+"""T04 'Nova Flamma' production assembly.
 
-Reproducible render: engine stems from seed-4103/variant-01, two Magenta pad
-beds (audio-steered, chroma-gated), and the locked voice lead placed per the
-vocal brief budget (19 vocal-active bars). The voice asset stays dry on disk;
-every placement gets its own spatial treatment here, at mix time.
+The song design lives in ``production.yml`` beside this file. This script is
+the deterministic renderer for that manifest: engine stems + genai atmosphere
++ locked female vocal -> premaster, master, no-voice twin, and listening clips.
 
 Run from the repo root:
 
     uv run --no-sync python music/tracks/T04/assemble.py
-
-Inputs (gitignored, regenerable from spec/seed/recipe):
-    local/candidates/T04/seed-4103/variant-01/stem-*.wav   (scrender)
-    local/candidates/genai/t04-pad-{main,break}.wav         (Magenta RT 2)
-    local/candidates/genai/latin-vocal-clean-take6-tailfix.wav (locked lead)
-
-Output:
-    local/candidates/T04/mix/nova-flamma-v1.wav      (mix, peak-normalized)
-    local/candidates/T04/mix/nova-flamma-final.wav   (club master)
 """
 
 from __future__ import annotations
 
 import subprocess
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import soundfile as sf
+import yaml
 from scipy.signal import butter, sosfiltfilt
 
 ROOT = Path(__file__).resolve().parents[3]
-V = ROOT / "local/candidates/T04/seed-4103/variant-01"
-GENAI = ROOT / "local/candidates/genai"
-VOICE = GENAI / "latin-vocal-clean-take6-tailfix.wav"
-OUT_DIR = ROOT / "local/candidates/T04/mix"
+PRODUCTION = Path(__file__).with_name("production.yml")
 PIECES = ROOT / "local/candidates/T04/voice/pieces"
 
 SR = 44100
-BPM = 123.0
-BAR_S = 4 * 60 / BPM  # 1.9512s
-TOTAL_BARS = 132
-
-# scrender's internal lead bus is deliberately excluded: the voice is THE lead.
-STEM_GAINS = {
-    "kick": 1.00,
-    "bass": 0.50,
-    "perc": 3.00,
-    "chords": 1.30,
-    "arp": 0.70,
-    "pad": 0.45,  # engine pad: conductor-harmony glue, all sections
-    "fx": 1.00,
-}
-
-# The committed section map (spec.yml). All automation below keys off this.
-SECTIONS = [
-    ("intro", 0, 8),
-    ("groove_a", 8, 24),
-    ("break_1", 24, 32),
-    ("drop_1", 32, 64),
-    ("groove_b", 64, 72),
-    ("break_2", 72, 88),
-    ("peak", 88, 120),
-    ("outro", 120, 132),
-]
-SECTION_RAMP_BARS = 1.0  # smooth gain transitions across boundaries
-
-# Arrangement automation: per-lane, per-section gain offsets in dB on top of
-# STEM_GAINS. This is the whole-timeline mix ride — every lane considered
-# against every other, section by section, so the layering stays legible:
-# foreground (kick/bass or voice) > midground (chords) > background (arp/pads).
-# 0.0 = lane at its base level; the engine already decides WHAT plays where.
-SECTION_AUTOMATION = {
-    #            intro g_a  brk1 drop g_b  brk2 peak outro
-    "kick":   {"intro": -1.0, "outro": -1.0},
-    "bass":   {"groove_a": -1.5, "groove_b": -1.0},
-    "perc":   {"intro": -4.0, "groove_a": -1.5, "break_1": -6.0,
-               "groove_b": -1.0, "break_2": -8.0, "outro": -3.0},
-    "chords": {"break_1": -1.0, "drop_1": -1.5, "break_2": -4.0},
-    "arp":    {"break_1": -5.0, "drop_1": -2.5, "break_2": -7.0, "peak": -1.0},
-    "pad":    {"groove_a": -2.0, "break_1": -1.0, "drop_1": -3.5,
-               "groove_b": -2.0, "break_2": -2.0, "peak": -3.0},
-    "fx":     {},
-    # genai pad beds ride the same table (base gain comes from PAD_SPANS)
-    "genai_pad": {"drop_1": -1.5, "peak": -1.0},
-}
-
-# Genai pad spans: (start_bar, end_bar, asset, gain). Intro/outro carry only
-# the engine pad so the edges stay mixable.
-# Magenta pad-main is retired from grooves/drops/peak: 32% of its energy sat
-# in the vocal formant band and read as a smeared pseudo-voice (taste-owner:
-# "does not sound like human and sounds horrible"). Engine pad + chords carry
-# the harmony there; the airy bed survives only under the breaks.
-PAD_SPANS = [
-    (24, 32, "t04-pad-break", 0.45), # break_1
-    (72, 88, "t04-pad-break", 0.40), # break_2 (verse bed)
-]
-PAD_HPF_HZ = 160.0  # low-end safety: sub belongs to kick/bass only
-PAD_XFADE_BARS = 2
+PAD_XFADE_BARS = 2.0
 PAD_EDGE_FADE_BARS = 1.0
 
-# Voice pieces: name -> (trim_start, trim_len, sox treatment chain).
-# Onsets from RMS phrase analysis; 0.15s pre-roll keeps the consonant attack.
-# Treatments reuse the chains proven on this voice at the tail-fix gate.
-BODY_EQ = ["equalizer", "280", "1q", "+3", "equalizer", "3000", "1.2q", "+2.5",
-           "equalizer", "4000", "1q", "+1.5"]
-PIECE_DEFS = {
-    "tease":  (4.52, 6.50, ["gain", "-5", *BODY_EQ, "pad", "0", "2",
-                            "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
-    "fullverse": (4.52, 29.98, ["gain", "-5", *BODY_EQ, "pad", "0", "2",
-                                "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
-    "chop":   (18.73, 1.10, ["gain", "-5", "highpass", "350", "pad", "0", "3",
-                             "echo", "0.7", "0.6", "366", "0.5", "732", "0.3", "gain", "-3"]),
-    "hook1":  (23.19, 4.00, ["gain", "-5", *BODY_EQ, "pad", "0", "3",
-                             "echo", "0.8", "0.5", "366", "0.35", "732", "0.18",
-                             "reverb", "55", "40", "100", "20"]),
-    "hook2":  (27.13, 7.37, ["gain", "-5", *BODY_EQ, "pad", "0", "3",
-                             "echo", "0.8", "0.5", "366", "0.35", "732", "0.18",
-                             "reverb", "55", "40", "100", "20"]),
-}
 
-# Placements: (piece, bar, gain). Budget per vocal-brief: break_1 tease 2 /
-# drop_1 accents 3 / break_2 verse 8 / peak hook 6 vocal-active bars.
-PLACEMENTS = [
-    ("tease", 28.0, 0.87),
-    ("chop", 40.0, 5.70),
-    ("chop", 56.0, 5.70),
-    ("fullverse", 74.0, 1.25),  # the whole stanza, once, intimate; dissolve
-                                # tail rings across the bar-88 peak downbeat
-    ("hook1", 96.0, 3.90),
-    ("hook2", 98.0, 2.95),
-    ("hook1", 104.0, 3.90),
-    ("hook2", 106.0, 2.95),
-]
-VOICE_PRE_ROLL_S = 0.15  # sung onset lands on the bar tick
-
-# Mix automation: every vocal placement opens a window — the harmonic lanes
-# ride down while kick/bass keep the groove. Depth/length per piece kind.
-DUCK_LANES = ("chords", "arp", "pad")
-DUCK_BY_PIECE = {  # piece -> (depth dB, window bars)
-    "tease": (-4.5, 3.4),
-    "chop": (-2.5, 1.5),
-    "fullverse": (-5.0, 14.0),
-    "hook1": (-5.0, 1.7), "hook2": (-5.0, 4.0),
-}
+def load_production(path: Path = PRODUCTION) -> dict[str, Any]:
+    manifest = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict):
+        raise ValueError(f"{path}: production manifest must be a mapping")
+    validate_production(manifest)
+    return manifest
 
 
-def bar_to_sample(bar: float) -> int:
-    return int(round(bar * BAR_S * SR))
+def validate_production(manifest: dict[str, Any]) -> None:
+    required = ("version", "bpm", "total_bars", "sources", "render", "sections", "automation")
+    for key in required:
+        if key not in manifest:
+            raise ValueError(f"production manifest missing {key}")
+    if "T02" in yaml.safe_dump(manifest):
+        raise ValueError("T04 production manifest must not reference T02")
+
+    total_bars = int(manifest["total_bars"])
+    cursor = 0
+    for section in manifest["sections"]:
+        if int(section["start_bar"]) != cursor:
+            raise ValueError(f"section {section['name']} starts at {section['start_bar']}, expected {cursor}")
+        end = int(section["end_bar"])
+        if end <= cursor:
+            raise ValueError(f"section {section['name']} must advance the timeline")
+        cursor = end
+    if cursor != total_bars:
+        raise ValueError(f"sections end at {cursor}, expected total_bars {total_bars}")
+
+    lanes = manifest["automation"].get("lanes", {})
+    if not lanes:
+        raise ValueError("production manifest requires automation.lanes")
+    for lane_name, lane in lanes.items():
+        stem = str(lane.get("stem", ""))
+        if not stem:
+            raise ValueError(f"lane {lane_name} missing stem")
+        if stem.startswith("lead"):
+            raise ValueError("rejected scrender lead bus must not be a production lane")
+    pieces = set((manifest.get("voice") or {}).get("pieces", {}))
+    for placement in (manifest.get("voice") or {}).get("placements", []):
+        if placement.get("piece") not in pieces:
+            raise ValueError(f"voice placement references unknown piece {placement.get('piece')}")
+        if not 0 <= float(placement["bar"]) < total_bars:
+            raise ValueError(f"voice placement bar out of range: {placement}")
+
+
+def repo_path(value: str | Path) -> Path:
+    path = Path(value)
+    return path if path.is_absolute() else ROOT / path
+
+
+def bpm(manifest: dict[str, Any]) -> float:
+    return float(manifest["bpm"])
+
+
+def bar_s(manifest: dict[str, Any]) -> float:
+    return 4 * 60 / bpm(manifest)
+
+
+def bar_to_sample(manifest: dict[str, Any], bar: float) -> int:
+    return int(round(bar * bar_s(manifest) * SR))
 
 
 def load_stereo(path: Path) -> np.ndarray:
     y, sr = sf.read(path, always_2d=True)
-    assert sr == SR, f"{path}: {sr} != {SR}"
+    if sr != SR:
+        raise ValueError(f"{path}: {sr} != {SR}")
     if y.shape[1] == 1:
         y = np.repeat(y, 2, axis=1)
     return y.astype(np.float64)
@@ -162,11 +106,11 @@ def highpass(y: np.ndarray, hz: float) -> np.ndarray:
     return sosfiltfilt(sos, y, axis=0)
 
 
-def crossfade_loop(src: np.ndarray, length: int, offset: int) -> np.ndarray:
+def crossfade_loop(manifest: dict[str, Any], src: np.ndarray, length: int, offset: int) -> np.ndarray:
     """Tile ``src`` to ``length`` samples with equal-power crossfades."""
-    xf = bar_to_sample(PAD_XFADE_BARS)
+    xf = bar_to_sample(manifest, PAD_XFADE_BARS)
     src = np.roll(src, -offset, axis=0)
-    hop = len(src) - xf
+    hop = max(1, len(src) - xf)
     out = np.zeros((length + len(src), 2))
     t = np.linspace(0, np.pi / 2, xf)[:, None]
     fade_in, fade_out = np.sin(t), np.cos(t)
@@ -174,128 +118,264 @@ def crossfade_loop(src: np.ndarray, length: int, offset: int) -> np.ndarray:
     while pos < length:
         piece = src.copy()
         if pos > 0:
-            piece[:xf] *= fade_in  # incoming head fades in over the outgoing tail
+            piece[:xf] *= fade_in
         piece[-xf:] *= fade_out
         out[pos : pos + len(piece)] += piece
         pos += hop
     return out[:length]
 
 
-def edge_fades(y: np.ndarray, fade_bars: float) -> np.ndarray:
-    n = bar_to_sample(fade_bars)
+def edge_fades(manifest: dict[str, Any], y: np.ndarray, fade_bars: float) -> np.ndarray:
+    n = min(len(y) // 2, bar_to_sample(manifest, fade_bars))
+    if n <= 0:
+        return y
     env = np.ones(len(y))
     env[:n] = np.linspace(0, 1, n)
     env[-n:] = np.linspace(1, 0, n)
     return y * env[:, None]
 
 
-def cut_voice_pieces() -> None:
+def section_value_envelope(
+    manifest: dict[str, Any],
+    section_values: dict[str, float],
+    fallback: float,
+    length: int,
+) -> np.ndarray:
+    env = np.full(length, fallback, dtype=np.float64)
+    for section in manifest["sections"]:
+        name = section["name"]
+        value = float(section_values.get(name, fallback))
+        lo = bar_to_sample(manifest, float(section["start_bar"]))
+        hi = min(length, bar_to_sample(manifest, float(section["end_bar"])))
+        env[lo:hi] = value
+
+    ramp = bar_to_sample(manifest, float(manifest["automation"].get("ramp_bars", 1.0)))
+    for section in manifest["sections"][1:]:
+        center = bar_to_sample(manifest, float(section["start_bar"]))
+        lo, hi = max(0, center - ramp // 2), min(length, center + ramp // 2)
+        if hi > lo:
+            left = env[lo - 1] if lo else env[lo]
+            right = env[hi - 1]
+            env[lo:hi] = np.linspace(left, right, hi - lo)
+    return env
+
+
+def duck_envelope(manifest: dict[str, Any], length: int) -> np.ndarray:
+    env = np.ones(length, dtype=np.float64)
+    edge = bar_to_sample(manifest, 0.5)
+    pre_roll = int(float(manifest["voice"].get("pre_roll_s", 0.0)) * SR)
+    for placement in manifest["voice"].get("placements", []):
+        depth_db = float(placement.get("duck_db", 0.0))
+        bars = float(placement.get("duck_bars", 0.0))
+        if depth_db >= 0 or bars <= 0:
+            continue
+        dip = 10 ** (depth_db / 20)
+        s0 = max(0, bar_to_sample(manifest, float(placement["bar"])) - pre_roll)
+        s1 = min(length, s0 + bar_to_sample(manifest, bars))
+        env[s0:s1] = np.minimum(env[s0:s1], dip)
+
+        pre0 = max(0, s0 - edge)
+        if s0 > pre0:
+            env[pre0:s0] = np.minimum(env[pre0:s0], np.linspace(1, dip, s0 - pre0))
+        post1 = min(length, s1 + edge)
+        if post1 > s1:
+            env[s1:post1] = np.minimum(env[s1:post1], np.linspace(dip, 1, post1 - s1))
+    return env
+
+
+def apply_width(y: np.ndarray, width: np.ndarray) -> np.ndarray:
+    width = width[: len(y)]
+    mid = (y[:, 0] + y[:, 1]) * 0.5
+    side = (y[:, 0] - y[:, 1]) * 0.5 * width
+    return np.column_stack((mid + side, mid - side))
+
+
+def expand_voice_chain(piece: dict[str, Any], body_eq: list[Any]) -> list[str]:
+    chain: list[str] = []
+    for item in piece["chain"]:
+        if item == "{body_eq}":
+            chain.extend(str(x) for x in body_eq)
+        else:
+            chain.append(str(item))
+    return chain
+
+
+def cut_voice_pieces(manifest: dict[str, Any]) -> None:
+    voice = repo_path(manifest["sources"]["voice"])
+    body_eq = manifest["voice"].get("body_eq", [])
     PIECES.mkdir(parents=True, exist_ok=True)
-    for name, (start, length, chain) in PIECE_DEFS.items():
+    for name, piece in manifest["voice"]["pieces"].items():
         out = PIECES / f"{name}.wav"
-        fade_out = "0.06" if name == "chop" else "1.2"
-        cmd = ["sox", str(VOICE), str(out), "trim", f"{start}", f"{length}",
-               "fade", "t", "0.03", "0", fade_out, *chain]
+        cmd = [
+            "sox",
+            str(voice),
+            str(out),
+            "trim",
+            str(piece["trim_start_s"]),
+            str(piece["trim_len_s"]),
+            "fade",
+            "t",
+            "0.03",
+            "0",
+            str(piece.get("fade_out_s", 1.2)),
+            *expand_voice_chain(piece, body_eq),
+        ]
         subprocess.run(cmd, check=True, capture_output=True, text=True)
 
 
-def duck_envelope(length: int) -> np.ndarray:
-    """Gain envelope dipping under each vocal placement window."""
-    env = np.ones(length)
-    edge = bar_to_sample(0.5)
-    for piece, bar, _gain in PLACEMENTS:
-        if piece not in DUCK_BY_PIECE:
+def mix_engine_lanes(
+    manifest: dict[str, Any],
+    length: int,
+    duck: np.ndarray,
+) -> np.ndarray:
+    variant_dir = repo_path(manifest["sources"]["variant_dir"])
+    mix = np.zeros((length, 2), dtype=np.float64)
+    duck_lanes = set(manifest["automation"].get("duck_lanes", []))
+    for lane_name, lane_cfg in manifest["automation"]["lanes"].items():
+        stem_path = variant_dir / f"stem-{lane_cfg['stem']}.wav"
+        lane = load_stereo(stem_path) * float(lane_cfg.get("gain", 1.0))
+        db_env = section_value_envelope(
+            manifest, lane_cfg.get("section_db", {}), 0.0, len(lane)
+        )
+        lane *= (10 ** (db_env / 20))[:, None]
+        if lane_name in duck_lanes:
+            lane *= duck[: len(lane), None]
+        width_env = section_value_envelope(
+            manifest,
+            lane_cfg.get("section_width", {}),
+            float(lane_cfg.get("width", 1.0)),
+            len(lane),
+        )
+        lane = apply_width(lane, width_env)
+        mix[: len(lane)] += lane
+    return mix
+
+
+def mix_genai_pads(
+    manifest: dict[str, Any],
+    length: int,
+    duck: np.ndarray,
+) -> np.ndarray:
+    genai_dir = repo_path(manifest["sources"]["genai_dir"])
+    mix = np.zeros((length, 2), dtype=np.float64)
+    for index, span in enumerate(manifest.get("genai_pads", [])):
+        s0 = bar_to_sample(manifest, float(span["start_bar"]))
+        s1 = min(length, bar_to_sample(manifest, float(span["end_bar"])))
+        if s1 <= s0:
             continue
-        depth_db, bars = DUCK_BY_PIECE[piece]
-        dip = 10 ** (depth_db / 20)
-        s0 = bar_to_sample(bar) - int(VOICE_PRE_ROLL_S * SR)
-        s1 = s0 + bar_to_sample(bars)
-        env[s0:s1] = np.minimum(env[s0:s1], dip)
-        env[s0 - edge : s0] = np.minimum(env[s0 - edge : s0], np.linspace(1, dip, edge))
-        env[s1 : s1 + edge] = np.minimum(env[s1 : s1 + edge], np.linspace(dip, 1, edge))
-    return env
+        src = load_stereo(genai_dir / f"{span['asset']}.wav")
+        bed = crossfade_loop(manifest, src, s1 - s0, offset=index * 7 * SR % len(src))
+        bed = highpass(bed, float(span.get("highpass_hz", 180.0)))
+        bed = edge_fades(manifest, bed, PAD_EDGE_FADE_BARS)
+        bed = apply_width(bed, np.full(len(bed), float(span.get("width", 1.0))))
+        bed *= duck[s0:s1, None]
+        mix[s0:s1] += bed * float(span.get("gain", 1.0))
+    return mix
 
 
-def automation_envelope(lane: str, length: int) -> np.ndarray:
-    """Whole-timeline gain ride for one lane from SECTION_AUTOMATION,
-    linear-ramped over SECTION_RAMP_BARS at each section boundary."""
-    table = SECTION_AUTOMATION.get(lane, {})
-    env = np.ones(length)
-    for name, b0, b1 in SECTIONS:
-        g = 10 ** (table.get(name, 0.0) / 20)
-        env[bar_to_sample(b0) : min(bar_to_sample(b1), length)] = g
-    ramp = bar_to_sample(SECTION_RAMP_BARS)
-    for _name, b0, _b1 in SECTIONS[1:]:
-        c = bar_to_sample(b0)
-        lo, hi = max(0, c - ramp // 2), min(length, c + ramp // 2)
-        if hi > lo:
-            env[lo:hi] = np.linspace(env[lo - 1] if lo else env[lo], env[hi - 1], hi - lo)
-    return env
+def place_voice(manifest: dict[str, Any], length: int) -> np.ndarray:
+    mix = np.zeros((length, 2), dtype=np.float64)
+    pre_roll = int(float(manifest["voice"].get("pre_roll_s", 0.0)) * SR)
+    for placement in manifest["voice"].get("placements", []):
+        y = load_stereo(PIECES / f"{placement['piece']}.wav")
+        start = bar_to_sample(manifest, float(placement["bar"])) - pre_roll
+        if start >= length:
+            continue
+        src0 = max(0, -start)
+        dst0 = max(0, start)
+        dst1 = min(length, dst0 + len(y) - src0)
+        if dst1 <= dst0:
+            continue
+        mix[dst0:dst1] += y[src0 : src0 + dst1 - dst0] * float(placement.get("gain", 1.0))
+    return mix
+
+
+def raw_mix(manifest: dict[str, Any], include_voice: bool) -> np.ndarray:
+    total = bar_to_sample(manifest, float(manifest["total_bars"]))
+    variant_dir = repo_path(manifest["sources"]["variant_dir"])
+    stem_lengths = [
+        len(load_stereo(variant_dir / f"stem-{lane['stem']}.wav"))
+        for lane in manifest["automation"]["lanes"].values()
+    ]
+    length = max(total, *stem_lengths)
+    duck = duck_envelope(manifest, length)
+    mix = mix_engine_lanes(manifest, length, duck)
+    mix += mix_genai_pads(manifest, length, duck)
+    if include_voice:
+        mix += place_voice(manifest, length)
+    return mix
+
+
+def peak_normalize(y: np.ndarray, peak_db: float) -> tuple[np.ndarray, float]:
+    peak = float(np.abs(y).max())
+    if peak <= 0:
+        return y, 1.0
+    gain = 10 ** (peak_db / 20) / peak
+    return y * gain, gain
+
+
+def master(manifest: dict[str, Any], premaster: Path, master_path: Path) -> None:
+    subprocess.run(
+        [
+            "ffmpeg",
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-y",
+            "-i",
+            str(premaster),
+            "-af",
+            manifest["master"]["ffmpeg_chain"],
+            "-c:a",
+            "pcm_s24le",
+            str(master_path),
+        ],
+        check=True,
+    )
+
+
+def write_auditions(manifest: dict[str, Any], master_path: Path) -> list[Path]:
+    y = load_stereo(master_path)
+    out_dir = repo_path(manifest["render"]["audition_dir"])
+    out_dir.mkdir(parents=True, exist_ok=True)
+    written: list[Path] = []
+    for clip in manifest.get("auditions", []):
+        s0 = bar_to_sample(manifest, float(clip["start_bar"]))
+        s1 = min(len(y), s0 + bar_to_sample(manifest, float(clip["bars"])))
+        out = out_dir / f"{clip['name']}.wav"
+        sf.write(out, y[s0:s1], SR, subtype="PCM_24")
+        written.append(out)
+    return written
+
+
+def render(manifest: dict[str, Any]) -> tuple[Path, Path, Path, list[Path]]:
+    cut_voice_pieces(manifest)
+    out_dir = repo_path(manifest["render"]["mix_dir"])
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    mix = raw_mix(manifest, include_voice=True)
+    novoice = raw_mix(manifest, include_voice=False)
+    normalized, gain = peak_normalize(mix, float(manifest["master"]["normalize_peak_db"]))
+    premaster = out_dir / manifest["render"]["premaster_name"]
+    novoice_path = out_dir / manifest["render"]["novoice_name"]
+    master_path = out_dir / manifest["render"]["master_name"]
+    sf.write(premaster, normalized, SR, subtype="PCM_24")
+    sf.write(novoice_path, novoice * gain, SR, subtype="PCM_24")
+    master(manifest, premaster, master_path)
+    auditions = write_auditions(manifest, master_path)
+    return premaster, master_path, novoice_path, auditions
 
 
 def main() -> int:
-    total = bar_to_sample(TOTAL_BARS)
-    cut_voice_pieces()
-
-    stems = {name: load_stereo(V / f"stem-{name}.wav") for name in STEM_GAINS}
-    length = max(total, *(len(y) for y in stems.values()))
-    duck = duck_envelope(length)
-    mix = np.zeros((length, 2))
-    for name, gain in STEM_GAINS.items():
-        lane = stems[name] * gain
-        lane *= automation_envelope(name, length)[: len(lane), None]
-        if name in DUCK_LANES:
-            lane *= duck[: len(lane), None]
-        mix[: len(lane)] += lane
-
-    pads = {name: load_stereo(GENAI / f"{name}.wav") for name in
-            {span[2] for span in PAD_SPANS}}
-    pad_auto = automation_envelope("genai_pad", length)
-    for i, (b0, b1, asset, gain) in enumerate(PAD_SPANS):
-        s0, s1 = bar_to_sample(b0), bar_to_sample(b1)
-        bed = crossfade_loop(pads[asset], s1 - s0, offset=i * 7 * SR % len(pads[asset]))
-        bed = highpass(bed, PAD_HPF_HZ)
-        bed = edge_fades(bed, PAD_EDGE_FADE_BARS)
-        bed *= (pad_auto[s0:s1] * duck[s0:s1])[:, None]
-        mix[s0:s1] += bed * gain
-
-    for piece, bar, gain in PLACEMENTS:
-        y = load_stereo(PIECES / f"{piece}.wav")
-        start = bar_to_sample(bar) - int(VOICE_PRE_ROLL_S * SR)
-        end = min(start + len(y), length)
-        mix[start:end] += y[: end - start] * gain
-
-    peak = np.abs(mix).max()
-    mix *= 10 ** (-1.0 / 20) / peak  # normalize to -1 dBFS true peak (approx)
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    out = OUT_DIR / "nova-flamma-v1.wav"
-    sf.write(out, mix, SR, subtype="PCM_24")
-    print(f"peak pre-norm {20 * np.log10(peak):.1f} dBFS -> wrote {out}")
-    master(out)
+    manifest = load_production()
+    premaster, master_path, novoice, auditions = render(manifest)
+    print(f"wrote premaster: {premaster}")
+    print(f"wrote master: {master_path}")
+    print(f"wrote no-voice twin: {novoice}")
+    for clip in auditions:
+        print(f"wrote audition: {clip}")
+    print("reminder: candidates require human listening notes before approval")
     return 0
-
-
-# Club master: glue compression, then a 4x-oversampled limiter. Drive is kept
-# moderate on purpose: the corpus-loud version (level_in 15.5dB, -8.9 LUFS)
-# flattened section contrast to 1 dB and buried the voice — taste-owner
-# rejected. Contrast preserved beats loudness matched.
-# alimiter's auto-`level` must stay disabled or it re-normalizes to 0 dBFS.
-MASTER_CHAIN = (
-    "acompressor=threshold=-18dB:ratio=2:attack=20:release=250:makeup=4dB,"
-    "aresample=176400,"
-    "alimiter=level_in=8dB:limit=0.871:attack=5:release=100:level=disabled,"
-    "aresample=44100"
-)
-
-
-def master(mix_path: Path) -> None:
-    out = mix_path.parent / "nova-flamma-final.wav"
-    subprocess.run(
-        ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", str(mix_path),
-         "-af", MASTER_CHAIN, "-c:a", "pcm_s24le", str(out)],
-        check=True,
-    )
-    print(f"mastered -> {out}")
 
 
 if __name__ == "__main__":

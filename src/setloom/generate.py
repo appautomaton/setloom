@@ -17,7 +17,7 @@ from pathlib import Path
 from setloom.conductor import build_conductor
 from setloom.midi import TICKS_PER_BAR, NoteEvent, section_layout, write_part_midi
 from setloom.parts import ALL_PARTS, part_rng
-from setloom.parts.bass import select_articulation_profile
+from setloom.parts.bass import bass_generation_label
 from setloom.schema import TrackSpec
 from setloom.stylepack import GateResult, StylePack, evaluate_gate, spec_duration_seconds
 
@@ -125,9 +125,9 @@ def generate_candidates(
             write_part_midi(variant_dir / f"{part_name}.mid", spec, events)
             counts[part_name] = len(events)
             part_events[part_name] = events
-        # Same rng derivation as BassGenerator's first (only) profile draw,
-        # so the reported profile matches the rendered bass exactly.
-        bass_profile = select_articulation_profile(spec, part_rng(effective_seed, index, "bass"))
+        # Same rng derivation as BassGenerator's first profile draw, so the
+        # reported source matches the rendered bass exactly.
+        bass_profile = bass_generation_label(spec, part_rng(effective_seed, index, "bass"), pack)
         results.append(
             VariantResult(
                 index=index,

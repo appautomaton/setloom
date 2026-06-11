@@ -154,3 +154,34 @@ the long no-bass break_2).
 Known quirk, deliberate exclusion: scrender still renders its internal lead
 bus (`stem-lead*.wav`) even with the lead lane removed from the spec; the
 assembly ignores those stems — the voice is THE lead.
+
+## Reimagined production pass (2026-06-11)
+
+The 2026-06-10 arrangement is now a legacy baseline, not the active T04
+production recipe. The active build is:
+
+- `music/tracks/T04/spec.yml`: current T04 track spec and track-specific groove
+  plan.
+- `music/tracks/T04/production.yml`: executable song production design —
+  section intent, lane hierarchy, spatial widths, vocal placements, ducking,
+  genai atmosphere spans, master target, and listening clips.
+- `music/tracks/T04/assemble.py`: manifest renderer, not the arrangement
+  itself.
+
+Retained fact: `local/candidates/genai/latin-vocal-clean-take6-tailfix.wav`
+remains the locked female voice source. Retired facts: the old smoke-test
+T04 stems/report and any T02-derived bed are not production truth. Current
+MIDI/stems must be regenerated from the T04 spec before audition.
+
+Active v2 outputs:
+
+- full master: `local/candidates/T04/mix/nova-flamma-reimagined-v2-master.wav`
+- no-voice twin: `local/candidates/T04/mix/nova-flamma-reimagined-v2-novoice.wav`
+- listening clips: `local/candidates/T04/auditions/reimagined-break1-tease.wav`,
+  `reimagined-drop1-body.wav`, `reimagined-mainbreak-fullverse.wav`,
+  `reimagined-peak-hook.wav`
+
+Technical check: `setloom score` reports 4 in / 3 out. BPM, LUFS, key mode,
+and vocal share are in; the outs are bass occupancy, main-break position, and
+duration against the club-extended corpus target. These are technical distance
+flags, not taste approval.
