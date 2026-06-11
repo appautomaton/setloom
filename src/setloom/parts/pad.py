@@ -14,7 +14,12 @@ import random
 
 from setloom.midi import TICKS_PER_BAR, NoteEvent, bar_to_tick, section_layout
 from setloom.parts.base import parse_key
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 PAD_CHANNEL = 5
 PAD_OCTAVE = 3  # root below the chords part's octave 4
@@ -32,7 +37,9 @@ NOTE_BARS_OPTIONS = (2, 4)
 class PadGenerator:
     name = "pad"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         pitch_class, _ = parse_key(spec.key)
         base = 12 * (PAD_OCTAVE + 1) + pitch_class
         # Exactly one rng draw per run keeps draw counts structural.

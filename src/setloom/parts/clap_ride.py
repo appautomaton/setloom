@@ -18,7 +18,12 @@ from setloom.midi import (
     beat_to_tick,
     section_layout,
 )
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 CLAP = 39  # rendered by vibe_clap as a dark rim/clap shadow
 RIDE = 51
@@ -34,7 +39,9 @@ CLAP_EVERY_BARS = 4  # phrase accent, not an every-bar backbeat
 class ClapRideGenerator:
     name = "clap_ride"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         # rng intentionally unused: deterministic constant pattern, zero draws.
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():

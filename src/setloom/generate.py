@@ -120,7 +120,7 @@ def generate_candidates(
         for part_name in spec.render_targets.midi:
             generator = ALL_PARTS[part_name]
             events: list[NoteEvent] = generator.generate(
-                spec, part_rng(effective_seed, index, part_name)
+                spec, part_rng(effective_seed, index, part_name), pack=pack
             )
             write_part_midi(variant_dir / f"{part_name}.mid", spec, events)
             counts[part_name] = len(events)

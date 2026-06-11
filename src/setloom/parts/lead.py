@@ -12,7 +12,12 @@ from dataclasses import dataclass
 
 from setloom.conductor import Conductor, build_conductor
 from setloom.midi import SIXTEENTH_TICKS, NoteEvent, bar_to_tick, section_layout
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 LEAD_CHANNEL = 4
 LEAD_OCTAVE = 5
@@ -183,7 +188,9 @@ def _emit_drop_fragments(conductor: Conductor, start_bar: int, bars: int) -> lis
 class LeadGenerator:
     name = "lead"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         conductor = build_conductor(spec)
         # One seeded structural choice: peak statements may be normal or octave-lift first.
         peak_lift_first = rng.choice((False, True))

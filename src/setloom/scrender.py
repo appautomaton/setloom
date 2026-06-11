@@ -23,6 +23,7 @@ from setloom.midi import PPQ, NoteEvent, total_ticks
 from setloom.parts import ALL_PARTS, part_rng
 from setloom.parts.base import SCALES, parse_key
 from setloom.schema import TrackSpec, load_spec
+from setloom.stylepack import StylePack, load_style_pack
 
 SC_APP_SCLANG = "/Applications/SuperCollider.app/Contents/MacOS/sclang"
 PATCHES = Path(__file__).resolve().parent / "patches.scd"
@@ -730,9 +731,11 @@ def peak_proof_command(wav: Path) -> list[str]:
     return ["sox", str(wav), "-n", "stat"]
 
 
-def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[NoteEvent]]:
+def vibe_events(
+    spec: TrackSpec, seed: int, variant: int, pack: "StylePack | None" = None
+) -> dict[str, list[NoteEvent]]:
     """The designed parts' events, derived exactly like ``setloom generate``."""
-    drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"))
+    drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"), pack=pack)
     events: dict[str, list[NoteEvent]] = {
         "kick": [e for e in drums if e.note == KICK_NOTE],
         "perc": [e for e in drums if e.note != KICK_NOTE],
@@ -740,13 +743,13 @@ def vibe_events(spec: TrackSpec, seed: int, variant: int) -> dict[str, list[Note
     for part in PERC_SOURCE_PARTS:
         if part == "drums":
             continue
-        events["perc"] += ALL_PARTS[part].generate(spec, part_rng(seed, variant, part))
+        events["perc"] += ALL_PARTS[part].generate(spec, part_rng(seed, variant, part), pack=pack)
     for part in VIBE_PARTS:
         if part in ("kick", "perc"):
             continue
-        events[part] = ALL_PARTS[part].generate(spec, part_rng(seed, variant, part))
+        events[part] = ALL_PARTS[part].generate(spec, part_rng(seed, variant, part), pack=pack)
     events["lead"] += ALL_PARTS["counterline"].generate(
-        spec, part_rng(seed, variant, "counterline")
+        spec, part_rng(seed, variant, "counterline"), pack=pack
     )
     return events
 
@@ -987,7 +990,11 @@ def main(argv: list[str] | None = None) -> int:
     variant_dir = Path(args.variant_dir)
     variant_dir.mkdir(parents=True, exist_ok=True)
 
-    events = vibe_events(spec, seed, args.variant)
+    try:
+        pack = load_style_pack(spec.style_pack)
+    except FileNotFoundError:
+        pack = None
+    events = vibe_events(spec, seed, args.variant, pack=pack)
     stems = render_stems(events, spec, variant_dir, sclang, jobs=args.jobs)
     out = variant_dir / "vibe_mix.wav"
     mix(variant_dir, stems, spec, out)

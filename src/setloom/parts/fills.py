@@ -18,7 +18,12 @@ from setloom.midi import (
     beat_to_tick,
     section_layout,
 )
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 SNARE = 38
 CLOSED_HAT = 42
@@ -60,7 +65,9 @@ VARIANTS = (_snare_roll, _hat_roll, _impact, _dropout)
 class FillsGenerator:
     name = "fills"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         layout = list(section_layout(spec).items())
         events: list[NoteEvent] = []
         # Exactly one rng draw per transition keeps draw counts structural.

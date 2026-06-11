@@ -2,10 +2,13 @@
 """Part-generator Protocol, per-part RNG derivation, and shared key helpers."""
 
 import random
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from setloom.midi import NoteEvent
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 PITCH_CLASSES = {
     "C": 0,
@@ -36,11 +39,26 @@ SCALES = {
 
 
 class PartGenerator(Protocol):
-    """One musical part: a name and a deterministic event generator."""
+    """One musical part: a name and a deterministic event generator.
+
+    ``pack`` carries the style pack whose ``groove.vocabulary`` holds pattern
+    content as data; generators that ignore it behave identically without it.
+    The engine owns alignment invariants; the pack owns pattern content.
+    """
 
     name: str
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]: ...
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]: ...
+
+
+def groove_vocabulary(pack: "StylePack | None") -> dict | None:
+    """The pack's groove.vocabulary block, or None when absent."""
+    if pack is None:
+        return None
+    vocab = pack.raw.get("groove", {}).get("vocabulary")
+    return vocab if isinstance(vocab, dict) else None
 
 
 def part_rng(seed: int, variant: int, part: str) -> random.Random:

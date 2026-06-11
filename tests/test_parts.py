@@ -482,3 +482,86 @@ def test_peak_lead_development(spec) -> None:
         assert len(fingerprints) >= 3, "peak needs M, V, V2/M8 distinct statements"
         all_notes = [e.note for e in in_peak]
         assert max(all_notes) - min(all_notes) >= 12, "peak octave lift missing"
+
+
+# --- Groove vocabulary (pack-data-driven patterns, decision 2026-06-10) ---
+#
+# Pattern content lives in the style pack's groove.vocabulary; the engine
+# enforces alignment invariants. Without a pack the generators reproduce
+# their legacy hardcoded behavior.
+
+
+@pytest.fixture(scope="module")
+def pack():
+    from setloom.stylepack import load_style_pack
+
+    return load_style_pack("melodic-progressive-techno", root=REPO_ROOT)
+
+
+def _bar_events(events, bar):
+    lo, hi = midi.bar_to_tick(bar), midi.bar_to_tick(bar + 1)
+    return [e for e in events if lo <= e.start_tick < hi]
+
+
+def test_vocab_bass_keeps_alignment_invariants(spec, pack):
+    for seed in range(6):
+        events = ALL_PARTS["bass"].generate(spec, part_rng(seed, 1, "bass"), pack=pack)
+        for event in events:
+            assert event.start_tick % midi.PPQ != 0, f"bass on a beat tick: {event}"
+            to_next_beat = midi.PPQ - event.start_tick % midi.PPQ
+            assert event.duration_ticks <= to_next_beat - 1, f"no sidechain gap: {event}"
+
+
+def test_vocab_bass_phrase_end_varies_and_swells(spec, pack):
+    events = ALL_PARTS["bass"].generate(spec, part_rng(7, 1, "bass"), pack=pack)
+    layout = midi.section_layout(spec)
+    for section, (start_bar, bars) in layout.items():
+        if not section.startswith(("groove", "drop", "peak")) or bars < 8:
+            continue
+        mid_steps = {(e.start_tick - midi.bar_to_tick(start_bar)) // midi.SIXTEENTH_TICKS
+                     for e in _bar_events(events, start_bar)}
+        end_steps = {(e.start_tick - midi.bar_to_tick(start_bar + 7)) // midi.SIXTEENTH_TICKS
+                     for e in _bar_events(events, start_bar + 7)}
+        assert mid_steps != end_steps, f"{section}: phrase-end bar identical to bar 1"
+        v_first = max(e.velocity for e in _bar_events(events, start_bar))
+        v_later = max(e.velocity for e in _bar_events(events, start_bar + 6))
+        assert v_later > v_first, f"{section}: no velocity swell across the phrase"
+
+
+def test_vocab_bass_neighbor_only_after_first_phrase(spec, pack):
+    tonic = root_note(spec.key, 2) % 12
+    events = ALL_PARTS["bass"].generate(spec, part_rng(7, 1, "bass"), pack=pack)
+    layout = midi.section_layout(spec)
+    saw_neighbor = False
+    for section, (start_bar, bars) in layout.items():
+        if not section.startswith(("groove", "drop", "peak")):
+            continue
+        for bar_in_section in range(bars):
+            notes = {e.note % 12 for e in _bar_events(events, start_bar + bar_in_section)}
+            if bar_in_section < 8:
+                assert notes <= {tonic}, f"{section} bar {bar_in_section}: non-tonic in first phrase"
+            elif notes - {tonic}:
+                saw_neighbor = True
+                assert notes - {tonic} == {(tonic - 2) % 12}, f"unexpected pitch: {notes}"
+    assert saw_neighbor, "no neighbor motion anywhere despite vocabulary"
+
+
+def test_vocab_break_accent_kicks(spec, pack):
+    events = ALL_PARTS["drums"].generate(spec, part_rng(7, 1, "drums"), pack=pack)
+    layout = midi.section_layout(spec)
+    for section, (start_bar, bars) in layout.items():
+        kicks = [e for e in events if e.note == KICK
+                 and midi.bar_to_tick(start_bar) <= e.start_tick < midi.bar_to_tick(start_bar + bars)]
+        if section.startswith("break") and bars >= 6:
+            assert 1 <= len(kicks) <= 2, f"{section}: expected lone accent kicks, got {len(kicks)}"
+        elif section.startswith("break"):
+            assert not kicks, f"{section}: short break should stay kick-free"
+
+
+def test_vocab_determinism_and_legacy_fallback(spec, pack):
+    a = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
+    b = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
+    assert a == b
+    legacy = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"))
+    with_pack = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
+    assert legacy and with_pack and legacy != with_pack

@@ -13,7 +13,12 @@ import random
 
 from setloom.midi import SIXTEENTH_TICKS, STEPS_PER_BAR, NoteEvent, bar_to_tick, section_layout
 from setloom.parts.base import TRIADS, parse_key
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 ARP_OCTAVE = 5
 
@@ -35,7 +40,9 @@ PEDAL_HIGH, PEDAL_LOW = 80, 70
 class ArpGenerator:
     name = "arp"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         pitch_class, quality = parse_key(spec.key)
         root = 12 * (ARP_OCTAVE + 1) + pitch_class
         tones = TRIADS[quality] + (12,)  # root, third, fifth, octave, ascending

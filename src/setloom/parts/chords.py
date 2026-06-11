@@ -18,7 +18,12 @@ from setloom.midi import (
     bar_to_tick,
     section_layout,
 )
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 CHORD_OCTAVE = 4  # mid register
 PAD_VELOCITY = 64  # modest pad level in breaks
@@ -76,7 +81,9 @@ def _events_for_chord(
 class ChordsGenerator:
     name = "chords"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         _ = rng  # Chords follow the shared conductor; per-run variation lives there.
         conductor = build_conductor(spec)
         base = 12 * (CHORD_OCTAVE + 1) + conductor.pitch_class

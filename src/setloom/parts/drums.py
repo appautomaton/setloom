@@ -22,7 +22,13 @@ from setloom.midi import (
     beat_to_tick,
     section_layout,
 )
+from typing import TYPE_CHECKING
+
+from setloom.parts.base import groove_vocabulary
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 KICK = 36
 CLOSED_HAT = 42
@@ -50,21 +56,57 @@ PERC_PATTERNS = (
 class DrumsGenerator:
     name = "drums"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
+        vocab = groove_vocabulary(pack) or {}
+        phrase_bars = vocab.get("phrase_bars", 8)
+        drums_vocab = vocab.get("drums", {})
+        phrase_end_vocab = drums_vocab.get("phrase_end", {})
+        hat_breath = bool(phrase_end_vocab.get("groove_hat_breath"))
+        bed_accents = phrase_end_vocab.get("bed_accent_steps") or ()
+        break_kick_fractions = drums_vocab.get("break_accent_kicks") or ()
+
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():
             kick = not section.startswith("break")
             hats = section.startswith(("groove", "drop", "peak"))
             hat_bed = section.startswith(("drop", "peak"))
+            # Corpus signature: lone accent kicks inside the breakdown. Bar
+            # positions derive from section length — no rng draws added, so
+            # draw counts stay structural.
+            accent_kick_bars = (
+                {min(bars - 1, int(bars * f)) for f in break_kick_fractions}
+                if section.startswith("break") and bars >= 6
+                else set()
+            )
             # Exactly one rng draw per section keeps draw counts structural.
             pattern = rng.choice(PERC_PATTERNS)
             for bar_in_section in range(bars):
                 bar = start_bar + bar_in_section
+                phrase_end = bar_in_section % phrase_bars == phrase_bars - 1
+                if bar_in_section in accent_kick_bars:
+                    events.append(
+                        NoteEvent(DRUM_CHANNEL, KICK, 104, beat_to_tick(bar, 0), SIXTEENTH_TICKS)
+                    )
                 for beat in range(4):
                     tick = beat_to_tick(bar, beat)
                     if kick:
                         events.append(NoteEvent(DRUM_CHANNEL, KICK, 112, tick, SIXTEENTH_TICKS))
                     if hats and not hat_bed:
+                        if hat_breath and phrase_end and beat == 3:
+                            # phrase turn: the last offbeat hat rests, an open
+                            # hat marks the corner instead
+                            events.append(
+                                NoteEvent(
+                                    DRUM_CHANNEL,
+                                    OPEN_HAT,
+                                    64,
+                                    tick + EIGHTH_TICKS,
+                                    EIGHTH_TICKS,
+                                )
+                            )
+                            continue
                         velocity = HAT_OFFBEAT_VELOCITIES[beat]
                         events.append(
                             NoteEvent(
@@ -85,6 +127,14 @@ class DrumsGenerator:
                     for beat in range(4):  # offbeat open hat: the lane's signature sizzle
                         tick = beat_to_tick(bar, beat) + EIGHTH_TICKS
                         events.append(NoteEvent(DRUM_CHANNEL, OPEN_HAT, 58, tick, EIGHTH_TICKS))
+                    if phrase_end:
+                        for step, velocity in bed_accents:
+                            tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
+                            events.append(
+                                NoteEvent(
+                                    DRUM_CHANNEL, CLOSED_HAT, velocity, tick, SIXTEENTH_TICKS
+                                )
+                            )
                 for step in pattern[bar_in_section % len(pattern)]:
                     tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
                     events.append(

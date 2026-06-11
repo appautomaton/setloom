@@ -5,7 +5,12 @@ import random
 
 from setloom.conductor import build_conductor
 from setloom.midi import SIXTEENTH_TICKS, NoteEvent, bar_to_tick, section_layout
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 COUNTER_CHANNEL = 6
 COUNTER_OCTAVE = 5
@@ -25,7 +30,9 @@ PEAK_WINDOWS = (
 class CounterlineGenerator:
     name = "counterline"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         conductor = build_conductor(spec)
         # One draw controls whether the answer leans lower or higher this run.
         register_shift = rng.choice((-12, 0))

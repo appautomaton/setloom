@@ -21,7 +21,12 @@ from setloom.midi import (
     section_layout,
 )
 from setloom.parts.base import root_note
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 FX_CHANNEL = 6
 
@@ -38,7 +43,9 @@ IMPACT_VELOCITY = 120
 class FxGenerator:
     name = "fx"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         riser_root = root_note(spec.key, RISER_OCTAVE)
         impact_note = root_note(spec.key, IMPACT_OCTAVE)
         # Exactly one rng draw per run keeps draw counts structural.

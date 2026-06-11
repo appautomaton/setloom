@@ -18,7 +18,12 @@ from setloom.midi import (
     bar_to_tick,
     section_layout,
 )
+from typing import TYPE_CHECKING
+
 from setloom.schema import TrackSpec
+
+if TYPE_CHECKING:
+    from setloom.stylepack import StylePack
 
 MARACAS = 70  # GM percussion
 
@@ -34,7 +39,9 @@ CONTOURS = (
 class ShakerGenerator:
     name = "shaker"
 
-    def generate(self, spec: TrackSpec, rng: random.Random) -> list[NoteEvent]:
+    def generate(
+        self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
+    ) -> list[NoteEvent]:
         # Exactly one rng draw per run keeps draw counts structural.
         contour = rng.choice(CONTOURS)
         events: list[NoteEvent] = []
