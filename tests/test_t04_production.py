@@ -49,6 +49,15 @@ def test_t04_production_rejects_t02_and_lead_bus(t04_assemble, production):
     )
 
 
+def test_t04_production_demotes_rejected_arp_and_lifts_bass(production):
+    lanes = production["automation"]["lanes"]
+    assert "arp" not in lanes
+    assert "arp" not in production["automation"].get("duck_lanes", [])
+    assert lanes["bass"]["gain"] >= 0.55
+    assert lanes["bass"]["section_db"]["drop_1"] > 0
+    assert lanes["chords"]["section_db"]["break_2"] <= -7.0
+
+
 def test_t04_production_keeps_locked_voice_and_gate_clips(production):
     assert production["sources"]["voice"].endswith("latin-vocal-clean-take6-tailfix.wav")
     assert {placement["piece"] for placement in production["voice"]["placements"]} == {
@@ -59,3 +68,18 @@ def test_t04_production_keeps_locked_voice_and_gate_clips(production):
         "hook2",
     }
     assert len(production["auditions"]) >= 3
+
+
+def test_t04_assemble_runtime_output_root_override(t04_assemble, production, tmp_path):
+    scratch = tmp_path / "scratch-render"
+    variant = tmp_path / "variant-01"
+    runtime = t04_assemble.with_runtime_overrides(
+        production,
+        output_root=scratch,
+        variant_dir=variant,
+    )
+    assert runtime["sources"]["variant_dir"] == str(variant)
+    assert runtime["render"]["mix_dir"] == str(scratch / "mix")
+    assert runtime["render"]["audition_dir"] == str(scratch / "auditions")
+    assert runtime["render"]["pieces_dir"] == str(scratch / "voice-pieces")
+    assert t04_assemble.pieces_dir(runtime) == scratch / "voice-pieces"

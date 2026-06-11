@@ -5,7 +5,7 @@
 # placements, ducking, genai atmosphere spans, and listening-gate clips.
 
 version: 1
-title: nova-flamma-reimagined
+title: nova-flamma-final-candidate
 bpm: 123
 total_bars: 132
 
@@ -16,9 +16,9 @@ sources:
 
 render:
   mix_dir: local/candidates/T04/mix
-  premaster_name: nova-flamma-reimagined-v2.wav
-  master_name: nova-flamma-reimagined-v2-master.wav
-  novoice_name: nova-flamma-reimagined-v2-novoice.wav
+  premaster_name: nova-flamma-final-candidate-premaster.wav
+  master_name: nova-flamma-final-candidate-master.wav
+  novoice_name: nova-flamma-final-candidate-novoice.wav
   audition_dir: local/candidates/T04/auditions
 
 sections:
@@ -33,7 +33,7 @@ sections:
 
 automation:
   ramp_bars: 1.0
-  duck_lanes: [chords, arp, pad, genai_pad]
+  duck_lanes: [chords, pad, genai_pad]
   lanes:
     kick:
       stem: kick
@@ -42,9 +42,9 @@ automation:
       section_db: {intro: -4.0, break_1: -1.5, groove_b: -1.0, break_2: -3.0, outro: -5.0}
     bass:
       stem: bass
-      gain: 0.52
+      gain: 0.56
       width: 0.0
-      section_db: {groove_a: -1.8, drop_1: -0.4, groove_b: -1.4, peak: 0.0}
+      section_db: {groove_a: -1.2, drop_1: 0.2, groove_b: -1.0, peak: 0.4}
     perc:
       stem: perc
       gain: 2.70
@@ -53,21 +53,15 @@ automation:
       section_width: {break_1: 0.75, break_2: 0.70, peak: 1.35}
     chords:
       stem: chords
-      gain: 1.05
-      width: 0.82
-      section_db: {break_1: -2.0, drop_1: -2.8, break_2: -6.0, peak: -1.4}
-      section_width: {break_1: 1.10, break_2: 0.95, peak: 1.20}
-    arp:
-      stem: arp
-      gain: 0.62
-      width: 1.25
-      section_db: {drop_1: -3.2, peak: -0.8}
-      section_width: {drop_1: 1.05, peak: 1.38}
+      gain: 0.92
+      width: 0.95
+      section_db: {break_1: -2.8, drop_1: -4.2, break_2: -7.2, peak: -2.2}
+      section_width: {break_1: 1.18, break_2: 1.02, peak: 1.24}
     pad:
       stem: pad
-      gain: 0.42
+      gain: 0.38
       width: 1.42
-      section_db: {break_1: -1.2, drop_1: -4.5, break_2: -3.5, peak: -2.8}
+      section_db: {break_1: -1.6, drop_1: -5.0, break_2: -4.2, peak: -3.4}
       section_width: {break_1: 1.55, break_2: 1.40, peak: 1.70}
     fx:
       stem: fx
@@ -76,9 +70,9 @@ automation:
       section_db: {intro: -2.0, groove_a: -1.0, break_1: 0.5, drop_1: -0.8, break_2: 1.0, peak: 0.6, outro: -1.2}
 
 genai_pads:
-  - {asset: t04-pad-break, start_bar: 24, end_bar: 32, gain: 0.46, width: 1.50, highpass_hz: 175.0, role: "break_1 breath under the tease"}
-  - {asset: t04-pad-break, start_bar: 72, end_bar: 88, gain: 0.42, width: 1.35, highpass_hz: 185.0, role: "main-break bed around the full verse"}
-  - {asset: t04-pad-break, start_bar: 88, end_bar: 96, gain: 0.20, width: 1.65, highpass_hz: 220.0, role: "short bloom into peak, kept below the vocal formant band"}
+  - {asset: t04-pad-break, start_bar: 24, end_bar: 32, gain: 0.40, width: 1.50, highpass_hz: 185.0, role: "break_1 breath under the tease"}
+  - {asset: t04-pad-break, start_bar: 72, end_bar: 88, gain: 0.36, width: 1.35, highpass_hz: 195.0, role: "main-break bed around the full verse"}
+  - {asset: t04-pad-break, start_bar: 88, end_bar: 96, gain: 0.16, width: 1.65, highpass_hz: 230.0, role: "short bloom into peak, kept below the vocal formant band"}
 
 voice:
   pre_roll_s: 0.15
@@ -124,7 +118,7 @@ master:
   ffmpeg_chain: "acompressor=threshold=-18dB:ratio=2:attack=20:release=250:makeup=3.5dB,aresample=176400,alimiter=level_in=17.0dB:limit=0.871:attack=5:release=100:level=disabled,aresample=44100"
 
 auditions:
-  - {name: reimagined-break1-tease, start_bar: 22, bars: 14}
-  - {name: reimagined-drop1-body, start_bar: 32, bars: 18}
-  - {name: reimagined-mainbreak-fullverse, start_bar: 70, bars: 22}
-  - {name: reimagined-peak-hook, start_bar: 92, bars: 30}
+  - {name: final-break1-tease, start_bar: 22, bars: 14}
+  - {name: final-drop1-body, start_bar: 32, bars: 18}
+  - {name: final-mainbreak-fullverse, start_bar: 70, bars: 22}
+  - {name: final-peak-hook, start_bar: 92, bars: 30}

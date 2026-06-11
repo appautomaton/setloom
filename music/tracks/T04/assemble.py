@@ -12,6 +12,8 @@ Run from the repo root:
 
 from __future__ import annotations
 
+import argparse
+import copy
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -36,6 +38,25 @@ def load_production(path: Path = PRODUCTION) -> dict[str, Any]:
         raise ValueError(f"{path}: production manifest must be a mapping")
     validate_production(manifest)
     return manifest
+
+
+def with_runtime_overrides(
+    manifest: dict[str, Any],
+    *,
+    output_root: str | Path | None = None,
+    variant_dir: str | Path | None = None,
+) -> dict[str, Any]:
+    """Return a manifest copy with scratch/final render paths overridden."""
+    runtime = copy.deepcopy(manifest)
+    if variant_dir is not None:
+        runtime["sources"]["variant_dir"] = str(variant_dir)
+    if output_root is not None:
+        root = Path(output_root)
+        runtime["render"]["mix_dir"] = str(root / "mix")
+        runtime["render"]["audition_dir"] = str(root / "auditions")
+        runtime["render"]["pieces_dir"] = str(root / "voice-pieces")
+    validate_production(runtime)
+    return runtime
 
 
 def validate_production(manifest: dict[str, Any]) -> None:
@@ -78,6 +99,10 @@ def validate_production(manifest: dict[str, Any]) -> None:
 def repo_path(value: str | Path) -> Path:
     path = Path(value)
     return path if path.is_absolute() else ROOT / path
+
+
+def pieces_dir(manifest: dict[str, Any]) -> Path:
+    return repo_path((manifest.get("render") or {}).get("pieces_dir", PIECES))
 
 
 def bpm(manifest: dict[str, Any]) -> float:
@@ -203,9 +228,10 @@ def expand_voice_chain(piece: dict[str, Any], body_eq: list[Any]) -> list[str]:
 def cut_voice_pieces(manifest: dict[str, Any]) -> None:
     voice = repo_path(manifest["sources"]["voice"])
     body_eq = manifest["voice"].get("body_eq", [])
-    PIECES.mkdir(parents=True, exist_ok=True)
+    out_dir = pieces_dir(manifest)
+    out_dir.mkdir(parents=True, exist_ok=True)
     for name, piece in manifest["voice"]["pieces"].items():
-        out = PIECES / f"{name}.wav"
+        out = out_dir / f"{name}.wav"
         cmd = [
             "sox",
             str(voice),
@@ -276,8 +302,9 @@ def mix_genai_pads(
 def place_voice(manifest: dict[str, Any], length: int) -> np.ndarray:
     mix = np.zeros((length, 2), dtype=np.float64)
     pre_roll = int(float(manifest["voice"].get("pre_roll_s", 0.0)) * SR)
+    voice_pieces = pieces_dir(manifest)
     for placement in manifest["voice"].get("placements", []):
-        y = load_stereo(PIECES / f"{placement['piece']}.wav")
+        y = load_stereo(voice_pieces / f"{placement['piece']}.wav")
         start = bar_to_sample(manifest, float(placement["bar"])) - pre_roll
         if start >= length:
             continue
@@ -366,8 +393,18 @@ def render(manifest: dict[str, Any]) -> tuple[Path, Path, Path, list[Path]]:
     return premaster, master_path, novoice_path, auditions
 
 
-def main() -> int:
-    manifest = load_production()
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Render the T04 production manifest")
+    parser.add_argument("--production", default=str(PRODUCTION), help="production manifest path")
+    parser.add_argument("--variant-dir", default=None, help="override sources.variant_dir")
+    parser.add_argument("--output-root", default=None, help="override render outputs under this root")
+    args = parser.parse_args(argv)
+
+    manifest = with_runtime_overrides(
+        load_production(Path(args.production)),
+        output_root=args.output_root,
+        variant_dir=args.variant_dir,
+    )
     premaster, master_path, novoice, auditions = render(manifest)
     print(f"wrote premaster: {premaster}")
     print(f"wrote master: {master_path}")
