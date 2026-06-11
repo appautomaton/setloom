@@ -131,7 +131,6 @@ render_targets:
     - bass
     - chords
     - arp
-    - counterline
     - fills
     - pad
     - shaker

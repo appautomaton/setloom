@@ -41,6 +41,7 @@ from setloom.scrender import (
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
+T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
 
 
 def test_ticks_to_seconds_at_124() -> None:
@@ -66,6 +67,14 @@ def test_vibe_events_kick_only_and_deterministic() -> None:
     assert set(events) == {"kick", "bass", "pad", "chords", "arp", "lead", "fx", "perc"}
     assert all(e.note == 36 for e in events["kick"]) and events["kick"]
     assert events == vibe_events(spec, spec.seed, 1)
+
+
+def test_t04_vibe_events_omit_nonvocal_lead_bus() -> None:
+    spec = load_spec(T04)
+    events = vibe_events(spec, spec.seed, 1)
+    assert "lead" not in events
+    assert "counterline" not in spec.render_targets.midi
+    assert {"kick", "bass", "pad", "chords", "arp", "fx", "perc"} == set(events)
 
 
 def test_build_scd_contains_patch_and_score() -> None:

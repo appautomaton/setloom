@@ -37,6 +37,7 @@ VIBE_PARTS = ("kick", "bass", "pad", "chords", "arp", "lead", "fx", "perc")
 
 # Generated parts whose events merge into the perc stem (drums minus kick).
 PERC_SOURCE_PARTS = ("drums", "fills", "shaker", "clap_ride")
+DIRECT_RENDER_PARTS = ("bass", "pad", "chords", "arp", "fx")
 
 # GM percussion note -> designed kit synth.
 PERC_SYNTH_FOR_NOTE = {
@@ -735,22 +736,33 @@ def vibe_events(
     spec: TrackSpec, seed: int, variant: int, pack: "StylePack | None" = None
 ) -> dict[str, list[NoteEvent]]:
     """The designed parts' events, derived exactly like ``setloom generate``."""
-    drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"), pack=pack)
-    events: dict[str, list[NoteEvent]] = {
-        "kick": [e for e in drums if e.note == KICK_NOTE],
-        "perc": [e for e in drums if e.note != KICK_NOTE],
-    }
+    targets = set(spec.render_targets.midi)
+    events: dict[str, list[NoteEvent]] = {}
+    if "drums" in targets:
+        drums = ALL_PARTS["drums"].generate(spec, part_rng(seed, variant, "drums"), pack=pack)
+        events["kick"] = [e for e in drums if e.note == KICK_NOTE]
+        events["perc"] = [e for e in drums if e.note != KICK_NOTE]
     for part in PERC_SOURCE_PARTS:
-        if part == "drums":
+        if part == "drums" or part not in targets:
             continue
-        events["perc"] += ALL_PARTS[part].generate(spec, part_rng(seed, variant, part), pack=pack)
-    for part in VIBE_PARTS:
-        if part in ("kick", "perc"):
+        events.setdefault("perc", [])
+        events["perc"] += ALL_PARTS[part].generate(
+            spec, part_rng(seed, variant, part), pack=pack
+        )
+    for part in DIRECT_RENDER_PARTS:
+        if part not in targets:
             continue
         events[part] = ALL_PARTS[part].generate(spec, part_rng(seed, variant, part), pack=pack)
-    events["lead"] += ALL_PARTS["counterline"].generate(
-        spec, part_rng(seed, variant, "counterline"), pack=pack
-    )
+    if "lead" in targets or "counterline" in targets:
+        events["lead"] = []
+        if "lead" in targets:
+            events["lead"] += ALL_PARTS["lead"].generate(
+                spec, part_rng(seed, variant, "lead"), pack=pack
+            )
+        if "counterline" in targets:
+            events["lead"] += ALL_PARTS["counterline"].generate(
+                spec, part_rng(seed, variant, "counterline"), pack=pack
+            )
     return events
 
 
@@ -926,7 +938,8 @@ def render_stems(
     *,
     jobs: int,
 ) -> dict[str, Path]:
-    stems = {part: variant_dir / f"stem-{part}.wav" for part in VIBE_PARTS}
+    render_parts = tuple(part for part in VIBE_PARTS if part in events)
+    stems = {part: variant_dir / f"stem-{part}.wav" for part in render_parts}
     with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, jobs)) as executor:
         futures = {
             executor.submit(
@@ -938,13 +951,13 @@ def render_stems(
                 sclang,
                 variant_dir,
             ): part
-            for part in VIBE_PARTS
+            for part in render_parts
         }
         for future in concurrent.futures.as_completed(futures):
             part = futures[future]
             future.result()
             print(f"rendered {stems[part].name}")
-    return {part: stems[part] for part in VIBE_PARTS}
+    return {part: stems[part] for part in render_parts}
 
 
 def mix(variant_dir: Path, sc_stems: dict[str, Path], spec: TrackSpec, out_wav: Path) -> None:
