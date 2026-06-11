@@ -527,7 +527,7 @@ def _bar_events(events, bar):
 
 def test_track_specific_bass_plan_is_reported(t04_spec, pack):
     label = bass_generation_label(t04_spec, part_rng(t04_spec.seed, 1, "bass"), pack)
-    assert label == "track:t04-vocal-answer-roller"
+    assert label == "track:t04-deep-sidechain-roller"
 
 
 def test_t04_bass_generation_not_t02_template(t02_spec, t04_spec, pack):
@@ -548,6 +548,38 @@ def test_track_bass_plan_can_override_first_phrase_tonic_rule(t04_spec, pack):
         if midi.bar_to_tick(start_bar) <= e.start_tick < midi.bar_to_tick(start_bar + 8)
     ]
     assert any(e.note % 12 != tonic for e in first_phrase)
+
+
+def test_t04_bass_plan_has_longer_sidechain_body(t04_spec, pack):
+    bass = _events_with_pack(t04_spec, "bass", pack, variant=1)
+    assert bass
+    lengths = sorted(event.duration_ticks / midi.SIXTEENTH_TICKS for event in bass)
+    median_len = lengths[len(lengths) // 2]
+    assert median_len >= 1.75
+    for event in bass:
+        assert event.start_tick % midi.PPQ != 0
+        next_beat = (event.start_tick // midi.PPQ + 1) * midi.PPQ
+        assert event.start_tick + event.duration_ticks < next_beat
+
+
+def test_t04_chords_use_section_plan_not_global_stab_loop(t04_spec, pack):
+    chords = _events_with_pack(t04_spec, "chords", pack, variant=1)
+    layout = midi.section_layout(t04_spec)
+    break_start, _ = layout["break_1"]
+    drop_start, _ = layout["drop_1"]
+    peak_start, _ = layout["peak"]
+    break_events = _bar_events(chords, break_start)
+    drop_bar_0 = _bar_events(chords, drop_start)
+    drop_bar_1 = _bar_events(chords, drop_start + 1)
+    peak_events = _bar_events(chords, peak_start)
+    assert any(event.duration_ticks >= midi.TICKS_PER_BAR for event in break_events)
+    assert drop_bar_0 and not drop_bar_1
+    assert any(event.duration_ticks >= midi.TICKS_PER_BAR for event in peak_events)
+    assert any(event.duration_ticks < midi.TICKS_PER_BAR for event in peak_events)
+
+
+def test_t04_arp_mutes_rejected_foreground_arp(t04_spec, pack):
+    assert _events_with_pack(t04_spec, "arp", pack, variant=1) == []
 
 
 def test_track_drum_plan_breaks_eight_bar_copy_loop(t04_spec, pack):

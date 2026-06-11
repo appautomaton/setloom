@@ -120,7 +120,8 @@ def test_t04_report_names_track_specific_bass_source(tmp_path: Path) -> None:
         == 0
     )
     report = (tmp_path / "T04" / "seed-4103" / "report.md").read_text(encoding="utf-8")
-    assert "bass articulation: track:t04-vocal-answer-roller" in report
+    assert "bass articulation: track:t04-deep-sidechain-roller" in report
+    assert "arp 0 (0.0/bar)" in report
 
 
 # --- parse_key coverage (Slice 3 quality-review fold-in) ---

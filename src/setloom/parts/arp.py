@@ -37,6 +37,18 @@ CELL_ACCENT, CELL_BASE = 84, 74
 PEDAL_HIGH, PEDAL_LOW = 80, 70
 
 
+def _track_arp_plan(spec: TrackSpec):
+    groove = getattr(spec, "groove", None)
+    if groove is None or groove.arp is None:
+        return None
+    return groove.arp
+
+
+def _section_plan(plan, section: str):
+    kind = section.rstrip("0123456789_")
+    return plan.sections.get(section) or plan.sections.get(kind)
+
+
 class ArpGenerator:
     name = "arp"
 
@@ -46,6 +58,31 @@ class ArpGenerator:
         pitch_class, quality = parse_key(spec.key)
         root = 12 * (ARP_OCTAVE + 1) + pitch_class
         tones = TRIADS[quality] + (12,)  # root, third, fifth, octave, ascending
+        track_plan = _track_arp_plan(spec)
+        if track_plan is not None:
+            events: list[NoteEvent] = []
+            for section, (start_bar, bars) in section_layout(spec).items():
+                planned_section = _section_plan(track_plan, section)
+                if planned_section is None or planned_section.mode == "mute":
+                    continue
+                section_root = 12 * (planned_section.octave + 1) + pitch_class
+                patterns = planned_section.patterns or (
+                    [planned_section.steps] if planned_section.steps else []
+                )
+                if not patterns:
+                    continue
+                duration = planned_section.duration_steps * SIXTEENTH_TICKS
+                for bar_in_section in range(bars):
+                    bar = start_bar + bar_in_section
+                    steps = patterns[bar_in_section % len(patterns)]
+                    for index, step in enumerate(steps):
+                        tone_index = planned_section.tone_indices[index % len(planned_section.tone_indices)]
+                        note = section_root + tones[tone_index % len(tones)]
+                        tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
+                        events.append(
+                            NoteEvent(3, note, planned_section.velocity, tick, duration)
+                        )
+            return events
         # Exactly one rng draw per run keeps draw counts structural.
         cell = rng.choice(CELLS)
         events: list[NoteEvent] = []

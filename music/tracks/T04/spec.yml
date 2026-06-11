@@ -59,18 +59,65 @@ style_vector:
 groove:
   summary: "Vocal-led roller: leave call/answer holes around the sung lead while keeping a D-root low-end anchor."
   bass:
-    label: t04-vocal-answer-roller
+    label: t04-deep-sidechain-roller
     phrase_bars: 8
-    velocity_swell_per_bar: 1
+    velocity_swell_per_bar: 2
     first_phrase_tonic: false
     neighbor_interval: -2
     bars:
-      - [[1, 82, 1], [2, 98, 1], [3, 86, 1], [5, 88, 1], [6, 104, 1], [9, 82, 1], [10, 99, 1], [11, 86, 1], [14, 102, 2], [15, 88, 1]]
-      - [[1, 82, 1], [3, 90, 1], [5, 86, 1], [6, 102, 1], [7, 90, 1], [9, 84, 1], [11, 96, 1], [13, 88, 1], [14, 104, 2]]
-      - [[1, 84, 1], [2, 96, 1], [5, 92, 1], [6, 100, 1], [10, 96, 1], [11, 88, 1], [13, 88, 1], [15, 98, 1]]
-      - [[2, 98, 1], [3, 84, 1], [5, 86, 1], [7, 94, 1], [9, 84, 1], [10, 102, 1], [11, 88, 1], [14, 106, 2]]
-    phrase_end_bar: [[1, 86, 1], [2, 98, 1], [5, 94, 1], [7, 88, 1], [10, 100, 1], [11, 86, 1], [13, 92, 1], [14, 104, 2]]
+      - [[1, 90, 3], [5, 94, 3], [9, 88, 3], [13, 96, 3], [14, 104, 2]]
+      - [[1, 88, 3], [6, 100, 2], [9, 90, 3], [13, 96, 3]]
+      - [[1, 90, 3], [5, 92, 3], [10, 100, 2], [13, 90, 3]]
+      - [[1, 88, 3], [6, 98, 2], [9, 90, 3], [14, 106, 2]]
+    phrase_end_bar: [[1, 92, 3], [5, 96, 3], [9, 90, 3], [11, 102, 2], [13, 98, 2], [14, 108, 2]]
     neighbor_steps: [11, 13]
+  chords:
+    label: t04-dark-vocal-pressure-bed
+    sections:
+      break:
+        mode: sustain
+        color: add9
+        octave: 4
+        bed_velocity: 46
+      drop:
+        mode: stabs
+        color: sus2
+        octave: 4
+        stab_velocity: 56
+        duration_steps: 3
+        stab_patterns:
+          - [6]
+          - []
+          - [10]
+          - []
+          - [6, 14]
+          - []
+          - [10]
+          - [14]
+      peak:
+        mode: bed_and_stabs
+        color: sus4
+        octave: 4
+        bed_velocity: 40
+        stab_velocity: 62
+        duration_steps: 2
+        bed_lift: 12
+        stab_patterns:
+          - [6]
+          - [10]
+          - []
+          - [14]
+          - [6, 14]
+          - []
+          - [10]
+          - [14]
+  arp:
+    label: t04-no-foreground-arp
+    sections:
+      drop:
+        mode: mute
+      peak:
+        mode: mute
   drums:
     label: t04-vocal-pocket-topline
     phrase_bars: 16

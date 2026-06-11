@@ -12,6 +12,7 @@ document creator intent and reserve the contract for future wiring.
 """
 
 from pathlib import Path
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -125,12 +126,98 @@ class DrumsGroovePlan(BaseModel):
         return self
 
 
+class ChordsGrooveSectionPlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mode: Literal["silent", "sustain", "stabs", "bed_and_stabs"]
+    color: Literal["conductor", "triad", "sus2", "sus4", "add9"] = "conductor"
+    octave: int = Field(default=4, ge=2, le=6)
+    bed_velocity: int = Field(default=50, ge=1, le=127)
+    stab_velocity: int = Field(default=60, ge=1, le=127)
+    duration_steps: int = Field(default=2, gt=0)
+    bed_lift: int = 0
+    stab_steps: list[int] = Field(default_factory=list)
+    stab_patterns: list[list[int]] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _stab_steps_are_safe(self) -> "ChordsGrooveSectionPlan":
+        patterns = self.stab_patterns or ([self.stab_steps] if self.stab_steps else [])
+        for pattern_index, pattern in enumerate(patterns):
+            for step in pattern:
+                if not 0 <= step < 16:
+                    raise ValueError(
+                        f"chord stab pattern {pattern_index} step {step} must be in the 0..15 sixteenth grid"
+                    )
+                if step % 4 == 0:
+                    raise ValueError(
+                        f"chord stab pattern {pattern_index} step {step} is on a beat tick reserved for kick space"
+                    )
+        return self
+
+
+class ChordsGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-chords"
+    sections: dict[str, ChordsGrooveSectionPlan]
+
+    @model_validator(mode="after")
+    def _sections_are_present(self) -> "ChordsGroovePlan":
+        if not self.sections:
+            raise ValueError("chords groove requires at least one section plan")
+        return self
+
+
+class ArpGrooveSectionPlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    mode: Literal["mute", "dark_pulse"] = "mute"
+    octave: int = Field(default=4, ge=2, le=6)
+    velocity: int = Field(default=46, ge=1, le=127)
+    duration_steps: int = Field(default=1, gt=0)
+    steps: list[int] = Field(default_factory=list)
+    patterns: list[list[int]] = Field(default_factory=list)
+    tone_indices: list[int] = Field(default_factory=lambda: [0, 2, 3])
+
+    @model_validator(mode="after")
+    def _pulse_steps_are_safe(self) -> "ArpGrooveSectionPlan":
+        patterns = self.patterns or ([self.steps] if self.steps else [])
+        for pattern_index, pattern in enumerate(patterns):
+            for step in pattern:
+                if not 0 <= step < 16:
+                    raise ValueError(
+                        f"arp pattern {pattern_index} step {step} must be in the 0..15 sixteenth grid"
+                    )
+                if step % 4 == 0:
+                    raise ValueError(
+                        f"arp pattern {pattern_index} step {step} is on a beat tick reserved for kick space"
+                    )
+        if not self.tone_indices:
+            raise ValueError("arp tone_indices must not be empty")
+        return self
+
+
+class ArpGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-arp"
+    sections: dict[str, ArpGrooveSectionPlan]
+
+    @model_validator(mode="after")
+    def _sections_are_present(self) -> "ArpGroovePlan":
+        if not self.sections:
+            raise ValueError("arp groove requires at least one section plan")
+        return self
+
+
 class GroovePlan(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     summary: str = ""
     bass: BassGroovePlan | None = None
     drums: DrumsGroovePlan | None = None
+    chords: ChordsGroovePlan | None = None
+    arp: ArpGroovePlan | None = None
 
 
 class TrackSpec(BaseModel):
