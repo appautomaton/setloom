@@ -87,12 +87,13 @@ SECTION_AUTOMATION = {
 
 # Genai pad spans: (start_bar, end_bar, asset, gain). Intro/outro carry only
 # the engine pad so the edges stay mixable.
+# Magenta pad-main is retired from grooves/drops/peak: 32% of its energy sat
+# in the vocal formant band and read as a smeared pseudo-voice (taste-owner:
+# "does not sound like human and sounds horrible"). Engine pad + chords carry
+# the harmony there; the airy bed survives only under the breaks.
 PAD_SPANS = [
-    (8, 24, "t04-pad-main", 0.35),   # groove_a
     (24, 32, "t04-pad-break", 0.45), # break_1
-    (32, 72, "t04-pad-main", 0.45),  # drop_1 + groove_b
     (72, 88, "t04-pad-break", 0.40), # break_2 (verse bed)
-    (88, 120, "t04-pad-main", 0.45), # peak
 ]
 PAD_HPF_HZ = 160.0  # low-end safety: sub belongs to kick/bass only
 PAD_XFADE_BARS = 2
@@ -106,9 +107,8 @@ BODY_EQ = ["equalizer", "280", "1q", "+3", "equalizer", "3000", "1.2q", "+2.5",
 PIECE_DEFS = {
     "tease":  (4.52, 4.60, ["highpass", "200", "pad", "0", "3",
                             "reverb", "45", "50", "100", "15", "gain", "-2"]),
-    "verse1": (4.52, 4.60, [*BODY_EQ, "pad", "0", "2", "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
-    "verse2": (11.00, 6.62, [*BODY_EQ, "pad", "0", "2", "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
-    "verse3": (18.73, 3.70, [*BODY_EQ, "pad", "0", "2", "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
+    "fullverse": (4.52, 29.98, [*BODY_EQ, "pad", "0", "2",
+                                "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
     "chop":   (18.73, 1.10, ["highpass", "350", "pad", "0", "3",
                              "echo", "0.7", "0.6", "366", "0.5", "732", "0.3", "gain", "-3"]),
     "hook1":  (23.19, 3.26, [*BODY_EQ, "pad", "0", "3",
@@ -124,11 +124,9 @@ PIECE_DEFS = {
 PLACEMENTS = [
     ("tease", 28.0, 0.90),
     ("chop", 40.0, 3.20),
-    ("chop", 48.0, 3.20),
     ("chop", 56.0, 3.20),
-    ("verse1", 76.0, 0.70),
-    ("verse2", 79.0, 0.70),
-    ("verse3", 83.0, 0.70),
+    ("fullverse", 74.0, 0.70),  # the whole stanza, once, intimate; dissolve
+                                # tail rings across the bar-88 peak downbeat
     ("hook1", 96.0, 2.20),
     ("hook2", 98.0, 2.20),
     ("hook1", 104.0, 2.20),
@@ -142,7 +140,7 @@ DUCK_LANES = ("chords", "arp", "pad")
 DUCK_BY_PIECE = {  # piece -> (depth dB, window bars)
     "tease": (-4.0, 2.4),
     "chop": (-2.5, 1.5),
-    "verse1": (-5.0, 2.4), "verse2": (-5.0, 3.4), "verse3": (-5.0, 2.0),
+    "fullverse": (-5.0, 14.0),
     "hook1": (-5.0, 1.7), "hook2": (-5.0, 4.0),
 }
 
