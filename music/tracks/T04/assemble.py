@@ -52,13 +52,46 @@ STEM_GAINS = {
     "fx": 1.00,
 }
 
+# The committed section map (spec.yml). All automation below keys off this.
+SECTIONS = [
+    ("intro", 0, 8),
+    ("groove_a", 8, 24),
+    ("break_1", 24, 32),
+    ("drop_1", 32, 64),
+    ("groove_b", 64, 72),
+    ("break_2", 72, 88),
+    ("peak", 88, 120),
+    ("outro", 120, 132),
+]
+SECTION_RAMP_BARS = 1.0  # smooth gain transitions across boundaries
+
+# Arrangement automation: per-lane, per-section gain offsets in dB on top of
+# STEM_GAINS. This is the whole-timeline mix ride — every lane considered
+# against every other, section by section, so the layering stays legible:
+# foreground (kick/bass or voice) > midground (chords) > background (arp/pads).
+# 0.0 = lane at its base level; the engine already decides WHAT plays where.
+SECTION_AUTOMATION = {
+    #            intro g_a  brk1 drop g_b  brk2 peak outro
+    "kick":   {"intro": -1.0, "outro": -1.0},
+    "bass":   {"groove_a": -1.5, "groove_b": -1.0},
+    "perc":   {"intro": -4.0, "groove_a": -1.5, "break_1": -6.0,
+               "groove_b": -1.0, "break_2": -8.0, "outro": -3.0},
+    "chords": {"break_1": -1.0, "drop_1": -1.5, "break_2": -4.0},
+    "arp":    {"break_1": -5.0, "drop_1": -2.5, "break_2": -7.0, "peak": -1.0},
+    "pad":    {"groove_a": -2.0, "break_1": -1.0, "drop_1": -3.5,
+               "groove_b": -2.0, "break_2": -2.0, "peak": -3.0},
+    "fx":     {},
+    # genai pad beds ride the same table (base gain comes from PAD_SPANS)
+    "genai_pad": {"drop_1": -1.5, "peak": -1.0},
+}
+
 # Genai pad spans: (start_bar, end_bar, asset, gain). Intro/outro carry only
 # the engine pad so the edges stay mixable.
 PAD_SPANS = [
     (8, 24, "t04-pad-main", 0.35),   # groove_a
-    (24, 32, "t04-pad-break", 0.60), # break_1
+    (24, 32, "t04-pad-break", 0.45), # break_1
     (32, 72, "t04-pad-main", 0.45),  # drop_1 + groove_b
-    (72, 88, "t04-pad-break", 0.60), # break_2 (verse bed)
+    (72, 88, "t04-pad-break", 0.40), # break_2 (verse bed)
     (88, 120, "t04-pad-main", 0.45), # peak
 ]
 PAD_HPF_HZ = 160.0  # low-end safety: sub belongs to kick/bass only
@@ -68,10 +101,11 @@ PAD_EDGE_FADE_BARS = 1.0
 # Voice pieces: name -> (trim_start, trim_len, sox treatment chain).
 # Onsets from RMS phrase analysis; 0.15s pre-roll keeps the consonant attack.
 # Treatments reuse the chains proven on this voice at the tail-fix gate.
-BODY_EQ = ["equalizer", "280", "1q", "+3", "equalizer", "4000", "1q", "+1.5"]
+BODY_EQ = ["equalizer", "280", "1q", "+3", "equalizer", "3000", "1.2q", "+2.5",
+           "equalizer", "4000", "1q", "+1.5"]
 PIECE_DEFS = {
-    "tease":  (4.52, 4.60, ["highpass", "300", "lowpass", "5000", "pad", "0", "3",
-                            "reverb", "-w", "85", "70", "100", "gain", "-9"]),
+    "tease":  (4.52, 4.60, ["highpass", "200", "pad", "0", "3",
+                            "reverb", "45", "50", "100", "15", "gain", "-2"]),
     "verse1": (4.52, 4.60, [*BODY_EQ, "pad", "0", "2", "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
     "verse2": (11.00, 6.62, [*BODY_EQ, "pad", "0", "2", "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
     "verse3": (18.73, 3.70, [*BODY_EQ, "pad", "0", "2", "reverb", "30", "40", "100", "10", "gain", "-1.5"]),
@@ -88,7 +122,7 @@ PIECE_DEFS = {
 # Placements: (piece, bar, gain). Budget per vocal-brief: break_1 tease 2 /
 # drop_1 accents 3 / break_2 verse 8 / peak hook 6 vocal-active bars.
 PLACEMENTS = [
-    ("tease", 28.0, 1.20),
+    ("tease", 28.0, 0.90),
     ("chop", 40.0, 3.20),
     ("chop", 48.0, 3.20),
     ("chop", 56.0, 3.20),
@@ -106,9 +140,10 @@ VOICE_PRE_ROLL_S = 0.15  # sung onset lands on the bar tick
 # ride down while kick/bass keep the groove. Depth/length per piece kind.
 DUCK_LANES = ("chords", "arp", "pad")
 DUCK_BY_PIECE = {  # piece -> (depth dB, window bars)
+    "tease": (-4.0, 2.4),
     "chop": (-2.5, 1.5),
-    "verse1": (-3.5, 2.4), "verse2": (-3.5, 3.4), "verse3": (-3.5, 2.0),
-    "hook1": (-3.5, 1.7), "hook2": (-3.5, 4.0),
+    "verse1": (-5.0, 2.4), "verse2": (-5.0, 3.4), "verse3": (-5.0, 2.0),
+    "hook1": (-5.0, 1.7), "hook2": (-5.0, 4.0),
 }
 
 
@@ -182,6 +217,23 @@ def duck_envelope(length: int) -> np.ndarray:
     return env
 
 
+def automation_envelope(lane: str, length: int) -> np.ndarray:
+    """Whole-timeline gain ride for one lane from SECTION_AUTOMATION,
+    linear-ramped over SECTION_RAMP_BARS at each section boundary."""
+    table = SECTION_AUTOMATION.get(lane, {})
+    env = np.ones(length)
+    for name, b0, b1 in SECTIONS:
+        g = 10 ** (table.get(name, 0.0) / 20)
+        env[bar_to_sample(b0) : min(bar_to_sample(b1), length)] = g
+    ramp = bar_to_sample(SECTION_RAMP_BARS)
+    for _name, b0, _b1 in SECTIONS[1:]:
+        c = bar_to_sample(b0)
+        lo, hi = max(0, c - ramp // 2), min(length, c + ramp // 2)
+        if hi > lo:
+            env[lo:hi] = np.linspace(env[lo - 1] if lo else env[lo], env[hi - 1], hi - lo)
+    return env
+
+
 def main() -> int:
     total = bar_to_sample(TOTAL_BARS)
     cut_voice_pieces()
@@ -191,20 +243,21 @@ def main() -> int:
     duck = duck_envelope(length)
     mix = np.zeros((length, 2))
     for name, gain in STEM_GAINS.items():
-        y = stems[name]
-        lane = y * gain
+        lane = stems[name] * gain
+        lane *= automation_envelope(name, length)[: len(lane), None]
         if name in DUCK_LANES:
             lane *= duck[: len(lane), None]
         mix[: len(lane)] += lane
 
     pads = {name: load_stereo(GENAI / f"{name}.wav") for name in
             {span[2] for span in PAD_SPANS}}
+    pad_auto = automation_envelope("genai_pad", length)
     for i, (b0, b1, asset, gain) in enumerate(PAD_SPANS):
         s0, s1 = bar_to_sample(b0), bar_to_sample(b1)
         bed = crossfade_loop(pads[asset], s1 - s0, offset=i * 7 * SR % len(pads[asset]))
         bed = highpass(bed, PAD_HPF_HZ)
         bed = edge_fades(bed, PAD_EDGE_FADE_BARS)
-        bed *= duck[s0:s1, None]
+        bed *= (pad_auto[s0:s1] * duck[s0:s1])[:, None]
         mix[s0:s1] += bed * gain
 
     for piece, bar, gain in PLACEMENTS:
