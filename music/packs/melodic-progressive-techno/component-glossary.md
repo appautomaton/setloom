@@ -35,7 +35,7 @@ One prerequisite term: **timbre** is the character of a sound — what makes two
 | Riser / uplifter | Sweep climbing in pitch or loudness over 4–16 bars; announces the drop | other | engineering |
 | Impact / downlifter | Boom or falling sweep at a phrase boundary; lands the arrival | other | engineering |
 | White-noise sweep | Filtered noise washing up or down; the standard transition tool | other | engineering |
-| Vocals | In this lane: chopped phrases, heavily reverbed, more texture than song. Corpus is bimodal: near-absent (0.01–0.14 share) vs featured collab (0.34–0.54) | vocals | not generated today |
+| Vocals | In this lane: chopped phrases, heavily reverbed, more texture than song. Corpus is bimodal: near-absent (0.01–0.14 share) vs featured collab (0.34–0.54) | vocals | GenAI (ACE-Step a-cappella lane, Recipe 1b) — T04 uses a generated voice as THE lead, placed per a bar budget at the low end of the corpus range (0.10 share) |
 
 ## The "other" bucket
 

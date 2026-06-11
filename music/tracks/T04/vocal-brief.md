@@ -117,3 +117,40 @@ After the voice gate: transcribe the vocal melody to MIDI, derive the lead
 motif from its contour, and build the two-cycle club arrangement per
 `spec.yml` — verse in break_2 (the main break), hook chops in break_1/drop_1,
 hook return at peak.
+
+## Arrangement build record (2026-06-10, full-autonomy session)
+
+The track is assembled by `assemble.py` beside this brief — placements,
+treatments, gains, and the master chain are all data in that file; re-running
+it reproduces `local/candidates/T04/mix/nova-flamma-final.wav` byte-for-byte
+from the engine stems, the two Magenta pads, and the locked voice.
+
+Placements as built (vs the budget above): break_1 tease at bar 28 (P1,
+wet-only reverb ghost, voice-to-bed −6.3 dB), drop_1 chops at bars 40/48/56
+(P3 fragment, echo, chords+arp duck −2.5 dB opens the window), break_2 verse
+at bars 76/79/83 (P1→P2→P3, intimate reverb, +6.1 to +8.7 dB), peak hook at
+bars 96/98 and 104/106 (P4→P5 with the dissolve tail closing each pass,
+dotted-eighth echo + wide reverb, +3.1 to +5.3 dB). Vocal share measured by
+the scorer: 0.10 (budget was 0.14; in the corpus near-absent band).
+
+Voice-to-bed ratios are corpus-anchored: Human Nature's separated stems put
+featured breakdown vocals at up to +8.5 dB, full-section vocals at +3 to +6,
+ghosts at −5 to −10. Every placement sits inside its band.
+
+Pads: Magenta RT 2, steered by embedding the engine's own chords+pad audio
+(D minor by construction) blended with a text prompt — text-only prompting
+landed in the wrong key (C#-centered) and is recorded as a dead end.
+`t04-pad-main` (D-centered, Dm11 colors) carries grooves/drops/peak;
+`t04-pad-break` (airier) carries both breaks; both high-passed at 160 Hz,
+crossfade-looped per section. Intro/outro carry only the engine pad so the
+edges stay mixable.
+
+Master: glue compressor + 4x-oversampled limiter (chain in `assemble.py`),
+−8.9 LUFS integrated (corpus window −9..−8), LRA 11.1, true peak −0.9 dBFS.
+Grammar score 4 in / 3 out; the three outs are spec-gated streaming-edit
+decisions (duration 4.36 min, main break at 0.55, bass occupancy 0.70 from
+the long no-bass break_2).
+
+Known quirk, deliberate exclusion: scrender still renders its internal lead
+bus (`stem-lead*.wav`) even with the lead lane removed from the spec; the
+assembly ignores those stems — the voice is THE lead.
