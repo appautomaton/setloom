@@ -2,7 +2,7 @@
 
 # Tooling
 
-Setloom is open-source first and keyboard-first for its public core. Python is the control plane for alignment, MIDI, analysis, automation, render orchestration, candidate routing, reports, and listening-gate handoff.
+Setloom is open-source first and keyboard-first for its public core. Python is the control plane for MIDI, analysis, automation, candidate routing, reports, and listening-gate handoff.
 
 User-owned proprietary tools can be useful as references, but they must not silently become the Setloom output path. Logic Pro may be inspected as a local reference surface for timbre vocabulary, preset categories, and short audition targets when the user has it installed. Logic Pro is not the Setloom final renderer, project-output chain, or required production dependency.
 
@@ -14,7 +14,7 @@ Do not install new Homebrew packages for this project. Python work must use the 
 
 | Layer | Preferred Tools | Purpose |
 | --- | --- | --- |
-| MIDI generation | Python, Mido, pretty_midi, music21 | Generate editable drums, bass, chords, arps, motifs, and fills. |
+| MIDI composition | Python, Mido, pretty_midi, music21 | Compose and edit MIDI for any part. |
 | Alignment and automation | Python packages, CLI scripts, file-based manifests | Analyze timing, route candidates, prepare audition files, and keep the human gate no-click capable. |
 | Synthesis and rendering | Headless, scriptable renderers orchestrated by Python | Render reproducible stems and demo mixes without a required DAW export path. |
 | DSP and mixing | Python audio packages, Faust, LV2 plugins, SoX, FFmpeg | Build and apply effects, meters, exports, and checks. |
@@ -22,7 +22,7 @@ Do not install new Homebrew packages for this project. Python work must use the 
 
 ## Python Audio Stack
 
-Setloom uses Python as the control plane for production automation. The first production-grade audio package set is:
+The production-grade audio package set is:
 
 | Package | Role |
 | --- | --- |
@@ -51,12 +51,10 @@ Never override `HF_HOME`: it holds the user's Hugging Face login token. Route ca
 
 Upstream reference clones under `.references/` are read-only working aids; their conflicting Python and torch pins are exactly why models are ported into this environment instead of run in theirs. Stale upstream pins are resolved in `pyproject.toml` (`[tool.uv] override-dependencies`, `[[tool.uv.dependency-metadata]]`) with the reasoning kept next to each override.
 
-Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — 53-stem layer analysis, generation, transcription — run one at a time, never concurrently. Generation recipes are reset until the melodic/progressive techno pack is rebuilt.
+Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — 53-stem layer analysis, generation, transcription — run one at a time, never concurrently.
 
 ## GenAI Boundary
 
-Use GenAI for musical ideas when it helps, including melody, motifs, atmosphere, timbre, and possible groove directions. Do not let GenAI, deterministic code, or a style pack silently own the musical decision. The track spec and listening gate own groove, kick, bass, timing, arrangement, and timbre choices.
+Use GenAI for musical ideas when it helps: melody, motifs, atmosphere, timbre, and groove directions. Do not let GenAI, deterministic code, or a style pack silently own the musical decision — that belongs to the track spec and the listening gate.
 
 Deterministic rendering remains useful for execution and technical control: mono-safe low end, reproducible MIDI/stems, clip prevention, phrase alignment, and audition packaging.
-
-For high-aesthetic lead timbre, especially vocal-substitute toplines, do not rely on scratch synthesis as the default. Use validated timbre references and automated, file-based render paths. Logic Pro can help name and audition the target sound class, but the Setloom candidate should still be produced by the harness unless the user explicitly asks for a separate Logic experiment. Procedural synthesis remains appropriate for kicks, basses, percussion, meters, rough textures, and deterministic tests.

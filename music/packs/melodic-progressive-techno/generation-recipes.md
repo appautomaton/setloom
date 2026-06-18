@@ -1,9 +1,6 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 
-# Generation Recipes: Reset for Rebuild
-
-The previous recipes are deprecated as musical guidance. They are retained only
-as environment notes for local experiments.
+# Generation Recipes
 
 ## Environment Contract
 
@@ -27,11 +24,7 @@ rendering concurrently.
 
 ## Current Policy
 
-Do not start a new track from a pack-level music prompt such as "123 BPM dark
-hypnotic melodic techno." That path produced generic output and overfit stale
-pack assumptions.
-
-Start from a track-specific musical thesis:
+Start from a track-specific musical thesis, not a pack-level prompt:
 
 ```text
 intent -> groove/rhythm thesis -> palette/timbre thesis -> motif behavior
@@ -53,15 +46,3 @@ make the result cheaper, remove them instead of polishing them.
 
 Generated audio is candidate material only. It is scored for technical
 diagnostics when useful, then judged by listening.
-
-## Deprecated Recipes
-
-| Recipe | Status |
-| --- | --- |
-| ACE-Step full-track instrumental from pack prompt | Deprecated as musical guidance |
-| Vocal-only generation notes | Keep as local experiment provenance only |
-| Magenta RT smoke clip | Keep as runtime smoke only |
-| Groove-first catalog contrast | Superseded by per-track thesis work |
-
-The next recipe file should be written after the local corpus and reference
-study rebuild.

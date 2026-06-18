@@ -45,7 +45,7 @@ Humans make the listening decision.
 ```text
 AGENTS.md             High-signal instructions for coding agents.
 docs/                 Charter, roadmap, licensing, lane-pack contract, and workflow notes.
-music/packs/          Per-lane packs: technical scaffolds, vocabulary, and rebuild notes.
+music/packs/          Per-lane packs: technical scaffolds and review vocabulary.
 music/tracks/         Track registry: spec, brief, and listening notes per track.
 src/setloom/          Python toolkit: CLI (validate/anatomize/score), track-spec schema, hygiene gate, MIDI + audio-hygiene + music-theory primitives, and anatomy/score diagnostics.
 scripts/              Local genai candidate and smoke-clip scripts.

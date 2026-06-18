@@ -22,8 +22,7 @@ Acceptance:
 
 Build timestamped studies from tracks and DJ sets.
 
-Status: superseded — the first corpus and findings were cleared from the active
-pack on 2026-06-15 because they over-promoted stale and restrictive evidence.
+Status: open — reference studies are selected case by case for a clear musical question.
 
 Acceptance:
 
@@ -35,9 +34,7 @@ Acceptance:
 
 Convert evidence into vocabulary, diagnostics, and track-specific hypotheses.
 
-Status: reset — `music/packs/melodic-progressive-techno/style.yml` now keeps
-only lane routing and technical-hygiene scaffolding while the real music
-evidence is rebuilt.
+Status: shipped — `music/packs/melodic-progressive-techno/style.yml` carries hygiene scaffolding only.
 
 Acceptance:
 
@@ -132,8 +129,7 @@ Acceptance:
 Generate local candidates from explicit track theses, then route them through
 technical diagnostics and the human listening gate.
 
-Status: partially reset — runtime/model-store plumbing remains useful; old
-pack-prompt recipes are deprecated as musical guidance.
+Status: in progress — runtime and model-store plumbing is in place; candidates route through diagnostics and the listening gate.
 
 Acceptance:
 

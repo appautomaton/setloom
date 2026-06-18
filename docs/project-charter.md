@@ -29,14 +29,7 @@ Setloom is not primarily for:
 
 The first working lane is melodic/progressive techno.
 
-That lane is currently in reset/rebuild mode. The old fixed reference-anchor
-list is not active guidance, because a named-artist list too easily becomes a
-template. Future references should enter the project as timestamped listening
-studies in `local/corpus/`, tied to stem/layer evidence and abstract musical
-moves.
-
-References are evidence and vocabulary sources. They are not instructions to
-imitate, clone, or convert one artist's habits into genre law.
+References enter the project as timestamped listening studies in `local/corpus/`, tied to stem/layer evidence and abstract musical moves. They are evidence and vocabulary sources, not instructions to imitate, clone, or convert one artist's habits into genre law.
 
 ## Design Principles
 
