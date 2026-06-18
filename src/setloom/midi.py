@@ -2,9 +2,9 @@
 """MIDI core: PPQ-480 tick math, bar-grid helpers, and a format-1 part writer.
 
 All Setloom MIDI is 4/4 at a constant tempo taken from the track spec.
-Generators produce ``NoteEvent`` lists in absolute ticks; the writer turns
-them into a standalone single-track format-1 file per part whose
-end_of_track lands at exactly the arrangement's total tick length.
+Per-track code produces ``NoteEvent`` lists in absolute ticks; the writer turns
+them into a standalone single-track format-1 file per part whose end_of_track
+lands at exactly the arrangement's total tick length.
 """
 
 from pathlib import Path

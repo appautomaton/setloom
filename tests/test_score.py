@@ -25,12 +25,7 @@ RAW = {
     "groove": {"bass_step_occupancy_target": [0.75, 0.93]},
     "arrangement_tension": {"main_break_start_fraction": [0.42, 0.48]},
 }
-PACK = StylePack(
-    id="test-pack",
-    generation_defaults=RAW["generation_defaults"],
-    rejection_rules=[],
-    raw=RAW,
-)
+PACK = StylePack(id="test-pack", raw=RAW)
 QUICK = {"key_estimate": "A# minor"}
 
 
@@ -74,7 +69,7 @@ class TestScoreRow:
         report = sc.score_row(_row(main_break_start_frac=None), QUICK, PACK)
         assert _by_metric(report)["main_break_start_frac"].status == "missing"
 
-        bare = StylePack(id="bare", generation_defaults={}, rejection_rules=[], raw={})
+        bare = StylePack(id="bare", raw={})
         report = sc.score_row(_row(), QUICK, bare)
         assert report.counts == {"in": 0, "out": 0, "missing": 7}  # never crashes
 
