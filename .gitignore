@@ -27,10 +27,12 @@ build/
 # Read-only reference clones of upstream projects; local working aid only.
 /.references/
 
+# Audio renders: large, binary, often copyrighted — never committed anywhere.
 *.wav
 *.aiff
 *.aif
 *.flac
 *.mp3
-*.mid
-*.midi
+
+# MIDI is small, regenerable source material — committable as track input.
+# Machine-local MIDI (candidates, scratch) is already covered by /local/ above.
