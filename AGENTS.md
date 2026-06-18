@@ -56,7 +56,6 @@ The corpus is evidence for study, not a lawbook. Your track must say something d
 ## Tooling Rules
 
 - Open-source, CLI-controllable tools for the public core; Python is the control plane; keyboard-first, never manual clicking.
-- Proprietary DAWs are local reference surfaces only — never required, never the output path (`docs/tooling.md`).
 - No new Homebrew packages; one repo-local `uv` environment for everything; Node tooling stays in-project.
 - The listening gate is no-click: agents prepare and play short audition audio; the human only listens and types.
 - Everything generated is file-based and reproducible: specs, MIDI, stems, renders, reports, notes.
