@@ -2,16 +2,16 @@
 
 # Setloom
 
-Open-source agentic tools for weaving club tracks and DJ sets.
+Producer-first agentic tools for weaving club tracks and DJ sets.
 
-Setloom by AppAutomaton is a keyboard-first tool and agentic harness for generating, tuning, mixing, and sequencing club tracks and DJ sets. It starts with melodic/progressive techno, then expands through style grammars for house, tech house, and adjacent electronic music lanes.
+Setloom by AppAutomaton is a keyboard-first co-production harness for generating, tuning, mixing, and sequencing club tracks and DJ sets. It starts with melodic/progressive techno, then expands through lane packs for house, tech house, and adjacent electronic music lanes.
 
-Setloom is built for creators with rhythm, taste, and rave intuition who want to type their way through music production instead of learning a full professional DAW workflow.
+Setloom is built for creators with rhythm, taste, and rave intuition who want to type their way through music production without surrendering musical judgment to presets or stale automation.
 
 ## What It Is
 
-- A file-based harness for track specs, style grammars, MIDI, stems, renders, review notes, and set plans.
-- An agentic workflow where AI proposes candidates and the human approves, rejects, or redirects by typing.
+- A file-based harness for track specs, lane packs, MIDI, stems, renders, review notes, and set plans.
+- An agentic workflow where AI prepares candidates, the human owns taste, and every serious render starts with a producer decision.
 - A practical bridge between algorithmic music tools, generative agents, and DJ-set-aware arrangement.
 
 ## What It Is Not
@@ -34,8 +34,9 @@ The project should preserve control. A final WAV is useful, but the editable mat
 ## Core Principle
 
 ```text
-Agents generate candidates.
-Rules protect groove and low end.
+Agents prepare candidates.
+Technical checks protect playback and low end.
+Producer judgment shapes the music.
 Humans make the listening decision.
 ```
 
@@ -43,8 +44,8 @@ Humans make the listening decision.
 
 ```text
 AGENTS.md             High-signal instructions for coding agents.
-docs/                 Charter, roadmap, licensing, style grammar, and workflow notes.
-music/packs/          Per-lane style packs: executable grammar plus the research that produced it.
+docs/                 Charter, roadmap, licensing, lane-pack contract, and workflow notes.
+music/packs/          Per-lane packs: technical scaffolds, vocabulary, and rebuild notes.
 music/tracks/         Track registry: spec, brief, and listening notes per track.
 src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
 scripts/              Local genai candidate and smoke-clip scripts.
@@ -60,7 +61,7 @@ Start with [docs/README.md](docs/README.md) for context routing.
 
 ## License
 
-Core code, harness prompts, schemas, style grammars, and automation logic are licensed under AGPL-3.0-only.
+Core code, harness prompts, schemas, executable lane packs, and automation logic are licensed under AGPL-3.0-only.
 
 Project documentation is licensed under CC BY-SA 4.0 unless explicitly marked otherwise.
 

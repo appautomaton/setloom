@@ -2,16 +2,56 @@
 
 # Workflow
 
-Setloom uses an agentic co-production loop.
+Setloom uses an agentic co-production loop. The exact tools used depend on the
+question being asked; no command sequence is mandatory.
 
 ```text
-spec -> candidates (deterministic MIDI or genai audio) -> render/separate -> anatomize -> score -> human listening -> typed revision -> next candidates
+track thesis -> candidate or reference study -> listening note
+             -> selective technical evidence when useful -> revision
 ```
 
+## Producer Pass
+
+Before a serious render, make the musical move explicit:
+
+```text
+groove spine -> motif cell -> energy arc -> palette -> what to cut
+```
+
+This pass is short, but it matters. A generator should not decide the track's
+taste by accident. The agent decides what to keep, cut, tile, halve, stab,
+lift, mute, fade, or bypass, then renders only the parts that serve that move.
+
+The right answer may be less material: no hat bed, no clap, no ride, no shaker,
+no inherited bus, no stale patch. Silence is an arrangement choice.
+
+For reference study, timestamped listening notes come first. Machine reports
+must not be read as style evidence or promoted into durable musical contracts.
+`setloom anatomize --layers` comes later, only when the selected reference
+raises a concrete technical question.
+
 The track spec is the authority for song-specific generator choices. A style
-pack supplies grammar, constraints, and review vocabulary; it must not become a
-single reusable groove bed for every track. If a candidate is described as a
-custom groove, the spec or generator path must show the custom bass/drum plan.
+pack supplies lane routing, technical-hygiene scaffolding, and review
+vocabulary; it must not become a reusable musical rulebook. If a candidate is
+described as a custom groove, the spec or generator path must show the custom
+bass/drum plan.
+
+## Harness Judgment
+
+The harness is a working surface, not a source of truth. Existing commands,
+reports, caches, prompts, and generators must be judged against the current
+musical objective before use.
+
+```text
+use it       -> when it fits the current question
+bypass it    -> when it is irrelevant or too coarse
+replace it   -> when it creates misleading authority
+ask          -> when suitability is unclear
+```
+
+When suitability is unclear, the agent asks the human with the question tool
+before proceeding. Scratch analysis stays in `/tmp` until confidence and purpose
+are explicit.
 
 ## Human Role
 
@@ -52,7 +92,8 @@ Current layout:
 ```text
 music/tracks/TNN/                # committed per-track spec, brief, and listening notes
 local/corpus/audio/<artist>/     # reference audio (copyrighted, never committed)
-local/corpus/stems/  stems53/    # separation caches
+local/corpus/notes/              # listening notes and low-confidence scratch reports
+local/corpus/stems53/            # active 53-stem layer cache
 local/corpus/dossiers/           # anatomize dossiers and the corpus summary
 local/candidates/                # TNN/ deterministic MIDI + renders; genai/ generated audio (corpus-exempt)
 local/releases/TNN/              # frozen release packages: master, artwork, upload notes
@@ -61,9 +102,11 @@ models/                          # model weights: generation and separation (git
 
 The `renders/`–`reports/`–`sets/` companions remain the Spec 7-era target; `music/tracks/` already follows the spec-plus-notes shape.
 
-## Review Gates
+## Diagnostics And Listening
 
-Automated checks can catch technical and structural problems. `setloom score` is the shipped technical check: grammar distance against the style-pack targets, with provenance per metric. It is never a taste verdict.
+Automated checks can catch technical and structural problems. `setloom score`
+is a technical diagnostic against whatever pack targets currently exist. It is
+never a taste verdict, and missing targets are acceptable during a pack rebuild.
 
 Human listening catches musical judgment.
 

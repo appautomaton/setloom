@@ -1,86 +1,67 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 
-# Generation Recipes: Local Candidates from the Unified Environment
+# Generation Recipes: Reset for Rebuild
 
-Documented local experiment paths, not product surfaces. Generated audio is reference material and candidate input for the taste owner — scored by `setloom score`, judged at the listening gate, never committed.
+The previous recipes are deprecated as musical guidance. They are retained only
+as environment notes for local experiments.
 
-## The environment contract
+## Environment Contract
 
-All generation models live in setloom's **one uv environment** via the `genai` dependency group — no per-model venvs. `.references/` clones are read-only reference code. Install:
+All generation models live in the repo-local `uv` environment. Model weights
+stay in gitignored `models/`; do not create per-model virtualenvs and do not
+override `HF_HOME`.
 
 ```sh
 uv sync --group anatomy --group genai
 ```
 
-Weights download on first use into the gitignored **project model store**:
+| Store | Path |
+| --- | --- |
+| ACE-Step weights | `models/acestep/` |
+| Magenta RT weights | `models/magenta/` |
+| Hugging Face hub cache | `models/hf/` |
+| 53-stem BS-RoFormer weights | `models/roformer/` |
 
-| Path | What | Routed by |
-| --- | --- | --- |
-| `models/acestep/` | ACE-Step 1.5 checkpoints (DiT, VAE, embedder, 5Hz LM) | `ACESTEP_CHECKPOINTS_DIR` (set by the script) |
-| `models/magenta/` | Magenta RT 2 checkpoints | `MAGENTA_HOME` (set by the script) |
-| `models/hf/` | Hugging Face hub cache for generation pulls | `HF_HUB_CACHE` (set by the script) |
+Serialize heavy jobs: do not run generation, separation, transcription, or GPU
+rendering concurrently.
 
-`HF_HOME` is never overridden, so an existing `hf auth login` keeps working. **Serialize heavy model runs** — never run generation concurrently with separation or another model (M5 Max unified-memory rule). On this machine the local `torch-2.12.0+m5max` wheel may replace stock torch (`uv sync --no-install-package torch`, then install the wheel); int8-on-MPS paths stay gated behind `"+m5max" in torch.__version__`.
+## Current Policy
 
-## Recipe 1 — ACE-Step 1.5: full-track instrumental candidate (songwriter pillar)
+Do not start a new track from a pack-level music prompt such as "123 BPM dark
+hypnotic melodic techno." That path produced generic output and overfit stale
+pack assumptions.
 
-```sh
-uv run --no-sync python scripts/generate_candidate.py --seed 42 --duration 360
-uv run --no-sync setloom score "local/candidates/genai/acestep-candidate-01.wav"
+Start from a track-specific musical thesis:
+
+```text
+intent -> groove/rhythm thesis -> palette/timbre thesis -> motif behavior
+       -> short audition -> listening note -> revision
 ```
 
-The script pins the style brief: instrumental, 123 bpm, minor key, hypnotic-pedal caption mirroring the grammar (no named artists). Candidates land in `local/candidates/genai/` — structurally exempt from `corpus-summary.yml`, so scoring them never pollutes the corpus aggregate. Iterate by seed and caption; the score report says where each candidate sits against the grammar, and your ears say whether it matters.
+Reference audio, MIDI, and separated stems are raw material for producer
+decisions. They are not a route to copying a song. Extract the smallest useful
+cell, choose the low-end spine, rebuild the form at the target BPM, and decide
+what should disappear.
 
-Reproducibility contract (verified 2026-06-10):
+Good generation work may bypass stale patches, preset drum lanes, or the mix
+bus entirely. A scratch synth in `/tmp` is acceptable when it exposes a better
+sound. Promote only the idea that survives listening, not the experiment that
+found it.
 
-- The script passes `use_random_seed=False` + explicit `seeds`; the upstream config default silently discards the seed otherwise.
-- `--no-thinking` runs are byte-reproducible per seed, and the caption reaches the DiT verbatim.
-- Thinking runs are **one-offs**: the 5Hz LM's MLX sampler is unseeded upstream, and the LM rewrites the caption by design ("query rewrite"; observed drift: melodic-techno brief → deep-house/oud/vocal-chop caption).
-- **Default to thinking for musical candidates.** The LM is the composition engine (upstream capability table: CoT metas, query rewrite, composition); DiT-only is upstream's low-VRAM fallback. Retention means keeping the WAV — revision flows from saved artifacts (repaint/retake/cover tasks), not from re-running seeds. Reach for `--no-thinking` only for engineering runs (determinism tests, knob attribution) or as a brief-fidelity fallback when the rewrite keeps drifting the mood.
-- Quality levers above the current `acestep-5Hz-lm-1.7B` + 2B turbo DiT: the 4B LM ("strong" composition tier) and the XL DiT both fit this machine's unified memory; trying them is its own change.
+Use deletion early. If hats, claps, rides, shakers, risers, or inherited effects
+make the result cheaper, remove them instead of polishing them.
 
-## Recipe 1b — Vocal lane: generate the voice, only the voice
+Generated audio is candidate material only. It is scored for technical
+diagnostics when useful, then judged by listening.
 
-Taste-owner rule (2026-06-10): when the target is a vocal lead, do not generate
-a full band around it. Caption an a cappella take ("solo female vocal, a
-cappella, minimal atmosphere") with `--lyrics-file` and `--vocal-language`,
-and size `--duration` to the lyric by beat math, not generosity: the model
-fills whatever canvas it gets (measured 2026-06-10 — 50 s a-cappella takes all
-sang wall-to-wall, stretching the lyric). At one strong syllable per beat, a
-4-line 8-syllable stanza is 8 bars and a 2-line hook is 4 bars; at 123 bpm
-that is ~24 s sung plus breath and tail ≈ a 30 s canvas, not 50 and never 120.
-Voice-only takes are cheaper, faster to audition, and need no stem separation —
-the artifact tax disappears when there is no band to peel away. Two measured
-caveats (2026-06-10): the model fills the tail to the canvas edge, so leave
-the last note room or rescue it by fading the dry voice into a reverb send;
-and "a cappella, no instruments" still leaks a quiet band (one take measured
-synth/bass at -19 dBFS and kick/drums at -27/-28 under the voice) — the
-voice-only deliverable is the 53-stem lens's lead-vocal + vocal layers, which
-took it to 0.0% sub-180 Hz energy and 0.2% transients. A plain high-pass only
-hides the bed below the voice; it cannot remove instruments that share the
-vocal band. Full-mix vocal
-generation (the T04 take-3 path) remains the fallback when the composer needs
-band context to phrase against.
+## Deprecated Recipes
 
-## Recipe 2 — Magenta RT 2: jam-pillar smoke clip
+| Recipe | Status |
+| --- | --- |
+| ACE-Step full-track instrumental from pack prompt | Deprecated as musical guidance |
+| Vocal-only generation notes | Keep as local experiment provenance only |
+| Magenta RT smoke clip | Keep as runtime smoke only |
+| Groove-first catalog contrast | Superseded by per-track thesis work |
 
-```sh
-uv run --no-sync python scripts/magenta_smoke.py --duration 16
-```
-
-A short MLX-generated clip proving the realtime pillar runs in this env. Lane assignment (2026-06-10): Magenta RT 2 owns the **sound-design / ambient / pad lane** — textures, beds, and pads — alongside its future realtime-jam role. Magenta RT 2 has **no PyTorch path** — it is MLX (plus a C++ engine) on Apple Silicon. The actual jam workflow (live audio routing, MIDI steering from an instrument) is its own future change; do not score smoke clips against full-track grammar.
-
-## Licensing and provenance
-
-- ACE-Step 1.5: MIT code, model-card-licensed training data (v1.5). Pinned in `pyproject.toml` at the upstream rev; its stale `<3.13` Python cap is overridden there with a documented `[[tool.uv.dependency-metadata]]` block.
-- Magenta RT 2: Apache-2.0 code, CC-BY model weights, from PyPI (`magenta-rt[mlx]`).
-- Stable Audio 3 is **deferred**: hard pins (`python <3.11`, `torch==2.7.1`) cannot join the unified env today; it returns as a dedicated porting effort. Until then, Magenta RT 2 covers its sound-design lane.
-- Generated audio belongs to its creator subject to each model's terms; treat outputs as local experiment material with non-commercial intent.
-
-## The loop this enables
-
-```
-generate (recipe) → separate → anatomize → score → listen (gate) → revise prompt/seed
-```
-
-`anatomize` and `score` do not care whether audio is a reference track or model output — the same instrument that dissected the corpus grades every candidate.
+The next recipe file should be written after the local corpus and reference
+study rebuild.
