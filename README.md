@@ -1,70 +1,117 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 
+<div align="center">
+
 # Setloom
 
-Producer-first agentic tools for weaving club tracks and DJ sets.
+**Producer-first agentic tools for club music.**
 
-Setloom by AppAutomaton is a keyboard-first co-production harness for generating, tuning, mixing, and sequencing club tracks and DJ sets. It starts with melodic/progressive techno, then expands through lane packs for house, tech house, and adjacent electronic music lanes.
+Turn musical intent into editable tracks, stems, renders, and listening notes.
 
-Setloom is built for creators with rhythm, taste, and rave intuition who want to type their way through music production without surrendering musical judgment to presets or stale automation.
+[Charter](docs/project-charter.md) ·
+[Workflow](docs/workflow.md) ·
+[Tooling](docs/tooling.md) ·
+[Roadmap](docs/roadmap.md)
 
-## What It Is
+</div>
 
-- A file-based harness for track specs, lane packs, MIDI, stems, renders, review notes, and set plans.
-- An agentic workflow where AI prepares candidates, the human owns taste, and every serious render starts with a producer decision.
-- A practical bridge between algorithmic music tools, generative agents, and DJ-set-aware arrangement.
+---
 
-## What It Is Not
+Setloom is a local, keyboard-first co-production harness for electronic music.
+It gives AI agents a structured place to help with production: track specs,
+MIDI, stems, renders, reference studies, technical checks, and revision notes.
 
-- Not a traditional DAW replacement.
-- Not a one-click hit generator.
-- Not a professional sound engineering course.
-- Not a closed hosted music service.
+The point is not to replace taste. The point is to make iteration faster while
+keeping the human in charge of the music.
 
-## V1 Artifact
+## Vision
 
-V1 targets editable outputs:
-
-```text
-MIDI + stems + review notes
-```
-
-The project should preserve control. A final WAV is useful, but the editable materials matter more.
-
-## Core Principle
+Setloom is built around a simple idea:
 
 ```text
-Agents prepare candidates.
-Technical checks protect playback and low end.
-Producer judgment shapes the music.
-Humans make the listening decision.
+AI can move quickly.
+The producer still decides what is music.
 ```
+
+We want a studio surface where a creator can describe the track's intent, ask
+agents to prepare options, listen without ceremony, and keep only what earns its
+place.
+
+Club music is the proving ground because it is unforgiving. The groove has to
+hold. The low end has to behave. The arrangement has to move. A prompt cannot
+fake that.
+
+Setloom is still iterating.
+
+## How It Works
+
+```text
+intent
+  -> candidate material
+  -> technical checks
+  -> listening gate
+  -> revision
+```
+
+Agents prepare the work. The human keeps, rejects, or redirects it.
+
+## Principles
+
+| Principle | Meaning |
+| --- | --- |
+| Producer-first | Musical intent comes before tools, scores, or generators. |
+| Human taste gate | Nothing is final until a human listener says it works. |
+| Local by default | Audio, candidates, references, and model weights stay on the machine. |
+| Evidence, not authority | Analysis helps ask better questions; it does not decide taste. |
+| Editable artifacts | MIDI, stems, specs, and notes matter as much as the final WAV. |
+
+## Tool Drawer
+
+These commands are available when they serve the track.
+
+```sh
+setloom validate <spec>
+setloom generate <spec>
+setloom anatomize <audio> --layers
+setloom score <audio>
+```
+
+They are tools, not a required pipeline.
 
 ## Repository Map
 
-```text
-AGENTS.md             High-signal instructions for coding agents.
-docs/                 Charter, roadmap, licensing, lane-pack contract, and workflow notes.
-music/packs/          Per-lane packs: technical scaffolds, vocabulary, and rebuild notes.
-music/tracks/         Track registry: spec, brief, and listening notes per track.
-src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
-scripts/              Local genai candidate and smoke-clip scripts.
-tests/                Schema, gate, generator, conductor, audio, part, and render tests.
-local/                Machine-local material (gitignored): corpus lab, candidates, releases.
-models/               Model weights store (gitignored).
-pyproject.toml        uv-managed Python package definition and CLI entry point.
-LICENSE               AGPL-3.0-only text for the core project.
-LICENSES/             Canonical license texts used by the project.
-```
+| Path | Purpose |
+| --- | --- |
+| `AGENTS.md` | Operating rules for coding agents. |
+| `docs/` | Charter, workflow, tooling, roadmap, and licensing. |
+| `music/packs/` | Lane scaffolds, review vocabulary, and reset notes. |
+| `music/tracks/` | Track-specific specs, briefs, production files, and notes. |
+| `src/setloom/` | Python package: CLI, generators, render helpers, anatomy, scoring. |
+| `scripts/` | Local utilities and experiments. |
+| `tests/` | Technical checks for the harness. |
+| `local/` | Machine-local audio, candidates, corpus, and releases. |
+| `models/` | Machine-local model weights. |
 
-Start with [docs/README.md](docs/README.md) for context routing.
+`local/` and `models/` are gitignored. Reference audio, generated candidates,
+model weights, and proprietary assets stay local.
+
+## What It Is Not
+
+- Not a DAW replacement.
+- Not a one-click song machine.
+- Not a style-law engine.
+- Not a named-artist imitation system.
+- Not a hosted music service.
 
 ## License
 
-Core code, harness prompts, schemas, executable lane packs, and automation logic are licensed under AGPL-3.0-only.
+Core code, harness prompts, schemas, executable lane packs, and automation logic
+are licensed under AGPL-3.0-only.
 
-Project documentation is licensed under CC BY-SA 4.0 unless explicitly marked otherwise.
+Project documentation is licensed under CC BY-SA 4.0 unless explicitly marked
+otherwise.
 
-Generated music outputs belong to the user who creates them, subject to the user's own third-party samples, models, and inputs.
+Generated music outputs belong to the user who creates them, subject to the
+user's own third-party samples, models, and inputs.
 
 See [docs/licensing.md](docs/licensing.md).
