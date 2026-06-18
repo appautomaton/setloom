@@ -1,0 +1,163 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# T05: 123 BPM techno mashup edit. Bad Romance (Lady Gaga) MIDI supplies the
+# low-end spine -- its moving F/G/A/C bass line and four-on-floor kick -- re-timed
+# to 123 BPM. Lopyt "Megatron" MIDI supplies a C-minor 8th-note ostinato motif
+# (synth pluck) re-arranged across the form. A Steinway piano (Logic Pro library
+# sample) carries the chord bed in place of the music-box ostinato.
+#
+# Departure from T04 'nova-flamma': T04 is 123 BPM D minor with a deep
+# sidechain roller bass and an ethereal Latin vocal lead. T05 keeps 123 BPM
+# (mandate) but diverges on key (A minor), bass identity (external moving line,
+# not a tonic pedal), top identity (instrumental ostinato + piano chord bed,
+# not vocal), and construction (external MIDI re-arrangement + Steinway sampling,
+# not pure generation).
+
+id: T05
+title: bad-romance-megatron-mashup
+style_pack: melodic-progressive-techno
+duration_profile: streaming_edit
+seed: 5505
+bpm: 123
+key: A minor
+energy: 8
+duration_bars: 144
+
+intent:
+  summary: "123 BPM techno edit mashing Bad Romance's moving low end with Lopyt's C-minor ostinato motif and a Steinway piano chord bed: motif teases in groove_a, breaks to stabs over a kick-out tension bed, drops full, peaks octave-lifted."
+  avoid:
+    - "festival-pop drop"
+    - "wall-to-wall motif; the riff breathes across the form"
+    - "tonic-pedal techno bass; the moving Bad Romance line is the point"
+    - "imitating either source artist; references are abstract moves only"
+
+sections:
+  intro: 8
+  groove_a: 16
+  groove_b: 16
+  break: 16
+  drop_1: 32
+  groove_c: 16
+  peak: 32
+  outro: 8
+
+palette:
+  kick: "four-on-floor, saturated and short; OUT in the break by harness routing"
+  bass: "Bad Romance moving line (F/G/A/C region), re-timed to 123 BPM -- external, not the harness tonic pedal"
+  drums: "tight hats, phrase-gated shaker, restrained percussion"
+  chords: "Aminor triad stabs in drops, sustained bed in break/peak"
+  pad: "dark conductor bed, wide and low"
+  lead: "Lopyt C-minor 8th-note ostinato (pluck) -- external, re-arranged by section; music-box lane replaced by Steinway piano chord bed"
+  fx: "risers into drop_1 and peak, impacts on their downbeats"
+
+style_vector:
+  darkness: 7
+  melodic_emotion: 6
+  groove_hypnosis: 8
+  cinematic_tension: 6
+  bass_aggression: 6
+  arrangement_patience: 7
+  hook_density: 7
+  vocal_presence: 0
+  organic_texture: 1
+  peak_time_pressure: 8
+
+groove:
+  summary: "External low-end + motif over harness scaffolding; Am-F-C-G conductor loop matches Bad Romance bass centers."
+  harmony:
+    label: t05-am-f-c-g-loop
+    progression: [0, 5, 2, 6]
+    chord_color: triad
+    harmonic_rhythm:
+      break: 4
+      drop: 8
+      peak: 4
+  pad:
+    label: t05-dark-conductor-bed
+    mode: conductor_bed
+    octave: 3
+    note_bars: 4
+    velocity: 44
+    peak_velocity: 52
+  shaker:
+    label: t05-phrase-gated-air
+    mode: phrase_gated
+    phrase_bars: 8
+    active_steps: [2, 6, 10, 14]
+    rest_last_bar: true
+  fx:
+    label: t05-drop-peak-risers
+    mode: entry_riser_impact
+    riser_bars: 4
+    impact_velocity: 118
+  chords:
+    label: t05-am-stabs-and-bed
+    sections:
+      break:
+        mode: sustain
+        color: triad
+        octave: 4
+        bed_velocity: 48
+      drop:
+        mode: stabs
+        color: triad
+        octave: 4
+        stab_velocity: 58
+        duration_steps: 3
+        stab_patterns:
+          - [6]
+          - []
+          - [10]
+          - []
+          - [6, 14]
+          - []
+          - [10]
+          - [14]
+      peak:
+        mode: bed_and_stabs
+        color: triad
+        octave: 4
+        bed_velocity: 42
+        stab_velocity: 64
+        duration_steps: 2
+        bed_lift: 12
+        stab_patterns:
+          - [6]
+          - [10]
+          - []
+          - [14]
+          - [6, 14]
+          - []
+          - [10]
+          - [14]
+  arp:
+    label: t05-mute-harness-arp
+    sections:
+      drop:
+        mode: mute
+      peak:
+        mode: mute
+  drums:
+    label: t05-techno-pocket
+    phrase_bars: 16
+    percussion_patterns:
+      - [[3, 10], [7], [11, 14], [], [3], [7, 13], [10], [3, 14], [7], [11], [3, 10], [14], [], [7, 11], [3], [10, 14]]
+
+render_targets:
+  midi:
+    - drums
+    - chords
+    - fills
+    - pad
+    - fx
+  stems:
+    - kick
+    - bass
+    - drums
+    - chords
+    - pad
+    - lead
+    - fx
+  demo_mix: true
+
+human_gate:
+  required: true
