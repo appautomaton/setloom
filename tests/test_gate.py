@@ -30,26 +30,22 @@ def test_t01_passes_gate(pack) -> None:
     assert result.blocking == [] and result.overridden == []
 
 
-def test_bpm_138_fails_naming_rule(pack) -> None:
+def test_bpm_138_is_not_blocked_by_reset_pack(pack) -> None:
     result = evaluate_gate(_spec_with(bpm=138), pack)
-    assert not result.passed
-    assert [v.rule_id for v in result.blocking] == ["bpm-out-of-lane"]
-
-
-def test_bpm_138_override_passes_and_records(pack) -> None:
-    result = evaluate_gate(_spec_with(bpm=138), pack, allow_overrides={"bpm-out-of-lane"})
     assert result.passed
-    assert [v.rule_id for v in result.overridden] == ["bpm-out-of-lane"]
 
 
-def test_club_length_too_long_fails(pack) -> None:
-    # 320 bars at 122 BPM = 10:29 — over the 9:00 ceiling. 122 stays inside the
-    # corpus-narrowed bpm_range so only club-length is exercised here.
+def test_removed_bpm_override_is_rejected(pack) -> None:
+    with pytest.raises(ValueError, match="unknown override"):
+        evaluate_gate(_spec_with(bpm=138), pack, allow_overrides={"bpm-out-of-lane"})
+
+
+def test_club_length_no_longer_blocks_musical_form(pack) -> None:
     sections = {"intro": 32, "groove_a": 64, "drop_1": 96, "peak": 96, "outro": 32}
     result = evaluate_gate(
         _spec_with(bpm=122, duration_bars=320, sections=sections), pack
     )
-    assert "club-length" in [v.rule_id for v in result.blocking]
+    assert result.passed
 
 
 def test_missing_outro_fails_unmixable_edges(pack) -> None:
@@ -78,17 +74,17 @@ def test_streaming_edit_passes_gate(pack) -> None:
     assert result.passed, result.blocking
 
 
-def test_streaming_edit_without_break_fails_identity(pack) -> None:
+def test_streaming_edit_without_break_is_not_pack_blocked(pack) -> None:
     sections = {"intro": 16, "groove_a": 32, "drop_1": 32, "peak": 32, "outro": 16}
     spec = _spec_with(duration_profile="streaming_edit", duration_bars=128, sections=sections)
     result = evaluate_gate(spec, pack)
-    assert [v.rule_id for v in result.blocking] == ["short-edit-identity"]
+    assert result.passed
 
 
-def test_128_bars_under_club_profile_fails_length(pack) -> None:
+def test_128_bars_under_club_profile_is_allowed_by_reset_pack(pack) -> None:
     spec = _spec_with(duration_bars=128, sections=STREAMING_SECTIONS)  # default club profile
     result = evaluate_gate(spec, pack)
-    assert "club-length" in [v.rule_id for v in result.blocking]
+    assert result.passed
 
 
 def test_streaming_edit_skips_mixable_edges(pack) -> None:

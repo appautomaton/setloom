@@ -95,6 +95,16 @@ def validate_production(manifest: dict[str, Any]) -> None:
         if not 0 <= float(placement["bar"]) < total_bars:
             raise ValueError(f"voice placement bar out of range: {placement}")
 
+    valid_move_lanes = set(lanes) | {"genai_pad"}
+    for move in manifest["automation"].get("phrase_moves", []):
+        lane = str(move.get("lane", ""))
+        if lane not in valid_move_lanes:
+            raise ValueError(f"phrase move references unknown lane {lane}")
+        start = float(move.get("start_bar", -1))
+        end = float(move.get("end_bar", -1))
+        if start < 0 or end <= start or end > total_bars:
+            raise ValueError(f"phrase move bar range out of bounds: {move}")
+
 
 def repo_path(value: str | Path) -> Path:
     path = Path(value)
@@ -127,8 +137,58 @@ def load_stereo(path: Path) -> np.ndarray:
 
 
 def highpass(y: np.ndarray, hz: float) -> np.ndarray:
+    if len(y) < 64:
+        return y
     sos = butter(4, hz, btype="highpass", fs=SR, output="sos")
     return sosfiltfilt(sos, y, axis=0)
+
+
+def lowpass(y: np.ndarray, hz: float) -> np.ndarray:
+    if len(y) < 64:
+        return y
+    sos = butter(4, hz, btype="lowpass", fs=SR, output="sos")
+    return sosfiltfilt(sos, y, axis=0)
+
+
+def edge_mask(length: int, fade: int) -> np.ndarray:
+    mask = np.ones(length, dtype=np.float64)
+    fade = max(0, min(fade, length // 2))
+    if fade > 1:
+        ramp = np.linspace(0.0, 1.0, fade, dtype=np.float64)
+        mask[:fade] = ramp
+        mask[-fade:] = ramp[::-1]
+    return mask
+
+
+def apply_phrase_moves(manifest: dict[str, Any], lane_name: str, y: np.ndarray) -> np.ndarray:
+    """Apply T04 phrase-level arrangement moves to one rendered support lane."""
+    moves = manifest["automation"].get("phrase_moves", [])
+    if not moves:
+        return y
+
+    out = y.copy()
+    for move in moves:
+        if move.get("lane") != lane_name:
+            continue
+        s0 = max(0, bar_to_sample(manifest, float(move["start_bar"])))
+        s1 = min(len(out), bar_to_sample(manifest, float(move["end_bar"])))
+        if s1 <= s0:
+            continue
+
+        original = out[s0:s1]
+        shaped = original.copy()
+        if "highpass_hz" in move:
+            shaped = highpass(shaped, float(move["highpass_hz"]))
+        if "lowpass_hz" in move:
+            shaped = lowpass(shaped, float(move["lowpass_hz"]))
+        if "width" in move:
+            shaped = apply_width(shaped, np.full(len(shaped), float(move["width"])))
+        shaped *= 10 ** (float(move.get("gain_db", 0.0)) / 20)
+
+        fade = bar_to_sample(manifest, float(move.get("fade_bars", 0.25)))
+        mask = edge_mask(s1 - s0, fade)[:, None]
+        out[s0:s1] = original * (1.0 - mask) + shaped * mask
+    return out
 
 
 def crossfade_loop(manifest: dict[str, Any], src: np.ndarray, length: int, offset: int) -> np.ndarray:
@@ -259,7 +319,7 @@ def mix_engine_lanes(
     duck_lanes = set(manifest["automation"].get("duck_lanes", []))
     for lane_name, lane_cfg in manifest["automation"]["lanes"].items():
         stem_path = variant_dir / f"stem-{lane_cfg['stem']}.wav"
-        lane = load_stereo(stem_path) * float(lane_cfg.get("gain", 1.0))
+        lane = load_stereo(stem_path)[:length] * float(lane_cfg.get("gain", 1.0))
         db_env = section_value_envelope(
             manifest, lane_cfg.get("section_db", {}), 0.0, len(lane)
         )
@@ -273,7 +333,9 @@ def mix_engine_lanes(
             len(lane),
         )
         lane = apply_width(lane, width_env)
-        mix[: len(lane)] += lane
+        lane = apply_phrase_moves(manifest, lane_name, lane)
+        n = min(length, len(lane))
+        mix[:n] += lane[:n]
     return mix
 
 
@@ -296,7 +358,7 @@ def mix_genai_pads(
         bed = apply_width(bed, np.full(len(bed), float(span.get("width", 1.0))))
         bed *= duck[s0:s1, None]
         mix[s0:s1] += bed * float(span.get("gain", 1.0))
-    return mix
+    return apply_phrase_moves(manifest, "genai_pad", mix)
 
 
 def place_voice(manifest: dict[str, Any], length: int) -> np.ndarray:
@@ -319,12 +381,7 @@ def place_voice(manifest: dict[str, Any], length: int) -> np.ndarray:
 
 def raw_mix(manifest: dict[str, Any], include_voice: bool) -> np.ndarray:
     total = bar_to_sample(manifest, float(manifest["total_bars"]))
-    variant_dir = repo_path(manifest["sources"]["variant_dir"])
-    stem_lengths = [
-        len(load_stereo(variant_dir / f"stem-{lane['stem']}.wav"))
-        for lane in manifest["automation"]["lanes"].values()
-    ]
-    length = max(total, *stem_lengths)
+    length = total
     duck = duck_envelope(manifest, length)
     mix = mix_engine_lanes(manifest, length, duck)
     mix += mix_genai_pads(manifest, length, duck)

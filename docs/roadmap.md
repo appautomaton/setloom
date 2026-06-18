@@ -20,29 +20,31 @@ Acceptance:
 
 ## Spec 1: Reference Survey
 
-Build a bounded deep survey from tracks and DJ sets.
+Build timestamped studies from tracks and DJ sets.
 
-Status: shipped — corpus and findings under `music/packs/melodic-progressive-techno/`.
-
-Acceptance:
-
-- Reference corpus for starting anchors.
-- Notes on BPM, groove, bass behavior, melody density, breakdown length, transition behavior, and set energy.
-- A style grammar draft that agents can use.
-
-## Spec 2: Style Grammar
-
-Convert references into measurable constraints.
-
-Status: shipped — `music/packs/melodic-progressive-techno/style.yml` with corpus-annotated targets; `music/packs/melodic-progressive-techno/taste-lexicon.md`.
+Status: superseded — the first corpus and findings were cleared from the active
+pack on 2026-06-15 because they over-promoted stale and restrictive evidence.
 
 Acceptance:
 
-- Style vector schema.
-- Track section defaults.
-- Groove and bass rules.
-- Review vocabulary for "too busy", "too flat", "too EDM", "too static", and "not club-functional".
-- First executable style pack under `music/packs/melodic-progressive-techno/style.yml`.
+- Reference studies selected case by case for a clear musical question.
+- Timestamped listening notes tied to stem/layer evidence.
+- Abstract musical moves that do not copy named artists.
+
+## Spec 2: Style Pack Contract
+
+Convert evidence into vocabulary, diagnostics, and track-specific hypotheses.
+
+Status: reset — `music/packs/melodic-progressive-techno/style.yml` now keeps
+only lane routing and technical-hygiene scaffolding while the real music
+evidence is rebuilt.
+
+Acceptance:
+
+- Clear separation between technical hygiene and musical taste.
+- No pack-level BPM, groove, bass, or kick defaults as creative authority.
+- Review vocabulary for listening notes, not score targets.
+- Executable style pack remains loadable under `music/packs/melodic-progressive-techno/style.yml`.
 
 ## Spec 3: Track Spec Schema
 
@@ -87,12 +89,12 @@ Acceptance:
 
 Separate automated checks from human taste decisions.
 
-Status: shipped — technical half is `setloom anatomize` and `setloom score` (`src/setloom/anatomy/`); the human half stays listening notes with keep/revise/reject.
+Status: shipped — diagnostic tools exist in `setloom anatomize` and `setloom score` (`src/setloom/anatomy/`); musical review stays listening notes with keep/revise/reject.
 
 Acceptance:
 
-- Technical checks: clipping, duration, section length, BPM, key center, stem presence.
-- Musical checks: groove density, low-end risk, melodic density, transition readiness.
+- Technical diagnostics: clipping, duration, section length, detected tempo, detected key center, stem presence.
+- Musical review prompts: groove density, low-end feel, melodic density, transition readiness.
 - Human listening notes format.
 - Candidate decision states: keep, revise, reject.
 
@@ -109,28 +111,30 @@ Acceptance:
 - Set arc plan.
 - Human approval for final ordering.
 
-## Spec 8: Style Pack Expansion
+## Spec 8: Lane Pack Expansion
 
-Support more club lanes through new style grammars.
+Support more club lanes through lane-specific packs.
 
 Status: in progress — first pack shipped; expansion lanes not started.
 
 Acceptance:
 
-- First style pack: melodic/progressive techno.
+- First lane pack: melodic/progressive techno.
 - Future packs: house, tech house, afro house, indie dance, and related lanes.
-- Style packs must use constraints and review gates, not artist cloning.
+- Packs must separate technical gates from musical vocabulary and must not clone artists.
 
 ## Spec 9: GenAI Candidate Lane
 
-Generate full-audio candidates from local models, graded by the same instruments as the corpus.
+Generate local candidates from explicit track theses, then route them through
+technical diagnostics and the human listening gate.
 
-Status: shipped — `scripts/generate_candidate.py` (ACE-Step 1.5 songwriter pillar), `scripts/magenta_smoke.py` (Magenta RT 2 sound-design/jam pillar), the `models/` store, and corpus-exempt routing into `local/candidates/genai/`; recipes in `music/packs/melodic-progressive-techno/generation-recipes.md`.
+Status: partially reset — runtime/model-store plumbing remains useful; old
+pack-prompt recipes are deprecated as musical guidance.
 
 Acceptance:
 
 - One repo-local environment; models join via dependency groups, never per-model virtualenvs.
 - Candidates land in `local/candidates/genai/` and never enter the corpus summary.
-- The same anatomize/score instruments grade reference tracks and candidates alike.
-- GenAI covers melody, motif, atmosphere, and texture lanes; groove and low-end safety stay rule-based.
+- The same anatomize/score instruments can diagnose reference tracks and candidates.
+- Musical ideas, including groove and bass identity, belong to the track thesis and listening gate; deterministic code is an execution surface, not a taste owner.
 - Every candidate routes to the human listening gate; scores are technical distance only.

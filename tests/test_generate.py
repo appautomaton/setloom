@@ -5,6 +5,7 @@ import hashlib
 from pathlib import Path
 
 import pytest
+import yaml
 
 from setloom import cli
 from setloom.parts.base import parse_key, root_note
@@ -12,7 +13,7 @@ from setloom.parts.base import parse_key, root_note
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T01 = Path(__file__).resolve().parent / "fixtures" / "spec-t01.yml"
 T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
-GATE_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "gate-bpm-138.yml"
+RESET_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "gate-bpm-138.yml"
 PARTS = (
     "drums",
     "bass",
@@ -79,32 +80,46 @@ def test_different_seed_diverges(tmp_path: Path) -> None:
     assert values_a != values_b
 
 
-def test_gate_blocks_bpm_138_naming_rule(
+def _missing_outro_spec(tmp_path: Path) -> Path:
+    raw = yaml.safe_load(RESET_FIXTURE.read_text(encoding="utf-8"))
+    raw["sections"]["peak"] += raw["sections"].pop("outro")
+    path = tmp_path / "missing-outro.yml"
+    path.write_text(yaml.safe_dump(raw, sort_keys=False), encoding="utf-8")
+    return path
+
+
+def test_bpm_138_is_allowed_by_reset_pack(tmp_path: Path) -> None:
+    code = cli.main(["generate", str(RESET_FIXTURE), "--variants", "1", "--out", str(tmp_path)])
+    assert code == 0
+    assert list(tmp_path.rglob("*.mid"))
+
+
+def test_gate_blocks_missing_mixable_outro(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    code = cli.main(["generate", str(GATE_FIXTURE), "--out", str(tmp_path)])
+    code = cli.main(["generate", str(_missing_outro_spec(tmp_path)), "--out", str(tmp_path)])
     assert code == 2
     err = capsys.readouterr().err
-    assert "bpm-out-of-lane" in err
-    assert not list(tmp_path.rglob("*.mid"))
+    assert "unmixable-edges" in err
+    assert not list((tmp_path / "G01").rglob("*.mid"))
 
 
 def test_gate_override_passes_and_recorded_in_report(tmp_path: Path) -> None:
     code = cli.main(
         [
             "generate",
-            str(GATE_FIXTURE),
+            str(_missing_outro_spec(tmp_path)),
             "--variants",
             "1",
             "--out",
             str(tmp_path),
             "--allow-override",
-            "bpm-out-of-lane",
+            "unmixable-edges",
         ]
     )
     assert code == 0
     report = (tmp_path / "G01" / "seed-42" / "report.md").read_text(encoding="utf-8")
-    assert "OVERRIDDEN bpm-out-of-lane" in report
+    assert "OVERRIDDEN unmixable-edges" in report
 
 
 def test_report_carries_human_gate_notice(tmp_path: Path) -> None:

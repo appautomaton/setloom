@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-# Gate fixture: schema-valid spec whose bpm 138 violates bpm-out-of-lane.
+# Reset-pack fixture: schema-valid spec at 138 BPM. The reset pack no longer
+# treats BPM as a musical rejection rule.
 
 id: G01
 title: gate-bpm-138

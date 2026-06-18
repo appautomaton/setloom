@@ -3,13 +3,13 @@
 """Generate an instrumental melodic-techno candidate with ACE-Step 1.5.
 
 A documented local experiment recipe, not a product surface: candidates are
-reference material for the taste owner, scored by ``setloom score`` and judged
-at the listening gate. See music/packs/melodic-progressive-techno/generation-recipes.md.
+audition material for the taste owner. Technical diagnostics are optional; the
+listening gate judges. See music/packs/melodic-progressive-techno/generation-recipes.md.
 
 Run from the repo root (requires the genai dependency group):
 
-    uv run --no-sync python scripts/generate_candidate.py [--name NAME] [--seed N]
-        [--duration SECONDS] [--caption TEXT]
+    uv run --no-sync python scripts/generate_candidate.py --caption TEXT
+        --bpm BPM --keyscale KEY [--name NAME] [--seed N] [--duration SECONDS]
 
 Weights download on first use to the project model store (gitignored):
 ACE-Step checkpoints -> models/acestep, HF hub cache -> models/hf. The user's
@@ -31,24 +31,19 @@ os.environ.setdefault("HF_HUB_CACHE", str(ROOT / "models" / "hf"))
 
 CANDIDATES = ROOT / "local" / "candidates" / "genai"
 
-# Style grammar in prose: hypnotic pedal groove, dark pads, motif, midpoint
-# break — mirrors style.yml targets without naming artists.
-DEFAULT_CAPTION = (
-    "hypnotic melodic techno, instrumental club mix, steady four-on-the-floor kick, "
-    "rolling sixteenth-note bass pedal locked to the root, dark evolving analog pads, "
-    "arpeggiated minor-key synth motif, long atmospheric breakdown near the middle "
-    "of the track, climactic drop, mixable intro and outro, controlled low end"
-)
-
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--name", default="acestep-candidate-01", help="output stem name")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--duration", type=float, default=360.0, help="seconds (club length)")
-    parser.add_argument("--bpm", type=int, default=123)
-    parser.add_argument("--keyscale", default="A minor")
-    parser.add_argument("--caption", default=DEFAULT_CAPTION)
+    parser.add_argument("--bpm", type=int, required=True, help="track-specific BPM")
+    parser.add_argument("--keyscale", required=True, help="track-specific key/scale")
+    parser.add_argument(
+        "--caption",
+        required=True,
+        help="track-specific musical thesis; no pack-level default prompt is provided",
+    )
     parser.add_argument(
         "--lyrics-file",
         default=None,
@@ -140,8 +135,8 @@ def main() -> int:
         shutil.move(src, out)
     print(f"candidate: {out}")
     print(f"seed: {result.audios[0]['params'].get('seed')}")
-    print("next: uv run setloom score " + str(out.relative_to(ROOT)))
-    print("reminder: scores are the technical half; the listening gate judges")
+    print("next: write a listening note before deciding what to inspect")
+    print("reminder: technical diagnostics are optional; the listening gate judges")
     return 0
 
 

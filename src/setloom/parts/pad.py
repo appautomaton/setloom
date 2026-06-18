@@ -1,20 +1,16 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Pad: sustained tonic-pedal harmonic bed in breaks, drops, and peak (channel 5).
+"""Pad: sustained harmonic bed in breaks, drops, and peak (channel 5).
 
-The pad holds a root + fifth + ninth stack on the key tonic — the
-"no_third_power_stack" color from style.yml harmony_and_melody.chord_colors.
-Omitting the third keeps the stack quality-neutral, so the bed can never
-clash with whatever diatonic progression the chords part drew for the same
-run. One note length (2 or 4 bars) is drawn per run; velocity stays soft and
-lifts slightly at peak. This is the harmonic floor the first listening notes
-said the peak lacked.
+The default pad keeps the legacy tonic power stack for compatibility. Tracks
+can opt into a conductor-driven bed when the tonic stack is too generic.
 """
 
 import random
+from typing import TYPE_CHECKING
 
+from setloom.conductor import build_conductor
 from setloom.midi import TICKS_PER_BAR, NoteEvent, bar_to_tick, section_layout
 from setloom.parts.base import parse_key
-from typing import TYPE_CHECKING
 
 from setloom.schema import TrackSpec
 
@@ -40,15 +36,24 @@ class PadGenerator:
     def generate(
         self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
     ) -> list[NoteEvent]:
+        plan = spec.groove.pad if spec.groove else None
+        if plan and plan.mode == "conductor_bed":
+            return self._generate_conductor_bed(spec, plan.note_bars)
+
         pitch_class, _ = parse_key(spec.key)
-        base = 12 * (PAD_OCTAVE + 1) + pitch_class
+        octave = plan.octave if plan else PAD_OCTAVE
+        base = 12 * (octave + 1) + pitch_class
         # Exactly one rng draw per run keeps draw counts structural.
-        note_bars = rng.choice(NOTE_BARS_OPTIONS)
+        note_bars = plan.note_bars if plan and plan.note_bars else rng.choice(NOTE_BARS_OPTIONS)
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():
             if not section.startswith(("break", "drop", "peak")):
                 continue
-            velocity = PEAK_VELOCITY if section.startswith("peak") else PAD_VELOCITY
+            velocity = (
+                (plan.peak_velocity if plan else PEAK_VELOCITY)
+                if section.startswith("peak")
+                else (plan.velocity if plan else PAD_VELOCITY)
+            )
             for bar_in_section in range(0, bars, note_bars):
                 # Clamp the last note so it never overflows the section.
                 span_bars = min(note_bars, bars - bar_in_section)
@@ -56,4 +61,39 @@ class PadGenerator:
                 duration = span_bars * TICKS_PER_BAR
                 for offset in STACK_OFFSETS:
                     events.append(NoteEvent(PAD_CHANNEL, base + offset, velocity, tick, duration))
+        return events
+
+    def _generate_conductor_bed(
+        self,
+        spec: TrackSpec,
+        planned_note_bars: int | None,
+    ) -> list[NoteEvent]:
+        conductor = build_conductor(spec)
+        plan = spec.groove.pad if spec.groove else None
+        octave = plan.octave if plan else PAD_OCTAVE
+        note_bars = planned_note_bars or 4
+        base = 12 * (octave + 1) + conductor.pitch_class
+        events: list[NoteEvent] = []
+        windows = [
+            (section, start_bar, start_bar + bars)
+            for section, (start_bar, bars) in section_layout(spec).items()
+            if section.startswith(("break", "drop", "peak"))
+        ]
+        for harmonic in conductor.harmonic_events:
+            for section, lo, hi in windows:
+                start = max(harmonic.start_bar, lo)
+                end = min(harmonic.start_bar + harmonic.bars, hi)
+                if end <= start:
+                    continue
+                velocity = (
+                    (plan.peak_velocity if plan else PEAK_VELOCITY)
+                    if section.startswith("peak")
+                    else (plan.velocity if plan else PAD_VELOCITY)
+                )
+                for bar in range(start, end, note_bars):
+                    span = min(note_bars, end - bar)
+                    tick = bar_to_tick(bar)
+                    duration = span * TICKS_PER_BAR
+                    for tone in conductor.chord_tones(harmonic):
+                        events.append(NoteEvent(PAD_CHANNEL, base + tone, velocity, tick, duration))
         return events

@@ -7,6 +7,7 @@ from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
+T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
 
 
 def test_conductor_exposes_shared_phrase_and_harmony_clock() -> None:
@@ -36,3 +37,12 @@ def test_conductor_energy_tracks_section_function() -> None:
     assert intro < drop < peak
     assert conductor.foreground_owner("break") == "lead"
     assert conductor.foreground_owner("drop") == "groove"
+
+
+def test_t04_overrides_shared_t02_harmony_template() -> None:
+    t02 = build_conductor(load_spec(T02))
+    t04 = build_conductor(load_spec(T04))
+
+    assert t04.progression != t02.progression
+    assert t04.progression == (0, 6, 3, 5)
+    assert t04.chord_color == "sus2"

@@ -1,361 +1,101 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-#
-# Annotation contract: every grammar value carries one of
-#   # corpus: <measured from local reference audio by `setloom anatomize`;
-#              see music/packs/melodic-progressive-techno/anatomy-findings.md>
-#   # evidence: <corpus-backed survey/metadata, see music/packs/melodic-progressive-techno/>
-#   # assumption: <design choice or value pending the listening gate>
-# corpus outranks evidence (signal-level measurement vs corroborated metadata).
-# model-knowledge assumptions come from the cross-model review
-# (music/packs/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md)
-# and rank between bare assumptions and corpus evidence: domain-expert priors
-# awaiting listening confirmation.
 
 id: melodic-progressive-techno
-status: surveyed
-provenance:
-  surveyed: 2026-06-07
-  anatomized: 2026-06-10
-  corpus: music/packs/melodic-progressive-techno/corpus/
-  findings: music/packs/melodic-progressive-techno/findings.md
-  anatomy_findings: music/packs/melodic-progressive-techno/anatomy-findings.md
-  cross_model_review: music/packs/melodic-progressive-techno/reviews/codex-cross-model-review-2026-06-07.md
+status: reset_for_rebuild
 
 summary: >
-  Dark, melodic, progressive, club-functional techno with patient arrangement,
-  controlled low end, hypnotic groove, cinematic tension, and DJ-set-aware flow.
+  Provisional lane label for the next melodic/progressive techno rebuild. This
+  pack no longer claims generator authority over BPM, groove, bass motion,
+  kick pattern, break position, arrangement shape, or melodic identity.
 
-reference_anchors:
-  starting:
-    - Innellea
-    - Colyn
-    - 8Kays
-    - Marino Canal
-    - ENAI
-    - Jono Stephenson
-    - Miss Monique
-  expansion:
-    - WhoMadeWho
-    - Arodes
-    - Massano
-    - Jan Blomqvist
-    - Adriatique
+reset:
+  date: 2026-06-15
+  reason: >
+    The first pack over-promoted a small, biased, mostly static evidence pass
+    into style law. Those measurements were useful debugging artifacts, but
+    they are not reliable musical grammar and must not drive generation.
+  deprecated_as_authority:
+    - previous metadata corpus
+    - previous anatomy findings
+    - previous BPM and duration defaults
+    - previous bass cells and groove vocabulary
+    - previous model-knowledge review rules
+    - previous score targets that treated musical taste as scalar distance
 
-style_vector_defaults:
-  # Style-vector values are taste-level judgments that metadata cannot settle;
-  # all remain assumptions until the listening worksheet returns.
-  darkness: 8              # assumption: pending listening; model-knowledge endorses for Afterlife-adjacent center
-  melodic_emotion: 7       # assumption: pending listening; model-knowledge endorses
-  groove_hypnosis: 8       # assumption: pending listening; model-knowledge endorses
-  cinematic_tension: 7     # assumption: pending listening; model-knowledge endorses
-  bass_aggression: 6       # assumption: pending listening
-  arrangement_patience: 9  # assumption: pending listening; model-knowledge flags as high unless extended-mix profile
-  hook_density: 5          # assumption: pending listening
-  vocal_presence: 1        # assumption: pending listening; corpus + model-knowledge both suggest understated for expansion anchors
-  organic_texture: 2       # assumption: pending listening; model-knowledge flags as understated for expansion anchors
-  peak_time_pressure: 6    # assumption: pending listening; model-knowledge flags as conservative for peak-time side
+authority:
+  generator_authority: false
+  musical_rules_authority: false
+  allowed_uses:
+    - route specs to the melodic/progressive techno lane
+    - preserve technical hygiene gates that protect file-based production
+    - hold rebuild notes until a new evidence pass exists
+  not_allowed_uses:
+    - selecting a default BPM
+    - selecting a default bass profile
+    - selecting a default kick pattern
+    - rejecting musical ideas because they do not match old corpus numbers
+    - treating reference-artist measurements as genre law
+
+musical_decision_policy:
+  taste_owner: human
+  track_spec_owns:
+    - groove character
+    - kick pattern
+    - bass profile
+    - rhythmic identity
+    - BPM and key
+    - energy arc
+    - timbre and palette
+    - motif and melody behavior
+  harness_owns_technical_hygiene:
+    - clip prevention
+    - mono and low-end safety
+    - phrase-grid sanity
+    - mixable edges when requested by the track form
+    - reproducible file outputs
+  listening_gate_required: true
 
 generation_defaults:
-  default_bpm: 123         # corpus: anatomy-findings.md — all 8 measured tracks lock at 123.0
-  bpm_range: [122, 124]    # corpus: anatomy-findings.md — measured corpus is single-valued at 123.0; ±1 kept for neighbors. Supersedes survey [120,125]
-  loudness_target_lufs: [-9.0, -8.0]  # corpus: anatomy-findings.md — masters span -9.34..-7.61, mean -8.45; mirrored by scrender LOUDNESS_TARGET_LUFS
-  bpm_outliers_observed: [118, 128]  # evidence: single-source extremes (whomadewho.yml 118, innellea.yml Euphoria 128)
-  bpm_soft_outliers: [118, 128]      # assumption: model-knowledge (cross-model review 2026-06-07) — allow for organic/vocal and peak-time variants
-  key_mode_bias: minor     # evidence: ~2:1 minor:major across sourced corpus keys (findings.md "Key practice")
-  key_mode_weights:        # assumption: model-knowledge (cross-model review 2026-06-07); minor share matches corpus 2:1
-    minor: 0.67
-    major: 0.25
-    ambiguous_or_suspended: 0.08
-  club_edit_duration_minutes: [5.5, 8.5]  # evidence: 16 sourced durations 5:37-8:35, median ~6:38 (findings.md "Duration")
-  meter: "4/4"             # assumption: genre norm, not verified per-track
-  phrase_grid_bars: 8     # evidence: local reference anatomy 2026-06-09; strong 8-bar change grid
-  phrase_lengths_bars: [16, 32]  # evidence: local reference anatomy 2026-06-09; larger changes land on 16/32-bar boundaries
-  major_boundary_bars: [16, 32, 64]  # evidence: local reference anatomy 2026-06-09
-  section_model_default: club_default_224  # assumption: model-knowledge (cross-model review 2026-06-07)
-  section_model_presets:
-    # assumption: model-knowledge (cross-model review 2026-06-07). Supersedes the
-    # draft 288-bar section_model, which exceeded the pack's own club-length rule
-    # (validator + cross-model review converged on this). 224 bars @123 ~ 7:17,
-    # 256 bars @123 ~ 8:20 — both inside the club window with 16/32-bar phrasing.
-    club_default_224:
-      intro: 32
-      groove_a: 32
-      break_1: 16
-      drop_1: 48
-      break_2: 16
-      peak: 48
-      outro: 32
-    extended_peak_256:
-      intro: 32
-      groove_a: 32
-      break_1: 32
-      drop_1: 64
-      break_2: 32
-      peak: 32
-      outro: 32
-    streaming_edit_128:
-      # assumption: model-knowledge (cross-model consult 2026-06-07); user take-3
-      # requested ~4 minutes. Single-arc short edit: one break, one drop/peak,
-      # reduced edges. 128 bars ~ 4:08 at 124 BPM — phrase-clean beats exact 4:00.
-      intro: 16
-      groove_a: 16
-      break_1: 16
-      drop_1: 32
-      peak: 32
-      outro: 16
-
+  # Operational forms only. These are not style constraints; they keep the
+  # existing gate code loadable while the pack is rebuilt.
   duration_profiles:
-    # assumption: model-knowledge (cross-model consult 2026-06-07). Two product
-    # forms, not one rule change: club evidence (5:37-8:35 corpus, Beatport
-    # sampling = DJ tools) stays intact; the short form is a streaming/radio
-    # edit, a different artifact generated natively (never blind-trimmed).
     club_extended:
-      duration_minutes: [5.0, 9.0]   # evidence: corpus duration span + club-length rule
+      duration_minutes: [0.5, 30.0]
       mixable_edges: required
-      section_model_preset: club_default_224
     streaming_edit:
-      duration_minutes: [3.75, 4.35]
+      duration_minutes: [0.5, 12.0]
       mixable_edges: reduced
-      section_model_preset: streaming_edit_128
-      product_label: "streaming/radio edit, not a club extended mix"
-
-groove:
-  # assumption: model-knowledge (cross-model review 2026-06-07) — the lane's drive
-  # comes from controlled bass/pump/top-loop interaction; pending listening.
-  bass_articulation_weights:
-    # corpus note: anatomy-findings.md measures occupancy 0.75-0.93 (median note
-    # 2 sixteenths), supporting rolling dominance; reweighting is generation
-    # behavior and stays deferred to the conductor/style_vector change.
-    rolling_16th_sub: 0.45
-    offbeat_eighth_pulse: 0.35
-    syncopated_pedal: 0.20
-  bass_step_occupancy_target: [0.75, 0.93]  # corpus: anatomy-findings.md — rolling pedal bass occupies 75-93% of the 16th grid across all 8 tracks
-  vocabulary:
-    # Groove cells as pack data (decision 2026-06-10): the engine renders
-    # cells and enforces alignment invariants (bass off beat ticks, sidechain
-    # gap, kick/no-kick per section); pattern CONTENT lives here so the lane
-    # evolves by editing data, never code. Cell note: [16th step 0-15,
-    # velocity, length in 16ths]; lengths clamp to the sidechain gap in code.
-    phrase_bars: 8           # corpus: strong 8-bar change grid
-    velocity_swell_per_bar: 1  # gentle build across each phrase
-    bass_cells:
-      # corpus: median note 2 sixteenths, neighbor motion at phrase edges
-      # (tonic share 0.47-0.92, never 1.0). neighbor_steps drop a whole step
-      # below the root, and only from a section's second phrase onward —
-      # the first 8 bars of every section stay pure tonic pedal.
-      rolling_16th_sub:
-        bars:
-          - [[1, 84, 1], [2, 100, 1], [3, 88, 1], [5, 84, 1], [6, 100, 1], [7, 88, 1], [9, 84, 1], [10, 100, 1], [11, 88, 1], [13, 84, 1], [14, 100, 1], [15, 88, 1]]
-        phrase_end_bar: [[1, 84, 1], [2, 100, 1], [3, 88, 1], [5, 84, 1], [6, 100, 1], [7, 88, 1], [9, 84, 1], [10, 100, 1], [11, 88, 1], [13, 90, 1], [14, 98, 2]]
-        neighbor_steps: [13]
-      offbeat_eighth_pulse:
-        bars:
-          - [[2, 96, 2], [6, 96, 2], [10, 96, 2], [14, 96, 2]]
-        phrase_end_bar: [[2, 96, 2], [6, 96, 2], [10, 96, 2], [13, 86, 1], [14, 98, 2]]
-        neighbor_steps: [13]
-      syncopated_pedal:
-        bars:
-          - [[2, 98, 2], [7, 88, 1], [10, 88, 2]]
-          - [[2, 98, 2], [7, 88, 1], [14, 90, 2]]
-        phrase_end_bar: [[2, 98, 2], [7, 88, 1], [13, 86, 1], [14, 94, 2]]
-        neighbor_steps: [13]
-    drums:
-      phrase_end:
-        groove_hat_breath: true        # final phrase bar: last offbeat hat rests, open hat marks the turn
-        bed_accent_steps: [[14, 84], [15, 92]]  # drop/peak: small 16th lift into the next phrase
-      break_accent_kicks: [0.4, 0.7]   # corpus signature: lone accent kicks inside the breakdown (Magma bars 43/46)
-  sidechain:
-    required: true
-    duck_on_kick_beats: true
-    recovery_shape: medium_slow
-  percussion:
-    offbeat_open_hat: required
-    closed_hat_16th_bed: section_dependent
-    shaker_top_groove: section_dependent
-    room_or_far_drum_layer: section_dependent
-    phrase_impacts: required
-    random_percussion: phrase_patterned_only
-    swing_amount: [0.00, 0.06]
-  low_end_family:
-    # evidence: local reference anatomy + Opus review 2026-06-09.
-    # Do not collapse these into one bass stem during production review.
-    kick_body_transient: required
-    sub: required
-    rumble_or_kick_tail: required
-    mid_bass_or_rolling_bass: required
-  production_glue:
-    deterministic_sidechain_pump: required
-    low_end_mono_safety: required
-    parallel_drum_bus: required
-    parallel_low_bus: required
-
-harmony_and_melody:
-  # assumption: model-knowledge (cross-model review 2026-06-07) — hooks work through
-  # repetition, restraint, modal color, gradual variation; pending listening.
-  harmonic_rhythm_bars: [4, 8, 16]
-  chord_colors:
-    - minor_triad
-    - sus2
-    - sus4
-    - add9
-    - no_third_power_stack
-  lead_density:
-    break: sparse_to_medium
-    drop: sparse
-    peak: medium_with_repetition
-  motif_policy:
-    repeat_then_vary: true
-    phrase_arc_bars: [8, 16]
-    short_loop_only: reject
-    call_response_required_when_no_vocal: true
-    counter_melody_or_tonal_response_required_when_no_vocal: true
-    classical_reference_must_be_recomposed: true
-    max_competing_melodic_layers: 2
-  no_vocal_identity:
-    # evidence: local reference anatomy + user listening gate 2026-06-09.
-    # If there is no vocal, melodic identity must carry the emotional foreground.
-    lead_as_vocal_substitute: true
-    requires_longer_phrase_line: true
-    requires_variation_across_repeats: true
-    avoid_mechanical_two_bar_motif: true
-    avoid_unprocessed_classical_loop: true
-
-composition_conductor:
-  # evidence: local listening + Fable consultation 2026-06-09.
-  required: true
-  shared_lanes:
-    - phrase_clock
-    - harmonic_timeline
-    - energy_curve
-    - space_plan
-  lead_period_bars: 16
-  lead_period_shape: "A-A'-B-A''"
-  sub_rumble_pedal_safe: true
-  mid_bass_or_tonal_support_follows_harmonic_root: true
-  counterline_in_lead_rests: true
-  independent_part_phrase_logic: reject
-
-arrangement_tension:
-  # assumption: model-knowledge (cross-model review 2026-06-07) — breakdown/drop
-  # identity is mostly automation, density, and tension management; pending listening.
-  breakdown_devices:
-    - filtered_pad_swell
-    - motif_reveal
-    - kick_drop_or_kick_under
-    - noise_riser
-    - false_drop
-  drop_entry_devices:
-    - bass_return
-    - arp_density_lift
-    - cymbal_or_noise_impact
-  automation_lanes_required:
-    - filter_cutoff
-    - reverb_send
-    - delay_feedback
-    - arp_density
-    - low_end_presence
-    - per_band_stereo_width
-    - shared_space_send
-    - lead_distance
-  main_break_start_fraction: [0.42, 0.48]  # corpus: anatomy-findings.md — 7/8 tracks open the principal breakdown just before the midpoint (mean 0.43). The section_model_presets predate this measurement; aligning them is deferred to the conductor/arrangement change
-  reference_derived_energy_rules:
-    # evidence: local reference anatomy 2026-06-09.
-    low_end_removal_restoration_is_primary_drama: true
-    break_low_end_collapses_upper_space_widens: true
-    drop_low_end_returns_centered_upper_material_controlled_wide: true
-    peak_opens_presence_air_without_overriding_low_end: true
-    layer_roles_rotate_not_all_maximal: true
-    static_global_reverb: reject
-    independent_background_layers: reject
-
-rules:
-  # Normative design rules. Corpus structure evidence is pending (findings.md);
-  # quantitative thresholds for these rules route through the listening worksheet.
-  kick:
-    - "Use stable four-on-the-floor timing."
-    - "Keep the kick controlled and mixable."
-    - "Do not generate chaotic kick timing."
-  bass:
-    - "Keep bass mono-aware and rhythmically locked."
-    - "Protect kick/bass separation in timing, note length, and register."
-    - "Prefer hypnotic drive over unnecessary note density."
-    - "Leave sidechain-shaped space around kick onsets."  # assumption: model-knowledge (cross-model review 2026-06-07)
-  melody:
-    - "Use motif-based writing."
-    - "Keep hooks sparse enough to survive repetition."
-    - "Use GenAI for melodic variants, not final approval."
-    - "Repeat, then vary; never stack more than two foreground melodic layers."  # assumption: model-knowledge (cross-model review 2026-06-07)
-    - "When there is no vocal, write the lead as the emotional foreground: a phrase-level line with call-response, counterline, and repeat variation."
-    - "Reject a lead that only repeats a short classical or MIDI-like motif without recomposition."
-  arrangement:
-    - "Preserve mixable intro and outro sections."
-    - "Use long-form energy movement."
-    - "Breakdowns may be emotional but should not collapse dancefloor motion."
-    - "Fills exist to mark phrase and section transitions, not to fire on a timer."  # assumption: model-knowledge (cross-model review 2026-06-07)
-    - "Treat 8-bar phrases as the local grid and 16/32-bar boundaries as payoff points."
-    - "Use one shared space concept per section; avoid background layers that sound like separate songs."
-
-review_vocabulary:
-  # Definitional reviewer vocabulary; calibration examples route through listening.
-  too_busy: "Too many events compete for attention."            # assumption: definitional
-  too_flat: "Energy does not lift across sections."             # assumption: definitional
-  too_edm: "Drop or hook feels over-signaled, obvious, or festival-pop."  # assumption: definitional
-  too_static: "Loop works but does not evolve."                 # assumption: definitional
-  not_club_functional: "Track is hard to mix, weak on low end, or lacks phrase clarity."  # assumption: definitional
-  low_end_conflict: "Kick and bass compete in timing, tuning, length, or spectral space."  # assumption: definitional
-  weak_pump: "Kick and bass do not breathe as one groove."      # assumption: model-knowledge (cross-model review 2026-06-07)
-  overfilled_low_mids: "Pads, bass, and toms crowd the 120-400 Hz body."  # assumption: model-knowledge (cross-model review 2026-06-07)
-  too_preset_arp: "Arp is continuous, literal, or lacks phrase-level motion."  # assumption: model-knowledge (cross-model review 2026-06-07)
-  break_loses_floor: "Breakdown removes too much pulse or takes too long to re-enter."  # assumption: model-knowledge (cross-model review 2026-06-07)
-  no_phrase_payoff: "Energy changes do not land on clear 16/32-bar boundaries."  # assumption: model-knowledge (cross-model review 2026-06-07)
-  palette_incoherence: "Timbres pull from different families instead of varying within one spectrum."  # evidence: ears (listening take-7, 2026-06-07) — maturity = variety within one spectrum
-  tech_minimal_collapse: "Low end and groove work, but the melodic identity is too short, too static, or too underdeveloped for melodic techno."  # evidence: ears (listening 2026-06-09)
-  independent_backgrounds: "Atmosphere, classical material, and FX feel like separate parts instead of one arrangement system."  # evidence: ears (listening 2026-06-09)
-  drum_monotony: "Kick/body is strong, but percussion lacks near/far depth, phrase accents, or evolving top-groove roles."  # evidence: ears (listening 2026-06-09)
 
 rejection_rules:
-  # Candidate auto-reject conditions for the Spec 6 review gate (rationale: findings.md).
-  # The generation gate evaluates spec-evaluable rules; the rest guide review and
-  # generator construction.
-  - id: bpm-out-of-lane
-    rule: "Reject candidates outside bpm_range unless the track spec explicitly overrides."
-    basis: evidence
-  - id: club-length
-    rule: "Reject candidates outside their duration profile's window (club_extended: 5:00-9:00)."
-    basis: evidence  # profile-scoped since 2026-06-07; streaming window is assumption-basis
   - id: no-listening-no-approval
-    rule: "Reject any final-approval request that lacks human listening notes."
+    rule: "Never mark a candidate final without human listening notes."
     basis: policy
-  - id: low-end-conflict
-    rule: "Reject candidates where kick and bass overlap in timing and register (see review_vocabulary.low_end_conflict)."
-    basis: assumption
   - id: unmixable-edges
-    rule: "Reject arrangements without mixable intro and outro sections."
-    basis: assumption  # profile-scoped: enforced only where mixable_edges is required
-  - id: short-edit-identity
-    rule: "For streaming_edit, reject arrangements without at least one break and one peak section."
-    basis: assumption  # model-knowledge (cross-model consult 2026-06-07)
-  - id: melodic-layer-overload
-    rule: "Reject candidates with more than two foreground melodic layers in a drop or peak."
-    basis: assumption  # model-knowledge (cross-model review 2026-06-07)
-    # ears datapoint (listening 2026-06-07, T01 seed-1001 v2): three layers at
-    # peak judged NOT crowded — thin-per-layer content was the complaint. Rule
-    # kept as review guidance, not generation-blocking; next ears pass decides.
-  - id: weak-pump
-    rule: "Reject candidates whose bass note length or onset pattern leaves no kick-duck space."
-    basis: assumption  # model-knowledge (cross-model review 2026-06-07)
-  - id: unphrased-fills
-    rule: "Reject fills that occur mechanically without section or phrase-transition purpose."
-    basis: assumption  # model-knowledge (cross-model review 2026-06-07)
-  - id: tech-minimal-collapse
-    rule: "Reject no-vocal candidates whose lead/melodic layer is only a short repeated motif without phrase-level development, call-response, or counter-melody."
-    basis: evidence  # local listening + reference anatomy, 2026-06-09
-  - id: independent-backgrounds
-    rule: "Reject candidates where atmosphere, classical material, FX, and percussion feel like independent loops instead of one shared phrase/space system."
-    basis: evidence  # local listening + reference anatomy, 2026-06-09
-  - id: drum-monotony
-    rule: "Reject candidates where drums are loud but lack role-separated top groove, near/far space, phrase accents, or transition-purpose fills."
-    basis: evidence  # local listening + reference anatomy, 2026-06-09
+    rule: "For forms that request mixable edges, require an intro and outro."
+    basis: technical_hygiene
+  - id: low-end-conflict
+    rule: "Flag kick/bass register, timing, or mono-safety conflicts for repair."
+    basis: technical_hygiene
+    severity: repair_required
+  - id: clipping
+    rule: "Reject or repair clipped renders before audition packaging."
+    basis: technical_hygiene
+  - id: mono-safety
+    rule: "Repair unsafe low-end stereo behavior before release packaging."
+    basis: technical_hygiene
+
+rebuild_contract:
+  next_pack_must_include:
+    - reference studies based on listening plus signal evidence
+    - timestamped arrangement and tension observations
+    - abstracted musical moves that do not copy named artists
+    - clear separation between evidence, hypothesis, and executable gate
+    - explicit anti-rules for overfitting tiny corpora into generator defaults
+  next_pack_must_not_include:
+    - corpus-derived BPM defaults treated as style law
+    - global bass or kick cells used as silent fallbacks
+    - score targets that masquerade as taste decisions
+    - named-artist imitation instructions
 
 approval:
   human_listening_required: true

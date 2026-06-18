@@ -1,16 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Grammar scorer: an anatomy dossier measured against style-pack targets.
+"""Technical scorer: an anatomy dossier measured against current pack targets.
 
-Scores are the technical half of review — distance from the grammar, never a
-verdict. Each metric carries the provenance of its target (``corpus`` /
-``evidence`` / ``assumption``) so distance from an assumption is not read as
-distance from the grammar. Provenance lives in this table because style.yml
-records it only in YAML comments, which ``yaml.safe_load`` drops; keep the
-labels in sync with the pack when targets change.
+Scores are diagnostics, never taste verdicts. During a pack rebuild, missing
+targets are acceptable and reported as missing instead of forcing stale musical
+rules back into the system. Each metric carries the provenance of its target
+(``corpus`` / ``evidence`` / ``assumption``) for older packs and test fixtures.
 
-Inputs come from cached dossier YAMLs via :func:`setloom.anatomy.corpus.track_row`;
-targets come from :func:`setloom.stylepack.load_style_pack`. Target numbers are
-never duplicated here.
+Inputs come from the current cached quick dossier; targets come from
+:func:`setloom.stylepack.load_style_pack`. Target numbers are never duplicated
+here.
 """
 
 from __future__ import annotations
@@ -131,6 +129,8 @@ def score_row(row: dict, quick: dict, pack: StylePack) -> ScoreReport:
     for name, source, path, kind, provenance in METRICS:
         target = _target(pack, path)
         measured = _measure(name, row, quick)
+        if target is None and measured is None:
+            continue
         if kind == "vocal_knob" and target is not None:
             target = [0.0, round(min(1.0, VOCAL_KNOB_BASE + VOCAL_KNOB_STEP * float(target)), 2)]
             kind = "range"
@@ -182,38 +182,26 @@ def report_lines(report: ScoreReport) -> list[str]:
 
 
 def load_row(track: str, out_dir: Path) -> tuple[dict, dict] | None:
-    """Build (row, quick) from cached dossiers; None when either YAML is missing."""
+    """Build (row, quick) from the cached quick dossier."""
     quick_path = out_dir / f"{track}.quick.yml"
-    stems_path = out_dir / f"{track}.stems.yml"
-    if not (quick_path.is_file() and stems_path.is_file()):
+    if not quick_path.is_file():
         return None
     quick = yaml.safe_load(quick_path.read_text(encoding="utf-8"))
-    stems = yaml.safe_load(stems_path.read_text(encoding="utf-8"))
-    return co.track_row(quick, stems), quick
+    return co.quick_row(track, quick), quick
 
 
 def score_track(
     audio: Path,
     pack: StylePack,
     out_dir: Path = Path("local/corpus/dossiers"),
-    stems_dir: Path = Path("local/corpus/stems"),
 ) -> tuple[ScoreReport, Path]:
-    """Score one audio file, creating its dossier first when not cached.
-
-    Dossier creation runs with ``summary=False``: scored candidates must never
-    enter the corpus aggregate.
-    """
+    """Score one audio file from an existing cached quick dossier."""
     from setloom.anatomy import analysis as an
 
     track = an.nfc(audio.stem)
     loaded = load_row(track, out_dir)
     if loaded is None:
-        from setloom.anatomy.pipeline import run as run_anatomy
-
-        run_anatomy(audio, out_dir=out_dir, stems_dir=stems_dir, summary=False)
-        loaded = load_row(track, out_dir)
-        if loaded is None:
-            raise RuntimeError(f"anatomize produced no dossier for {audio}")
+        raise RuntimeError(f"no cached quick dossier for {audio}")
     row, quick = loaded
     report = score_row(row, quick, pack)
     score_path = out_dir / f"{track}.score.yml"

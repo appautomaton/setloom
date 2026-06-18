@@ -27,27 +27,16 @@ Setloom is not primarily for:
 
 ## Starting Lane
 
-The first style grammar is melodic/progressive techno.
+The first working lane is melodic/progressive techno.
 
-Initial reference anchors:
+That lane is currently in reset/rebuild mode. The old fixed reference-anchor
+list is not active guidance, because a named-artist list too easily becomes a
+template. Future references should enter the project as timestamped listening
+studies in `local/corpus/`, tied to stem/layer evidence and abstract musical
+moves.
 
-- Innellea
-- Colyn
-- 8Kays
-- Marino Canal
-- ENAI
-- Jono Stephenson
-- Miss Monique
-
-Expansion anchors:
-
-- WhoMadeWho
-- Arodes
-- Massano
-- Jan Blomqvist
-- Adriatique
-
-Reference artists are used to build style grammar and review vocabulary. They are not instructions to imitate or clone.
+References are evidence and vocabulary sources. They are not instructions to
+imitate, clone, or convert one artist's habits into genre law.
 
 ## Design Principles
 
@@ -56,8 +45,8 @@ Reference artists are used to build style grammar and review vocabulary. They ar
 - Agentic, but not autopilot-only.
 - File-based and reproducible where possible.
 - Human listening is required for approval.
-- Low-end control is protected by rules, not left to opaque audio generation.
-- Style is encoded as specs and review gates, not vague taste words.
+- Low-end control is protected by technical checks, not left to opaque audio generation.
+- Style is expressed through track-specific specs, listening vocabulary, and evidence-backed diagnostics, not universal musical gates or vague taste words.
 
 ## V1 Target
 

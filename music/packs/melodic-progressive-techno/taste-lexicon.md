@@ -1,29 +1,29 @@
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 
-# Taste Lexicon: Review Words → Measurements → Knobs
+# Taste Lexicon
 
-One row per `review_vocabulary` term in `style.yml`. **Sounds like** stays open until the taste owner fills it from listening sessions; that column is the human half of the contract. **Measures as** names the dossier metric (see `dossier-guide.md`) when one exists today. **Knob** is where a revision request lands in the generator. For the layer names those quotes will use (pad, lead, arp, riser), see `component-glossary.md`.
+Review words for human listening sessions. These are vocabulary terms, not
+score targets.
 
-| Term | Measures as (today) | Knob to turn |
-| --- | --- | --- |
-| `too_busy` | `drums.high_perc_onsets_per_bar_groove` and `other.onset_rate_per_bar` above corpus norms | percussion densities (`parts/drums.py`, `shaker.py`, `clap_ride.py`); `max_competing_melodic_layers` |
-| `too_flat` | low variance across `energy_curve_16bar` sections | conductor energy curve contrast *(conductor change, deferred)* |
-| `too_edm` | not yet measured (no riser/drop-signal detector) | `parts/fx.py` riser/impact frequency; fills restraint |
-| `too_static` | `harmonic_changes_per_16bars` ≈ 2 plus unvarying chord list | harmonic mode selection; lead variation rate (`parts/lead.py` gestures) |
-| `not_club_functional` | executable gates: `club-length`, `unmixable-edges`; low `kick_coverage` | duration profile; intro/outro bars in section model |
-| `low_end_conflict` | not yet measured (kick/bass overlap needs per-stem timing compare) | bass sidechain gap (`parts/bass.py`); kick/bass register split |
-| `weak_pump` | partially: `bass.step_occupancy` ≈ 1.0 with no kick-beat gaps | bass note gaps before beats; sidechain recovery shape |
-| `overfilled_low_mids` | not yet measured (needs 120–400 Hz per-stem energy) | pad/chords register and voicing |
-| `too_preset_arp` | not yet measured (arp phrase-motion metric) | arp contour selection (`parts/arp.py`) |
-| `break_loses_floor` | main-break span vs corpus 8–43 bars; break start vs 0.42–0.48 | section-model break lengths |
-| `no_phrase_payoff` | section boundaries off 16/32-bar multiples | conductor phrase clock and boundary snapping |
-| `palette_incoherence` | not measurable from dossiers; ears only | scrender layer palette coherence rules |
-| `tech_minimal_collapse` | not yet measured (lead density/variation metric) | lead gesture development (`parts/lead.py`, `counterline.py`) |
-| `independent_backgrounds` | future: inter-stem energy-envelope correlation | conductor shared space plan |
-| `drum_monotony` | partially: per-phrase variance of high-perc density | fills purpose rules; section-dependent percussion roles |
+| Term | Use In Notes |
+| --- | --- |
+| `too_busy` | Too many elements compete for attention. |
+| `too_flat` | Energy does not move or develop. |
+| `too_edm` | Gesture feels over-signaled, obvious, or festival-pop. |
+| `too_static` | A loop works briefly but does not evolve. |
+| `not_club_functional` | The track is hard to mix, weak on the floor, or lacks phrase clarity. |
+| `low_end_conflict` | Kick and bass fight in register, timing, or mono behavior. |
+| `weak_pump` | Groove does not breathe as a body-moving system. |
+| `overfilled_low_mids` | Pads, bass, toms, or vocals crowd the body. |
+| `too_preset_arp` | Arp feels literal, continuous, or unshaped. |
+| `break_loses_floor` | Breakdown loses too much motion or takes too long to re-enter. |
+| `no_phrase_payoff` | Energy changes do not land as intentional musical events. |
+| `palette_incoherence` | Timbres feel like separate worlds rather than one record. |
+| `tech_minimal_collapse` | Groove works, but melodic identity is underdeveloped. |
+| `independent_backgrounds` | Atmosphere, FX, and harmony feel pasted together. |
+| `drum_monotony` | Drums are present but do not change role or depth over time. |
 
-## Sounds like — listening column
+## Rebuild Note
 
-Fill during audition sessions, one short quote per term, citing track and bars (e.g. `too_busy: "T01 v2 bars 65–80, hats fight the arp"`). Keep entries here so the future listening-notes consumer can pair your words with these metrics.
-
-*(all entries open as of 2026-06-10)*
+Future metrics may support these words, but the word starts with ears. A
+measurement can explain a listening note; it must not replace one.

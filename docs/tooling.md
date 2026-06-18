@@ -45,18 +45,18 @@ Model weights live in the gitignored project store:
 | ACE-Step weights | `models/acestep/` | `ACESTEP_CHECKPOINTS_DIR` |
 | Magenta RT weights | `models/magenta/` | `MAGENTA_HOME` |
 | Hugging Face hub cache | `models/hf/` | `HF_HUB_CACHE` |
-| 53-stem BS-RoFormer weights | `models/roformer/` | `anatomize --layers` code default |
+| 53-stem BS-RoFormer weights | `models/roformer/` | active `anatomize --layers` reference lens |
 
 Never override `HF_HOME`: it holds the user's Hugging Face login token. Route caches with `HF_HUB_CACHE` only.
 
 Upstream reference clones under `.references/` are read-only working aids; their conflicting Python and torch pins are exactly why models are ported into this environment instead of run in theirs. Stale upstream pins are resolved in `pyproject.toml` (`[tool.uv] override-dependencies`, `[[tool.uv.dependency-metadata]]`) with the reasoning kept next to each override.
 
-Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — separation, generation, transcription — run one at a time, never concurrently. Generation recipes and the candidate loop live in `music/packs/melodic-progressive-techno/generation-recipes.md`.
+Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — 53-stem layer analysis, generation, transcription — run one at a time, never concurrently. Generation recipes are reset until the melodic/progressive techno pack is rebuilt.
 
 ## GenAI Boundary
 
-Use GenAI for melody, motifs, harmonic direction, atmosphere, and variation.
+Use GenAI for musical ideas when it helps, including melody, motifs, atmosphere, timbre, and possible groove directions. Do not let GenAI, deterministic code, or a style pack silently own the musical decision. The track spec and listening gate own groove, kick, bass, timing, arrangement, and timbre choices.
 
-Do not rely on GenAI audio as the primary source for kick, bass, groove, or low-end timing. Those parts need deterministic control.
+Deterministic rendering remains useful for execution and technical control: mono-safe low end, reproducible MIDI/stems, clip prevention, phrase alignment, and audition packaging.
 
 For high-aesthetic lead timbre, especially vocal-substitute toplines, do not rely on scratch synthesis as the default. Use validated timbre references and automated, file-based render paths. Logic Pro can help name and audition the target sound class, but the Setloom candidate should still be produced by the harness unless the user explicitly asks for a separate Logic experiment. Procedural synthesis remains appropriate for kicks, basses, percussion, meters, rough textures, and deterministic tests.

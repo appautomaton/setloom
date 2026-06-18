@@ -8,8 +8,7 @@ local analysis only — never redistributed, never committed.
 
 Layer stems are overlapping extractions, not a partition: the same content can
 appear in several stems (the synth stem carries the bassline too, which is why
-melodic prep high-passes it). Energy-accounting metrics stay on the demucs
-partition in ``pipeline.stem_pass``.
+melodic prep high-passes it). Do not use layer stems for energy accounting.
 """
 
 from __future__ import annotations
@@ -250,7 +249,7 @@ def layer_pass(
         "track": track,
         "model": MODEL_NAME,
         "note": "layers are overlapping extractions, not a partition; "
-        "energy accounting stays on the demucs stems",
+        "do not use layer stems for energy accounting",
         "kept_layers": kept,
         "melodic": melodic,
     }

@@ -8,6 +8,7 @@ import mido
 import pytest
 
 from setloom import midi
+from setloom.conductor import build_conductor
 from setloom.parts import ALL_PARTS, part_rng
 from setloom.parts.base import parse_key, root_note
 from setloom.parts.bass import (
@@ -582,6 +583,45 @@ def test_t04_arp_mutes_rejected_foreground_arp(t04_spec, pack):
     assert _events_with_pack(t04_spec, "arp", pack, variant=1) == []
 
 
+def test_t04_pad_uses_track_harmony_not_tonic_power_stack(t04_spec, pack):
+    pad = _events_with_pack(t04_spec, "pad", pack, variant=1)
+    tonic = root_note(t04_spec.key, 3) % 12
+    tonic_stack = {tonic, (tonic + 7) % 12, (tonic + 2) % 12}
+    pitch_classes = {event.note % 12 for event in pad}
+
+    assert pad
+    assert pitch_classes - tonic_stack
+    assert build_conductor(t04_spec).chord_color == "sus2"
+
+
+def test_t04_shaker_is_phrase_gated_not_continuous_bed(t04_spec, pack):
+    shaker = _events_with_pack(t04_spec, "shaker", pack, variant=1)
+    layout = midi.section_layout(t04_spec)
+    drop_start, _ = layout["drop_1"]
+
+    first_drop_bar = _bar_events(shaker, drop_start)
+    last_phrase_bar = _bar_events(shaker, drop_start + 7)
+    assert len(first_drop_bar) == 4
+    assert not last_phrase_bar
+
+
+def test_t04_fx_uses_phrase_marks_not_generic_chromatic_risers(t04_spec, pack):
+    fx = _events_with_pack(t04_spec, "fx", pack, variant=1)
+    layout = midi.section_layout(t04_spec)
+    drop_start, _ = layout["drop_1"]
+    riser_window = [
+        event
+        for event in fx
+        if midi.bar_to_tick(drop_start - RISER_BARS) <= event.start_tick < midi.bar_to_tick(drop_start)
+    ]
+    mark_bars = {event.start_tick // midi.TICKS_PER_BAR for event in fx}
+
+    assert fx
+    assert not riser_window
+    assert drop_start in mark_bars
+    assert drop_start + 8 in mark_bars
+
+
 def test_track_drum_plan_breaks_eight_bar_copy_loop(t04_spec, pack):
     drums = _events_with_pack(t04_spec, "drums", pack, variant=1)
     layout = midi.section_layout(t04_spec)
@@ -604,56 +644,27 @@ def test_vocab_bass_keeps_alignment_invariants(spec, pack):
             assert event.duration_ticks <= to_next_beat - 1, f"no sidechain gap: {event}"
 
 
-def test_vocab_bass_phrase_end_varies_and_swells(spec, pack):
-    events = ALL_PARTS["bass"].generate(spec, part_rng(7, 1, "bass"), pack=pack)
-    layout = midi.section_layout(spec)
-    for section, (start_bar, bars) in layout.items():
-        if not section.startswith(("groove", "drop", "peak")) or bars < 8:
-            continue
-        mid_steps = {(e.start_tick - midi.bar_to_tick(start_bar)) // midi.SIXTEENTH_TICKS
-                     for e in _bar_events(events, start_bar)}
-        end_steps = {(e.start_tick - midi.bar_to_tick(start_bar + 7)) // midi.SIXTEENTH_TICKS
-                     for e in _bar_events(events, start_bar + 7)}
-        assert mid_steps != end_steps, f"{section}: phrase-end bar identical to bar 1"
-        v_first = max(e.velocity for e in _bar_events(events, start_bar))
-        v_later = max(e.velocity for e in _bar_events(events, start_bar + 6))
-        assert v_later > v_first, f"{section}: no velocity swell across the phrase"
+def test_reset_pack_has_no_global_groove_vocabulary(pack):
+    assert pack.raw.get("groove") is None
 
 
-def test_vocab_bass_neighbor_only_after_first_phrase(spec, pack):
-    tonic = root_note(spec.key, 2) % 12
-    events = ALL_PARTS["bass"].generate(spec, part_rng(7, 1, "bass"), pack=pack)
-    layout = midi.section_layout(spec)
-    saw_neighbor = False
-    for section, (start_bar, bars) in layout.items():
-        if not section.startswith(("groove", "drop", "peak")):
-            continue
-        for bar_in_section in range(bars):
-            notes = {e.note % 12 for e in _bar_events(events, start_bar + bar_in_section)}
-            if bar_in_section < 8:
-                assert notes <= {tonic}, f"{section} bar {bar_in_section}: non-tonic in first phrase"
-            elif notes - {tonic}:
-                saw_neighbor = True
-                assert notes - {tonic} == {(tonic - 2) % 12}, f"unexpected pitch: {notes}"
-    assert saw_neighbor, "no neighbor motion anywhere despite vocabulary"
+def test_reset_pack_uses_legacy_bass_fallback_without_vocabulary(spec, pack):
+    legacy = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"))
+    with_pack = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
+    assert legacy and with_pack and legacy == with_pack
 
 
-def test_vocab_break_accent_kicks(spec, pack):
+def test_reset_pack_breaks_stay_kick_free_without_vocab_accents(spec, pack):
     events = ALL_PARTS["drums"].generate(spec, part_rng(7, 1, "drums"), pack=pack)
     layout = midi.section_layout(spec)
     for section, (start_bar, bars) in layout.items():
         kicks = [e for e in events if e.note == KICK
                  and midi.bar_to_tick(start_bar) <= e.start_tick < midi.bar_to_tick(start_bar + bars)]
-        if section.startswith("break") and bars >= 6:
-            assert 1 <= len(kicks) <= 2, f"{section}: expected lone accent kicks, got {len(kicks)}"
-        elif section.startswith("break"):
+        if section.startswith("break"):
             assert not kicks, f"{section}: short break should stay kick-free"
 
 
-def test_vocab_determinism_and_legacy_fallback(spec, pack):
+def test_reset_pack_fallback_determinism(spec, pack):
     a = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
     b = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
     assert a == b
-    legacy = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"))
-    with_pack = ALL_PARTS["bass"].generate(spec, part_rng(5, 1, "bass"), pack=pack)
-    assert legacy and with_pack and legacy != with_pack

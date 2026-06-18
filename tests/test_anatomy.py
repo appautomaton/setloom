@@ -19,8 +19,7 @@ class TestTempo:
 
     def test_metrical_level_error_is_suspect(self):
         # The Matemática case: 80.7 is a 3:2 metrical error for a true 123;
-        # octave folding cannot rescue it, so it must read as suspect and
-        # trigger the drum-stem re-anchor in the pipeline.
+        # octave folding cannot rescue it, so it must read as suspect.
         assert an.tempo_suspect(80.7) is True
 
     def test_club_tempo_not_suspect(self):
@@ -140,58 +139,51 @@ class TestUnicode:
         assert an.nfc(nfd) == an.nfc(nfc)
 
 
-def _stem_fixture(track, n_bars, gaps, occupancy, tonic_share):
-    return {
-        "track": track,
-        "bars": n_bars,
-        "drums": {"kick_gap_bars": gaps, "kick_bars_present": n_bars - 20},
-        "bass": {
-            "tonic_candidate": "A#",
-            "pitch_class_share": {"A#": tonic_share},
-            "step_occupancy": occupancy,
-            "note_len_16ths_median": 2.0,
-        },
-        "other": {"harmonic_changes_per_16bars": 2.0},
-        "vocals": {"active_share": 0.1},
-    }
-
-
 def _quick_fixture():
     return {
         "artist_dir": "8kays",
         "bpm_estimate": 123.0,
         "integrated_lufs": -8.5,
         "duration_s": 220.0,
+        "bars_estimated": 112,
     }
 
 
 class TestCorpus:
-    def test_parse_span(self):
-        assert co.parse_span("34-53") == (34, 53)
-
-    def test_main_break_picks_longest(self):
-        assert co.main_break([(34, 42), (47, 60), (94, 95)]) == (47, 60)
-        assert co.main_break([]) is None
-
-    def test_track_row(self):
-        row = co.track_row(
-            _quick_fixture(), _stem_fixture("t1", 100, ["34-42", "44-45"], 0.9, 0.72)
-        )
-        assert row["main_break_start_frac"] == 0.34
-        assert row["main_break_len_bars"] == 9
-        assert row["kick_coverage"] == 0.8
-        assert row["tonic_share"] == 0.72
+    def test_quick_row_uses_current_fullmix_fields_only(self):
+        row = co.quick_row("t1", _quick_fixture())
+        assert row == {
+            "track": "t1",
+            "artist": "8kays",
+            "bpm": 123.0,
+            "lufs": -8.5,
+            "bars": 112,
+            "duration_s": 220.0,
+        }
+        assert "bass_occupancy" not in row
+        assert "main_break_start_frac" not in row
 
     def test_corpus_stats(self):
         rows = [
-            co.track_row(_quick_fixture(), _stem_fixture("t1", 100, ["40-49"], 0.9, 0.7)),
-            co.track_row(_quick_fixture(), _stem_fixture("t2", 200, ["80-99"], 0.8, 0.9)),
+            co.quick_row("t1", _quick_fixture()),
+            co.quick_row(
+                "t2",
+                {
+                    **_quick_fixture(),
+                    "bpm_estimate": 124.0,
+                    "integrated_lufs": -9.5,
+                    "duration_s": 300.0,
+                    "bars_estimated": 150,
+                },
+            ),
         ]
         stats = co.corpus_stats(rows)
         assert stats["tracks"] == 2
-        assert stats["bpm_values"] == [123.0]
-        assert stats["bass_occupancy_mean"] == 0.85
-        assert stats["main_break_len_bars_values"] == [10, 20]
+        assert stats["bpm_values"] == [123.0, 124.0]
+        assert stats["lufs_mean"] == -9.0
+        assert stats["lufs_range"] == [-9.5, -8.5]
+        assert stats["duration_s_range"] == [220.0, 300.0]
+        assert stats["bars_range"] == [112, 150]
 
     def test_merge_rows_updates_in_place_and_appends(self):
         existing = [{"track": "a", "bpm": 120.0}, {"track": "b", "bpm": 121.0}]
@@ -211,17 +203,35 @@ class TestCli:
     def test_anatomize_registered(self):
         from setloom.cli import build_parser
 
-        args = build_parser().parse_args(["anatomize", "somewhere", "--no-separate"])
-        assert args.no_separate is True
+        args = build_parser().parse_args(["anatomize", "somewhere"])
         assert args.out == "local/corpus/dossiers"
-        assert args.stems_dir == "local/corpus/stems"
+        assert args.layer_stems_dir == "local/corpus/stems53"
+        assert args.models_dir == "models/roformer"
         assert callable(args.func)
 
+    def test_anatomize_accepts_layer_scratch_dirs(self):
+        from setloom.cli import build_parser
 
-def _synthesize_stems(stem_dir, sr=22050, bpm=120.0, n_bars=8):
+        args = build_parser().parse_args(
+            [
+                "anatomize",
+                "somewhere",
+                "--layers",
+                "--out",
+                "/tmp/dossiers",
+                "--layer-stems-dir",
+                "/tmp/stems53",
+                "--models-dir",
+                "/tmp/models",
+            ]
+        )
+        assert args.layers is True
+        assert args.out == "/tmp/dossiers"
+        assert args.layer_stems_dir == "/tmp/stems53"
+        assert args.models_dir == "/tmp/models"
+
+def _synthesize_mix(sr=22050, bpm=120.0, n_bars=8):
     """Hermetic 8-bar A-minor techno skeleton: no models, no real audio."""
-    import soundfile as sf
-
     bar_dur = 4.0 * 60.0 / bpm
     total = int(n_bars * bar_dur * sr)
     t = np.arange(total) / sr
@@ -245,56 +255,16 @@ def _synthesize_stems(stem_dir, sr=22050, bpm=120.0, n_bars=8):
         + np.sin(2 * np.pi * 261.63 * t)
         + np.sin(2 * np.pi * 329.63 * t)
     )  # A minor triad
-    vocals = np.zeros(total)
-
-    stem_dir.mkdir(parents=True, exist_ok=True)
-    for name, y in [("drums", drums), ("bass", bass), ("other", other), ("vocals", vocals)]:
-        sf.write(stem_dir / f"{name}.wav", y, sr)
     return drums + bass + other
 
 
 class TestPipelineIntegration:
-    def test_stem_pass_on_synthetic_stems(self, tmp_path):
-        from setloom.anatomy import pipeline as pl
-
-        stem_dir = tmp_path / "stems" / "synthetic"
-        _synthesize_stems(stem_dir, sr=pl.SR)
-        out_dir = tmp_path / "out"
-        out_dir.mkdir()
-        grid = pl.Grid(bpm=120.0, t0=0.0, n_bars=8)
-
-        dossier = pl.stem_pass("synthetic", stem_dir, grid, out_dir)
-        assert dossier["drums"]["kick_bars_present"] == 8
-        assert dossier["drums"]["kick_gap_bars"] == []
-        assert dossier["bass"]["tonic_candidate"] == "A"
-        assert dossier["bass"]["step_occupancy"] > 0.8
-        chords = [c for c in dossier["other"]["chords_per_2bars"] if c]
-        assert chords and max(set(chords), key=chords.count) == "Am"
-        assert dossier["vocals"]["active_bar_ranges"] == []
-        assert (out_dir / "synthetic.bass.mid").is_file()
-
-    def test_partition_residual_clean_and_broken(self, tmp_path):
-        import soundfile as sf
-
-        from setloom.anatomy import pipeline as pl
-
-        stem_dir = tmp_path / "stems" / "synthetic"
-        mix = _synthesize_stems(stem_dir, sr=pl.SR)
-        source = tmp_path / "source.wav"
-        # FLOAT subtype: the synthetic mix peaks above 1.0 and PCM_16 would clip
-        sf.write(source, mix, pl.SR, subtype="FLOAT")
-        # stems sum exactly to the source: residual is near silence
-        assert pl.partition_residual_db(source, stem_dir) < -40.0
-        # source scaled away from the stem sum: partition broken, check fires
-        sf.write(source, 0.5 * mix, pl.SR, subtype="FLOAT")
-        assert pl.partition_residual_db(source, stem_dir) > -20.0
-
     def test_fullmix_pass_on_synthetic_mix(self, tmp_path):
         import soundfile as sf
 
         from setloom.anatomy import pipeline as pl
 
-        mix = _synthesize_stems(tmp_path / "stems", sr=pl.SR)
+        mix = _synthesize_mix(sr=pl.SR)
         wav = tmp_path / "synthetic.wav"
         sf.write(wav, mix, pl.SR)
 
@@ -306,59 +276,53 @@ class TestPipelineIntegration:
         assert dossier["key_estimate"].endswith("minor")
 
 
-def _fake_cached_track(tmp_path, track="fake"):
-    """A fully cached track: run() touches no audio, only YAML and wav existence."""
-    import yaml
-
-    audio = tmp_path / "art" / f"{track}.mp3"
-    audio.parent.mkdir()
-    audio.touch()
-    out_dir = tmp_path / "dossiers"
-    out_dir.mkdir()
-    quick = {
-        **_quick_fixture(),
-        "first_beat_s": 0.0,
-        "bars_estimated": 100,
-        "tempo_suspect": False,
-        "stem_model": "htdemucs",
-    }
-    (out_dir / f"{track}.quick.yml").write_text(yaml.safe_dump(quick), encoding="utf-8")
-    stems = _stem_fixture(track, 100, ["40-49"], 0.9, 0.7)
-    (out_dir / f"{track}.stems.yml").write_text(yaml.safe_dump(stems), encoding="utf-8")
-    stems_dir = tmp_path / "stems"
-    (stems_dir / track).mkdir(parents=True)
-    for name in ("drums", "bass", "other", "vocals"):
-        (stems_dir / track / f"{name}.wav").touch()
-    return audio, out_dir, stems_dir
-
-
-class TestSummaryMerge:
-    def test_subset_run_merges_into_existing_summary(self, tmp_path):
-        import yaml
-
+class TestPipelineRun:
+    def test_layers_run_reports_quick_and_layers_only(self, monkeypatch, tmp_path):
         from setloom.anatomy import pipeline as pl
 
-        audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
-        other_row = {"track": "other-track", "bpm": 121.0, "main_break_len_bars": 8}
-        (out_dir / "corpus-summary.yml").write_text(
-            yaml.safe_dump({"tracks": [other_row], "corpus": {}}), encoding="utf-8"
+        audio = tmp_path / "Radiance.mp3"
+        audio.touch()
+        out_dir = tmp_path / "dossiers"
+        layer_stems_dir = tmp_path / "stems53"
+
+        monkeypatch.setattr(
+            pl,
+            "fullmix_pass",
+            lambda path: {
+                **_quick_fixture(),
+                "file": path.name,
+                "first_beat_s": 0.0,
+                "bars_estimated": 16,
+                "tempo_suspect": False,
+                "sections": [],
+                "energy_curve_16bar": [],
+            },
         )
 
-        statuses = pl.run(audio, out_dir=out_dir, stems_dir=stems_dir, separate=False)
-        assert statuses["corpus-summary"] == ["written"]
-        summary = yaml.safe_load((out_dir / "corpus-summary.yml").read_text(encoding="utf-8"))
-        assert [r["track"] for r in summary["tracks"]] == ["other-track", "fake"]
-        assert summary["tracks"][0] == other_row  # subset run no longer shrinks the aggregate
+        class FakeLayerLens:
+            @staticmethod
+            def layer_pass(audio_path, track, grid, out_dir, layer_stems_dir, models_dir):
+                return ["layers:analyzed"]
 
-    def test_summary_false_skips_summary_write(self, tmp_path):
-        from setloom.anatomy import pipeline as pl
+        original_import = __import__
 
-        audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
+        def fake_import(name, globals=None, locals=None, fromlist=(), level=0):
+            if name == "setloom.anatomy" and fromlist and "layers" in fromlist:
+                return type("FakeAnatomy", (), {"layers": FakeLayerLens})()
+            return original_import(name, globals, locals, fromlist, level)
+
+        monkeypatch.setattr("builtins.__import__", fake_import)
+
         statuses = pl.run(
-            audio, out_dir=out_dir, stems_dir=stems_dir, separate=False, summary=False
+            audio,
+            out_dir=out_dir,
+            layers=True,
+            layer_stems_dir=layer_stems_dir,
         )
-        assert "corpus-summary" not in statuses
-        assert not (out_dir / "corpus-summary.yml").exists()
+
+        assert statuses["Radiance"] == ["quick:analyzed", "layers:analyzed"]
+        summary = out_dir / "corpus-summary.yml"
+        assert summary.exists()
 
     def test_collect_audio_skips_candidates_but_takes_file_target(self, tmp_path):
         from setloom.anatomy import pipeline as pl
@@ -370,49 +334,3 @@ class TestSummaryMerge:
         cand.touch()
         assert [p.name for p in pl.collect_audio(tmp_path)] == ["a.mp3"]
         assert pl.collect_audio(cand) == [cand]
-
-
-class TestAnalyzeVocalsSilenceFloor:
-    """Separation bleed on vocal-free mixes must not self-normalize to 'active'."""
-
-    def test_bleed_floor_scores_zero(self):
-        from setloom.anatomy import pipeline as pl
-
-        grid = pl.Grid(bpm=123.0, t0=0.0, n_bars=16)
-        n = int(grid.n_bars * grid.bar_dur * pl.SR)
-        rng = np.random.default_rng(7)
-        bleed = rng.normal(0.0, 1.58e-3, n).astype(np.float32)  # ~-56 dBFS RMS
-        res = pl._analyze_vocals(bleed, grid)
-        assert res["active_share"] == 0.0
-        assert res["active_bar_ranges"] == []
-
-    def test_real_singing_still_counts(self):
-        from setloom.anatomy import pipeline as pl
-
-        grid = pl.Grid(bpm=123.0, t0=0.0, n_bars=16)
-        n = int(grid.n_bars * grid.bar_dur * pl.SR)
-        rng = np.random.default_rng(7)
-        y = rng.normal(0.0, 1.58e-3, n).astype(np.float32)
-        half = n // 2
-        t = np.arange(half) / pl.SR
-        y[:half] += (0.05 * np.sin(2 * np.pi * 220.0 * t)).astype(np.float32)  # ~-29 dBFS
-        res = pl._analyze_vocals(y, grid)
-        assert 0.3 <= res["active_share"] <= 0.7
-        assert res["active_bar_ranges"] != []
-
-
-class TestCandidateSummaryExemption:
-    def test_explicit_candidate_target_gets_dossier_but_no_summary_row(self, tmp_path):
-        from setloom.anatomy import pipeline as pl
-
-        audio, out_dir, stems_dir = _fake_cached_track(tmp_path)
-        for dirname in ("candidates", "_candidates"):  # current home + pre-move layouts
-            cand = tmp_path / dirname / audio.name
-            cand.parent.mkdir()
-            audio.rename(cand)
-
-            statuses = pl.run(cand, out_dir=out_dir, stems_dir=stems_dir, separate=False)
-            assert "fake" in statuses
-            assert "corpus-summary" not in statuses
-            assert not (out_dir / "corpus-summary.yml").exists()
-            cand.rename(audio)

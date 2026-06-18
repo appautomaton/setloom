@@ -24,7 +24,6 @@ setloom = "setloom.cli:run"
 [dependency-groups]
 anatomy = [
     "beartype>=0.22.9",
-    "demucs>=4.0.1",
     "einops>=0.8.2",
     "essentia==2.1b6.dev1389",
     "rotary-embedding-torch>=0.8.9",
@@ -43,6 +42,12 @@ genai = [
     "magenta-rt[mlx]>=2.0.2",
     "huggingface-hub[cli]",
 ]
+# Audio-to-MIDI transcription scaffold. Basic Pitch is currently a Python
+# 3.11 tool for this project; run it as an optional group, not core runtime.
+transcription = [
+    "basic-pitch>=0.4.0; python_version < '3.12' and sys_platform == 'darwin'",
+    "setuptools<72",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -59,6 +64,26 @@ override-dependencies = ["numpy>=2.4.6"]
 
 [tool.uv.sources]
 ace-step = { git = "https://github.com/ace-step/ACE-Step-1.5", rev = "dce621408bee8c31b4fcf4811682eb9359e1bc94" }
+
+# Basic Pitch 0.4.0 publishes broad TensorFlow runtime metadata that conflicts
+# with this repo's genai group during universal locking. For Setloom we use the
+# macOS CoreML CLI path as an optional transcription scaffold, verified locally
+# with Python 3.11, and intentionally do not install TensorFlow for it.
+[[tool.uv.dependency-metadata]]
+name = "basic-pitch"
+version = "0.4.0"
+requires-python = ">=3.11,<3.12"
+requires-dist = [
+    "librosa>=0.8.0",
+    "mir-eval>=0.6",
+    "numpy>=1.18",
+    "pretty-midi>=0.2.9",
+    "resampy>=0.2.2,<0.4.3",
+    "scikit-learn",
+    "scipy>=1.4.1",
+    "typing-extensions",
+    "coremltools; sys_platform == 'darwin'",
+]
 
 # ACE-Step 1.5 declares requires-python ">=3.11,<3.13"; its full macOS arm64
 # dependency set resolves and installs on 3.13 (verified 2026-06-10), so the

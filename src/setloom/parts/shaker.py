@@ -42,14 +42,29 @@ class ShakerGenerator:
     def generate(
         self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
     ) -> list[NoteEvent]:
+        plan = spec.groove.shaker if spec.groove else None
         # Exactly one rng draw per run keeps draw counts structural.
         contour = rng.choice(CONTOURS)
+        active_steps = (
+            set(plan.active_steps)
+            if plan and plan.active_steps
+            else set(range(STEPS_PER_BAR))
+        )
         events: list[NoteEvent] = []
         for section, (start_bar, bars) in section_layout(spec).items():
             if not section.startswith(("groove", "drop", "peak")):
                 continue
-            for bar in range(start_bar, start_bar + bars):
+            for rel_bar, bar in enumerate(range(start_bar, start_bar + bars)):
+                if (
+                    plan
+                    and plan.mode == "phrase_gated"
+                    and plan.rest_last_bar
+                    and rel_bar % plan.phrase_bars == plan.phrase_bars - 1
+                ):
+                    continue
                 for step in range(STEPS_PER_BAR):
+                    if step not in active_steps:
+                        continue
                     tick = bar_to_tick(bar) + step * SIXTEENTH_TICKS
                     events.append(
                         NoteEvent(DRUM_CHANNEL, MARACAS, contour[step % 4], tick, SIXTEENTH_TICKS)

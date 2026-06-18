@@ -111,9 +111,9 @@ def _cmd_anatomize(args: argparse.Namespace) -> int:
     statuses = run_anatomy(
         target,
         out_dir=Path(args.out),
-        stems_dir=Path(args.stems_dir),
-        separate=not args.no_separate,
         layers=args.layers,
+        layer_stems_dir=Path(args.layer_stems_dir),
+        models_dir=Path(args.models_dir),
     )
     for track, status in statuses.items():
         print(f"{track}: {', '.join(status)}")
@@ -135,9 +135,11 @@ def _cmd_score(args: argparse.Namespace) -> int:
     except FileNotFoundError as exc:
         print(f"score failed: {exc}", file=sys.stderr)
         return 1
-    report, score_path = score_track(
-        audio, pack, out_dir=Path(args.out), stems_dir=Path(args.stems_dir)
-    )
+    try:
+        report, score_path = score_track(audio, pack, out_dir=Path(args.out))
+    except RuntimeError as exc:
+        print(f"score failed: {exc}", file=sys.stderr)
+        return 1
     print("\n".join(report_lines(report)))
     print(f"score: {score_path}")
     return 0
@@ -174,27 +176,28 @@ def build_parser() -> argparse.ArgumentParser:
         "--out", default="local/corpus/dossiers", help="dossier output root (default local/corpus/dossiers)"
     )
     p_anatomize.add_argument(
-        "--stems-dir",
-        dest="stems_dir",
-        default="local/corpus/stems",
-        help="stem cache root (default local/corpus/stems)",
-    )
-    p_anatomize.add_argument(
         "--layers",
         action="store_true",
-        help="also run the 53-stem layer lens (downloads ~1.3 GB weights on first use)",
+        help="run the 53-stem layer lens (downloads ~1.3 GB weights on first use)",
     )
     p_anatomize.add_argument(
-        "--no-separate",
-        action="store_true",
-        help="skip stem separation when stems are missing (full-mix pass only)",
+        "--layer-stems-dir",
+        dest="layer_stems_dir",
+        default="local/corpus/stems53",
+        help="53-stem layer cache root (default local/corpus/stems53)",
+    )
+    p_anatomize.add_argument(
+        "--models-dir",
+        dest="models_dir",
+        default="models/roformer",
+        help="53-stem model cache root (default models/roformer)",
     )
     p_anatomize.set_defaults(func=_cmd_anatomize)
 
     p_score = sub.add_parser(
-        "score", help="score an anatomized track against style-pack grammar targets"
+        "score", help="write a technical diagnostic report for an anatomized track"
     )
-    p_score.add_argument("audio", help="audio file to score (dossier created if missing)")
+    p_score.add_argument("audio", help="audio file to score from an existing quick dossier")
     p_score.add_argument(
         "--pack",
         default="melodic-progressive-techno",
@@ -202,12 +205,6 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_score.add_argument(
         "--out", default="local/corpus/dossiers", help="dossier root (default local/corpus/dossiers)"
-    )
-    p_score.add_argument(
-        "--stems-dir",
-        dest="stems_dir",
-        default="local/corpus/stems",
-        help="stem cache root (default local/corpus/stems)",
     )
     p_score.set_defaults(func=_cmd_score)
 

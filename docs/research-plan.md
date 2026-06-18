@@ -2,45 +2,36 @@
 
 # Research Plan
 
-Status: executed — outputs live under `music/packs/melodic-progressive-techno/` and `music/packs/melodic-progressive-techno/style.yml`.
+Status: reset for rebuild.
 
-The first research pass is a deep survey, but the deliverable is a style grammar, not a long report.
+The first research pass produced useful project lessons, but its outputs under
+`music/packs/melodic-progressive-techno/` are no longer valid as generation
+rules. The next research pass starts from listening and local corpus work.
 
-## Scope
+## Goal
 
-Research should use both tracks and DJ sets.
+Build evidence that explains musical behavior, not just metadata.
 
-Tracks reveal:
-
-- groove construction;
-- bass behavior;
-- melodic density;
-- sound palette;
-- breakdown and drop structure.
-
-DJ sets reveal:
-
-- long-form energy flow;
-- transition length;
-- key and BPM movement;
-- how much repetition is useful;
-- what kinds of tracks survive in sequence.
+```text
+reference -> timestamped listening -> stem/layer evidence -> abstract move
+          -> track-specific use
+```
 
 ## Output
 
-Research should produce:
+Future research should produce:
 
-- a reference corpus;
-- style dimensions;
-- generation constraints;
-- review vocabulary;
-- candidate rejection rules;
-- style-pack defaults.
+- reference studies with timestamps;
+- tension and release observations;
+- groove and bass behavior notes;
+- timbre and space vocabulary;
+- reusable abstract moves;
+- technical hygiene checks that stay separate from taste.
 
 ## Guardrails
 
 - Do not copy or recreate specific tracks.
-- Do not use copyrighted audio as repo assets.
-- Do not let research become open-ended browsing.
-- Convert findings into specs that agents can use.
-
+- Do not convert one artist's fingerprint into genre law.
+- Do not promote BPM, key, duration, or occupancy numbers into defaults by themselves.
+- Do not let a score replace the listening gate.
+- Convert only confirmed, abstract behavior into future specs.

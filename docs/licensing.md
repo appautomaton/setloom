@@ -10,7 +10,7 @@ This document describes the intended licensing architecture for Setloom. It is p
 | --- | --- |
 | Core code | AGPL-3.0-only |
 | Harness prompts | AGPL-3.0-only |
-| Schemas and executable style grammars | AGPL-3.0-only |
+| Schemas and executable lane packs | AGPL-3.0-only |
 | Automation logic | AGPL-3.0-only |
 | Project documentation | CC BY-SA 4.0 |
 | Generated audio, MIDI, stems, arrangements, and sets | Owned by the creator, subject to third-party inputs |

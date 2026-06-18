@@ -2,8 +2,8 @@
 # T04: vocal-first design. The voice lead ("Ad Auroram" verse, D minor,
 # ethereal female, Recipe 1b voice-only takes) is chosen at the voice gate
 # before any arrangement exists; key and bpm below are measured from the
-# voice, not chosen. Taste-owner target (2026-06-10): ~4:20 total — 132 bars
-# at 123 is 4:18, the phrase grid's closest fit inside the streaming window.
+# voice, not chosen. Taste-owner target after the listening gate: ~4:02 total —
+# 124 bars at 123 BPM, preserving the accepted vocal timing without the long tail.
 # Two-cycle form kept at this length: break_1 teases the hook, break_2 is the
 # main break carrying the full sung verse, peak returns the hook. The voice
 # visits the track (vocal share <= 0.15 of bars); never wall-to-wall.
@@ -16,7 +16,7 @@ seed: 4103
 bpm: 123
 key: D minor
 energy: 7
-duration_bars: 132
+duration_bars: 124
 
 intent:
   summary: "Emotive Latin vocal over dark hypnotic roller: hook tease at drop one, full verse in the main break, anthemic hook return at peak."
@@ -33,7 +33,7 @@ sections:
   groove_b: 8
   break_2: 16
   peak: 32
-  outro: 12
+  outro: 4
 
 palette:
   kick: "deep short saturated"
@@ -58,6 +58,31 @@ style_vector:
 
 groove:
   summary: "Vocal-led roller: leave call/answer holes around the sung lead while keeping a D-root low-end anchor."
+  harmony:
+    label: t04-vocal-dawn-harmony
+    progression: [0, 6, 3, 5]
+    chord_color: sus2
+    harmonic_rhythm:
+      drop: 8
+      peak: 4
+  pad:
+    label: t04-conductor-shadow-pad
+    mode: conductor_bed
+    octave: 3
+    note_bars: 4
+    velocity: 42
+    peak_velocity: 50
+  shaker:
+    label: t04-phrase-gated-air
+    mode: phrase_gated
+    phrase_bars: 8
+    active_steps: [2, 6, 10, 14]
+    rest_last_bar: true
+  fx:
+    label: t04-phrase-mark-fx
+    mode: phrase_marks
+    mark_every_bars: 8
+    mark_velocity: 66
   bass:
     label: t04-deep-sidechain-roller
     phrase_bars: 8

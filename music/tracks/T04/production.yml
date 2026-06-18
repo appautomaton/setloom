@@ -7,11 +7,11 @@
 version: 1
 title: nova-flamma-final-candidate
 bpm: 123
-total_bars: 132
+total_bars: 124
 
 sources:
   variant_dir: local/candidates/T04/seed-4103/variant-01
-  voice: local/candidates/genai/latin-vocal-clean-take6-tailfix.wav
+  voice: local/candidates/T04/voice/source/latin-vocal-clean-take6-tailfix-breathfix.wav
   genai_dir: local/candidates/genai
 
 render:
@@ -29,7 +29,7 @@ sections:
   - {name: groove_b, start_bar: 64, end_bar: 72, intent: "Reset the floor before the main break; narrower and more mechanical."}
   - {name: break_2, start_bar: 72, end_bar: 88, intent: "Main vocal event: full stanza, one piece, bed pulls back around it."}
   - {name: peak, start_bar: 88, end_bar: 120, intent: "Peak return: full low-end drive, widened top, hook returns as landmark not pop chorus."}
-  - {name: outro, start_bar: 120, end_bar: 132, intent: "DJ-safe exit: drain harmony and voice, leave motion and tail."}
+  - {name: outro, start_bar: 120, end_bar: 124, intent: "DJ-safe exit: drain harmony and voice, leave motion and tail."}
 
 automation:
   ramp_bars: 1.0
@@ -55,27 +55,78 @@ automation:
       stem: chords
       gain: 0.92
       width: 0.95
-      section_db: {break_1: -2.8, drop_1: -4.2, break_2: -7.2, peak: -2.2}
-      section_width: {break_1: 1.18, break_2: 1.02, peak: 1.24}
+      section_db: {break_1: -2.6, drop_1: -4.2, break_2: -4.8, peak: -2.0}
+      section_width: {break_1: 1.18, break_2: 1.16, peak: 1.28}
     pad:
       stem: pad
       gain: 0.38
       width: 1.42
-      section_db: {break_1: -1.6, drop_1: -5.0, break_2: -4.2, peak: -3.4}
-      section_width: {break_1: 1.55, break_2: 1.40, peak: 1.70}
+      section_db: {break_1: -1.4, drop_1: -5.0, break_2: -2.6, peak: -3.0}
+      section_width: {break_1: 1.55, break_2: 1.62, peak: 1.76}
     fx:
       stem: fx
       gain: 0.95
       width: 1.45
       section_db: {intro: -2.0, groove_a: -1.0, break_1: 0.5, drop_1: -0.8, break_2: 1.0, peak: 0.6, outro: -1.2}
+  phrase_moves:
+    # Drop/groove instrumental movement after the approved tease vocal.
+    - {lane: chords, start_bar: 32.03, end_bar: 40.0, gain_db: 1.4, width: 0.85, highpass_hz: 230, lowpass_hz: 3800, fade_bars: 0.35}
+    - {lane: pad, start_bar: 32.03, end_bar: 40.0, gain_db: -0.5, width: 1.20, highpass_hz: 230, lowpass_hz: 3600, fade_bars: 0.35}
+    - {lane: perc, start_bar: 32.03, end_bar: 40.0, gain_db: -0.4, width: 1.02, lowpass_hz: 9200, fade_bars: 0.25}
+    - {lane: fx, start_bar: 32.03, end_bar: 40.0, gain_db: -5.5, width: 0.90, lowpass_hz: 4200, fade_bars: 0.25}
+    - {lane: chords, start_bar: 40.0, end_bar: 48.0, gain_db: -2.5, width: 0.70, highpass_hz: 250, lowpass_hz: 2600, fade_bars: 0.35}
+    - {lane: pad, start_bar: 40.0, end_bar: 48.0, gain_db: -1.8, width: 1.05, highpass_hz: 260, lowpass_hz: 3000, fade_bars: 0.35}
+    - {lane: perc, start_bar: 40.0, end_bar: 48.0, gain_db: -1.6, width: 0.85, lowpass_hz: 7200, fade_bars: 0.25}
+    - {lane: fx, start_bar: 40.0, end_bar: 48.0, gain_db: -18.0, width: 0.70, lowpass_hz: 3000, fade_bars: 0.25}
+    - {lane: chords, start_bar: 48.0, end_bar: 56.0, gain_db: 2.8, width: 0.95, highpass_hz: 230, lowpass_hz: 4800, fade_bars: 0.35}
+    - {lane: pad, start_bar: 48.0, end_bar: 56.0, gain_db: 1.4, width: 1.34, highpass_hz: 230, lowpass_hz: 4300, fade_bars: 0.35}
+    - {lane: perc, start_bar: 48.0, end_bar: 56.0, gain_db: 0.3, width: 1.12, lowpass_hz: 9500, fade_bars: 0.25}
+    - {lane: chords, start_bar: 56.0, end_bar: 60.0, gain_db: 1.0, width: 0.90, highpass_hz: 230, lowpass_hz: 4200, fade_bars: 0.25}
+    - {lane: pad, start_bar: 56.0, end_bar: 60.0, gain_db: -0.3, width: 1.18, highpass_hz: 250, lowpass_hz: 3600, fade_bars: 0.25}
+    - {lane: perc, start_bar: 56.0, end_bar: 60.0, gain_db: 0.5, width: 1.20, lowpass_hz: 10300, fade_bars: 0.25}
+    - {lane: chords, start_bar: 60.0, end_bar: 64.0, gain_db: -2.0, width: 0.70, highpass_hz: 250, lowpass_hz: 3000, fade_bars: 0.25}
+    - {lane: pad, start_bar: 60.0, end_bar: 64.0, gain_db: -1.4, width: 1.00, highpass_hz: 260, lowpass_hz: 3000, fade_bars: 0.25}
+    - {lane: perc, start_bar: 60.0, end_bar: 64.0, gain_db: -1.8, width: 0.85, lowpass_hz: 7400, fade_bars: 0.25}
+    - {lane: chords, start_bar: 64.0, end_bar: 72.17, gain_db: -6.0, width: 0.60, highpass_hz: 260, lowpass_hz: 2200, fade_bars: 0.35}
+    - {lane: pad, start_bar: 64.0, end_bar: 72.17, gain_db: -5.0, width: 0.75, highpass_hz: 280, lowpass_hz: 2400, fade_bars: 0.35}
+    - {lane: perc, start_bar: 64.0, end_bar: 72.17, gain_db: -2.5, width: 0.65, lowpass_hz: 6200, fade_bars: 0.35}
+    # Peak gap orchestration only; protected vocal windows are left alone.
+    - {lane: chords, start_bar: 89.06, end_bar: 95.42, gain_db: -1.8, width: 0.85, highpass_hz: 240, lowpass_hz: 4300, fade_bars: 0.25}
+    - {lane: pad, start_bar: 89.06, end_bar: 95.42, gain_db: -1.2, width: 1.20, highpass_hz: 250, lowpass_hz: 4400, fade_bars: 0.25}
+    - {lane: perc, start_bar: 89.06, end_bar: 95.42, gain_db: -0.8, width: 1.05, lowpass_hz: 9000, fade_bars: 0.25}
+    - {lane: fx, start_bar: 89.06, end_bar: 95.42, gain_db: -8.0, width: 0.85, lowpass_hz: 4200, fade_bars: 0.25}
+    - {lane: genai_pad, start_bar: 89.06, end_bar: 95.42, gain_db: -3.0, width: 1.20, highpass_hz: 300, lowpass_hz: 4500, fade_bars: 0.25}
+    - {lane: chords, start_bar: 103.61, end_bar: 108.0, gain_db: 1.0, width: 0.95, highpass_hz: 240, lowpass_hz: 4200, fade_bars: 0.25}
+    - {lane: pad, start_bar: 103.61, end_bar: 108.0, gain_db: 0.6, width: 1.25, highpass_hz: 250, lowpass_hz: 4200, fade_bars: 0.25}
+    - {lane: perc, start_bar: 103.61, end_bar: 108.0, gain_db: -0.2, width: 1.20, lowpass_hz: 9500, fade_bars: 0.25}
+    - {lane: genai_pad, start_bar: 103.61, end_bar: 108.0, gain_db: -4.0, width: 1.15, highpass_hz: 300, lowpass_hz: 4200, fade_bars: 0.25}
+    - {lane: chords, start_bar: 108.0, end_bar: 111.42, gain_db: -2.8, width: 0.75, highpass_hz: 260, lowpass_hz: 2800, fade_bars: 0.20}
+    - {lane: pad, start_bar: 108.0, end_bar: 111.42, gain_db: -2.2, width: 0.95, highpass_hz: 280, lowpass_hz: 2600, fade_bars: 0.20}
+    - {lane: perc, start_bar: 108.0, end_bar: 111.42, gain_db: -1.6, width: 0.85, lowpass_hz: 7200, fade_bars: 0.20}
+    - {lane: genai_pad, start_bar: 108.0, end_bar: 111.42, gain_db: -6.0, width: 1.00, highpass_hz: 320, lowpass_hz: 3000, fade_bars: 0.20}
+    - {lane: chords, start_bar: 119.61, end_bar: 124.0, gain_db: -5.0, width: 0.70, highpass_hz: 280, lowpass_hz: 2400, fade_bars: 0.25}
+    - {lane: pad, start_bar: 119.61, end_bar: 124.0, gain_db: -4.0, width: 0.85, highpass_hz: 300, lowpass_hz: 2400, fade_bars: 0.25}
+    - {lane: perc, start_bar: 119.61, end_bar: 124.0, gain_db: -2.5, width: 0.70, lowpass_hz: 6400, fade_bars: 0.25}
+    - {lane: bass, start_bar: 120.5, end_bar: 124.0, gain_db: -1.5, width: 0.0, lowpass_hz: 1200, fade_bars: 0.25}
+    - {lane: kick, start_bar: 121.5, end_bar: 124.0, gain_db: -3.0, width: 0.0, lowpass_hz: 1800, fade_bars: 0.25}
 
 genai_pads:
-  - {asset: t04-pad-break, start_bar: 24, end_bar: 32, gain: 0.40, width: 1.50, highpass_hz: 185.0, role: "break_1 breath under the tease"}
-  - {asset: t04-pad-break, start_bar: 72, end_bar: 88, gain: 0.36, width: 1.35, highpass_hz: 195.0, role: "main-break bed around the full verse"}
-  - {asset: t04-pad-break, start_bar: 88, end_bar: 96, gain: 0.16, width: 1.65, highpass_hz: 230.0, role: "short bloom into peak, kept below the vocal formant band"}
+  - {asset: t04-pad-break, start_bar: 24, end_bar: 32, gain: 0.43, width: 1.50, highpass_hz: 190.0, role: "break_1 breath under the tease"}
+  - {asset: t04-pad-break, start_bar: 72, end_bar: 88, gain: 0.54, width: 1.58, highpass_hz: 215.0, role: "main-break halo under the full verse"}
+  - {asset: t04-pad-break, start_bar: 84, end_bar: 96, gain: 0.22, width: 1.72, highpass_hz: 260.0, role: "vocal-tail bloom into the peak without becoming a lead"}
+  - {asset: t04-pad-break, start_bar: 96, end_bar: 116, gain: 0.16, width: 1.70, highpass_hz: 245.0, role: "thin peak air behind hook returns"}
 
 voice:
   pre_roll_s: 0.15
+  source_repair:
+    original: local/candidates/genai/latin-vocal-clean-take6-tailfix.wav
+    derivative: local/candidates/T04/voice/source/latin-vocal-clean-take6-tailfix-breathfix.wav
+    method: near-remove
+    basis: "12-breath-only-cut-fill proved the target windows; source derivative uses wider no-fill repair so the original source does not retain breath-tail noise."
+    approved_window: local/candidates/T04/motif-auditions/voice-repair/12-breath-only-cut-fill-voice-only.wav
+    breath_windows_s:
+      - {start: 11.007, end: 11.650, maps_to: "fullverse preview 7.80-8.33s plus tail"}
+      - {start: 18.747, end: 19.500, maps_to: "fullverse preview 15.54-16.10s plus tail"}
   body_eq: [equalizer, "280", "1q", "+3", equalizer, "3000", "1.2q", "+2.0", equalizer, "4000", "1q", "+1.2"]
   pieces:
     tease:
@@ -88,11 +139,6 @@ voice:
       trim_len_s: 29.98
       fade_out_s: 1.2
       chain: [gain, "-5", "{body_eq}", pad, "0", "2", reverb, "26", "38", "100", "10", gain, "-1.8"]
-    chop:
-      trim_start_s: 18.73
-      trim_len_s: 1.10
-      fade_out_s: 0.06
-      chain: [gain, "-5", highpass, "360", pad, "0", "3", echo, "0.7", "0.55", "366", "0.45", "732", "0.22", gain, "-3.5"]
     hook1:
       trim_start_s: 23.19
       trim_len_s: 4.00
@@ -104,14 +150,12 @@ voice:
       fade_out_s: 1.2
       chain: [gain, "-5", "{body_eq}", pad, "0", "3", echo, "0.75", "0.46", "366", "0.30", "732", "0.16", reverb, "46", "40", "100", "18"]
   placements:
-    - {piece: tease, bar: 27.75, gain: 0.76, duck_db: -3.6, duck_bars: 2.6, role: "late break_1 hint, not a verse"}
-    - {piece: chop, bar: 40.0, gain: 4.70, duck_db: -2.0, duck_bars: 1.2, role: "drop_1 call-response throw"}
-    - {piece: chop, bar: 56.0, gain: 4.30, duck_db: -2.0, duck_bars: 1.2, role: "drop_1 second response, lower than the first"}
-    - {piece: fullverse, bar: 72.75, gain: 1.18, duck_db: -5.2, duck_bars: 15.6, role: "main break full stanza, one uncut piece"}
-    - {piece: hook1, bar: 96.0, gain: 3.35, duck_db: -4.2, duck_bars: 1.9, role: "peak hook landmark"}
-    - {piece: hook2, bar: 98.0, gain: 2.45, duck_db: -4.2, duck_bars: 4.3, role: "peak hook tail"}
-    - {piece: hook1, bar: 112.0, gain: 2.55, duck_db: -3.2, duck_bars: 1.9, role: "late peak ghost return"}
-    - {piece: hook2, bar: 114.0, gain: 1.90, duck_db: -3.2, duck_bars: 4.0, role: "late peak echo, lower than first pass"}
+    - {piece: tease, bar: 27.75, gain: 0.76, duck_db: -3.0, duck_bars: 2.6, role: "late break_1 hint, not a verse"}
+    - {piece: fullverse, bar: 72.75, gain: 1.18, duck_db: -3.1, duck_bars: 15.6, role: "main break full stanza, one uncut piece with a high-passed support bed"}
+    - {piece: hook1, bar: 96.0, gain: 3.35, duck_db: -3.2, duck_bars: 1.9, role: "peak hook landmark"}
+    - {piece: hook2, bar: 98.0, gain: 2.45, duck_db: -3.2, duck_bars: 4.3, role: "peak hook tail"}
+    - {piece: hook1, bar: 112.0, gain: 2.55, duck_db: -2.6, duck_bars: 1.9, role: "late peak ghost return"}
+    - {piece: hook2, bar: 114.0, gain: 1.90, duck_db: -2.6, duck_bars: 4.0, role: "late peak echo, lower than first pass"}
 
 master:
   normalize_peak_db: -1.2
@@ -119,6 +163,6 @@ master:
 
 auditions:
   - {name: final-break1-tease, start_bar: 22, bars: 14}
-  - {name: final-drop1-body, start_bar: 32, bars: 18}
+  - {name: final-drop1-groove, start_bar: 32, bars: 40}
   - {name: final-mainbreak-fullverse, start_bar: 70, bars: 22}
-  - {name: final-peak-hook, start_bar: 92, bars: 30}
+  - {name: final-peak-hook, start_bar: 88, bars: 32}

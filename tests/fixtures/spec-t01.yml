@@ -16,9 +16,8 @@ intent:
     - "overcrowded bassline"
     - "long break that loses dancefloor motion"
 
-# Section bars must sum to duration_bars (256). 256 bars at 124 BPM is ~8:15,
-# inside the style pack's club-length window; the style.yml section_model (288
-# bars total) overshoots that window and is queued in the listening worksheet.
+# Section bars must sum to duration_bars (256). The reset style pack no longer
+# treats BPM or club length as musical rejection rules.
 sections:
   intro: 16
   groove_a: 32

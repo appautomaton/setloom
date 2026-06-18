@@ -8,7 +8,7 @@ music/packs/melodic-progressive-techno/generation-recipes.md.
 
 Run from the repo root (requires the genai dependency group):
 
-    uv run --no-sync python scripts/magenta_smoke.py [--duration 16] [--prompt TEXT]
+    uv run --no-sync python scripts/magenta_smoke.py --prompt TEXT [--duration 16]
 
 Weights download on first use to the project model store (gitignored):
 MAGENTA_HOME -> models/magenta. Heavy model runs are serialized: do not run
@@ -28,11 +28,6 @@ os.environ.setdefault("HF_HUB_CACHE", str(ROOT / "models" / "hf"))
 
 OUT_DIR = ROOT / "local" / "candidates" / "genai"
 
-DEFAULT_PROMPT = (
-    "dark hypnotic melodic techno groove, rolling sixteenth-note bassline, "
-    "evolving analog pads, arpeggiated minor-key synth motif"
-)
-
 
 def _ensure_model(size: str = "mrt2_base") -> None:
     """Fetch shared resources and the exported MLX model on first use."""
@@ -50,7 +45,11 @@ def _ensure_model(size: str = "mrt2_base") -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--prompt", default=DEFAULT_PROMPT)
+    parser.add_argument(
+        "--prompt",
+        required=True,
+        help="track-specific smoke prompt; no pack-level default prompt is provided",
+    )
     parser.add_argument("--duration", type=float, default=16.0, help="seconds")
     parser.add_argument("--name", default="magenta-smoke")
     args = parser.parse_args()

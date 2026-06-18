@@ -210,14 +210,78 @@ class ArpGroovePlan(BaseModel):
         return self
 
 
+class HarmonyGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-harmony"
+    progression: list[int] | None = None
+    chord_color: Literal["triad", "sus2", "sus4", "add9"] | None = None
+    harmonic_rhythm: dict[str, int] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def _progression_is_usable(self) -> "HarmonyGroovePlan":
+        if self.progression is not None:
+            if len(self.progression) < 2:
+                raise ValueError("harmony progression must contain at least two degrees")
+            if any(degree < 0 for degree in self.progression):
+                raise ValueError("harmony progression degrees must be non-negative")
+        for section, bars in self.harmonic_rhythm.items():
+            if bars <= 0:
+                raise ValueError(f"harmony harmonic_rhythm[{section}] must be positive")
+        return self
+
+
+class PadGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-pad"
+    mode: Literal["tonic_power_stack", "conductor_bed"] = "tonic_power_stack"
+    octave: int = Field(default=3, ge=1, le=6)
+    note_bars: int | None = Field(default=None, gt=0)
+    velocity: int = Field(default=50, ge=1, le=127)
+    peak_velocity: int = Field(default=58, ge=1, le=127)
+
+
+class ShakerGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-shaker"
+    mode: Literal["continuous_16th", "phrase_gated"] = "continuous_16th"
+    phrase_bars: int = Field(default=8, gt=0)
+    active_steps: list[int] = Field(default_factory=list)
+    rest_last_bar: bool = False
+
+    @model_validator(mode="after")
+    def _active_steps_are_safe(self) -> "ShakerGroovePlan":
+        for step in self.active_steps:
+            if not 0 <= step < 16:
+                raise ValueError(f"shaker active step {step} must be in the 0..15 sixteenth grid")
+        return self
+
+
+class FxGroovePlan(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str = "track-fx"
+    mode: Literal["entry_riser_impact", "phrase_marks", "mute"] = "entry_riser_impact"
+    riser_bars: int = Field(default=4, ge=1)
+    mark_every_bars: int = Field(default=8, gt=0)
+    mark_velocity: int = Field(default=72, ge=1, le=127)
+    impact_velocity: int = Field(default=120, ge=1, le=127)
+
+
 class GroovePlan(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     summary: str = ""
+    harmony: HarmonyGroovePlan | None = None
     bass: BassGroovePlan | None = None
     drums: DrumsGroovePlan | None = None
     chords: ChordsGroovePlan | None = None
     arp: ArpGroovePlan | None = None
+    pad: PadGroovePlan | None = None
+    shaker: ShakerGroovePlan | None = None
+    fx: FxGroovePlan | None = None
 
 
 class TrackSpec(BaseModel):

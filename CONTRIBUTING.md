@@ -10,7 +10,7 @@ Setloom welcomes contributions from independent developers, musicians, and techn
 - Prefer open-source, CLI-controllable tools.
 - Keep generated artifacts reproducible where practical.
 - Do not add proprietary samples, unclear sample packs, model weights, or copyrighted audio.
-- Use reference artists to build style grammar, not to imitate or clone.
+- Treat references as evidence and vocabulary, not as templates or genre law.
 - Preserve the human listening gate.
 
 ## Developer Certificate of Origin
@@ -22,4 +22,3 @@ Signed-off-by: Your Name <you@example.com>
 ```
 
 The sign-off means you have the right to submit the contribution under the project licenses.
-

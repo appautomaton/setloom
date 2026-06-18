@@ -196,14 +196,19 @@ def build_conductor(spec: TrackSpec) -> Conductor:
     """Build a deterministic conductor shared by all musical parts."""
     pitch_class, quality = parse_key(spec.key)
     rng = random.Random(f"{spec.seed}:{spec.key}:{spec.duration_bars}:conductor")
+    plan = spec.groove.harmony if spec.groove else None
     progressions = MINOR_PROGRESSIONS if quality == "minor" else MAJOR_PROGRESSIONS
-    progression = rng.choice(progressions)
-    color = rng.choice(CHORD_COLORS)
+    progression = tuple(plan.progression) if plan and plan.progression else rng.choice(progressions)
+    color = plan.chord_color if plan and plan.chord_color else rng.choice(CHORD_COLORS)
     scale = SCALES[quality]
     events: list[HarmonicEvent] = []
     for section, (start_bar, bars) in section_layout(spec).items():
         kind = section.rstrip("0123456789_")
-        harmonic_bars = SECTION_HARMONIC_RHYTHM.get(kind, 4)
+        harmonic_bars = (
+            plan.harmonic_rhythm.get(kind)
+            if plan and kind in plan.harmonic_rhythm
+            else SECTION_HARMONIC_RHYTHM.get(kind, 4)
+        )
         for offset in range(0, bars, harmonic_bars):
             span = min(harmonic_bars, bars - offset)
             step = (offset // harmonic_bars) % len(progression)

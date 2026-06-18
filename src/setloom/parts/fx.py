@@ -46,17 +46,24 @@ class FxGenerator:
     def generate(
         self, spec: TrackSpec, rng: random.Random, pack: "StylePack | None" = None
     ) -> list[NoteEvent]:
+        plan = spec.groove.fx if spec.groove else None
+        if plan and plan.mode == "mute":
+            return []
+        if plan and plan.mode == "phrase_marks":
+            return self._generate_phrase_marks(spec, plan.mark_every_bars, plan.mark_velocity)
+
         riser_root = root_note(spec.key, RISER_OCTAVE)
         impact_note = root_note(spec.key, IMPACT_OCTAVE)
         # Exactly one rng draw per run keeps draw counts structural.
         steps_per_semitone = rng.choice(STEPS_PER_SEMITONE_OPTIONS)
-        run_steps = RISER_BARS * STEPS_PER_BAR
+        riser_bars = plan.riser_bars if plan else RISER_BARS
+        run_steps = riser_bars * STEPS_PER_BAR
         events: list[NoteEvent] = []
         for section, (start_bar, _) in section_layout(spec).items():
             if not section.startswith(("drop", "peak")):
                 continue
-            if start_bar >= RISER_BARS:  # guard: a full riser must fit before the entry
-                run_start = bar_to_tick(start_bar - RISER_BARS)
+            if start_bar >= riser_bars:  # guard: a full riser must fit before the entry
+                run_start = bar_to_tick(start_bar - riser_bars)
                 for step in range(run_steps):
                     note = riser_root + step // steps_per_semitone
                     velocity = (
@@ -69,9 +76,35 @@ class FxGenerator:
                 NoteEvent(
                     FX_CHANNEL,
                     impact_note,
-                    IMPACT_VELOCITY,
+                    plan.impact_velocity if plan else IMPACT_VELOCITY,
                     bar_to_tick(start_bar),
                     TICKS_PER_BAR // 2,
                 )
             )
+        return events
+
+    def _generate_phrase_marks(
+        self,
+        spec: TrackSpec,
+        mark_every_bars: int,
+        mark_velocity: int,
+    ) -> list[NoteEvent]:
+        root = root_note(spec.key, RISER_OCTAVE)
+        fifth = root + 7
+        events: list[NoteEvent] = []
+        for section, (start_bar, bars) in section_layout(spec).items():
+            if not section.startswith(("drop", "peak")):
+                continue
+            for rel_bar in range(0, bars, mark_every_bars):
+                bar = start_bar + rel_bar
+                note = root if (rel_bar // mark_every_bars) % 2 == 0 else fifth
+                events.append(
+                    NoteEvent(
+                        FX_CHANNEL,
+                        note,
+                        mark_velocity,
+                        bar_to_tick(bar),
+                        TICKS_PER_BAR // 2,
+                    )
+                )
         return events

@@ -108,23 +108,10 @@ def _cached_dossiers(tmp_path, track="t"):
         "bpm_estimate": 123.0,
         "integrated_lufs": -8.5,
         "duration_s": 396.0,
+        "bars_estimated": 100,
         "key_estimate": "A# minor",
     }
-    stems = {
-        "track": track,
-        "bars": 100,
-        "drums": {"kick_gap_bars": ["44-52"], "kick_bars_present": 90},
-        "bass": {
-            "tonic_candidate": "A#",
-            "pitch_class_share": {"A#": 0.7},
-            "step_occupancy": 0.9,
-            "note_len_16ths_median": 2.0,
-        },
-        "other": {"harmonic_changes_per_16bars": 2.0},
-        "vocals": {"active_share": 0.1},
-    }
     (out_dir / f"{track}.quick.yml").write_text(yaml.safe_dump(quick), encoding="utf-8")
-    (out_dir / f"{track}.stems.yml").write_text(yaml.safe_dump(stems), encoding="utf-8")
     return out_dir
 
 
@@ -140,6 +127,7 @@ class TestScoreTrack:
         data = yaml.safe_load(first)
         assert data["track"] == "t"
         assert data["counts"] == report.counts
+        assert report.counts == {"in": 4, "out": 0, "missing": 3}
         assert data["note"] == sc.LISTENING_GATE_LINE
 
         report2, _ = sc.score_track(audio, PACK, out_dir=out_dir)
@@ -147,6 +135,17 @@ class TestScoreTrack:
         assert report2.counts == report.counts
         # scored tracks never enter the corpus aggregate
         assert not (out_dir / "corpus-summary.yml").exists()
+
+    def test_missing_cached_row_fails_without_generation(self, tmp_path):
+        audio = tmp_path / "t.mp3"
+        audio.touch()
+        out_dir = tmp_path / "dossiers"
+        out_dir.mkdir()
+
+        import pytest
+
+        with pytest.raises(RuntimeError, match="no cached quick dossier"):
+            sc.score_track(audio, PACK, out_dir=out_dir)
 
 
 def test_score_import_is_torch_free():
