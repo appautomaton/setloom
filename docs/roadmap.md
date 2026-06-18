@@ -22,8 +22,7 @@ Acceptance:
 
 Build timestamped studies from tracks and DJ sets.
 
-Status: superseded — the first corpus and findings were cleared from the active
-pack on 2026-06-15 because they over-promoted stale and restrictive evidence.
+Status: open — reference studies are selected case by case for a clear musical question.
 
 Acceptance:
 
@@ -35,9 +34,7 @@ Acceptance:
 
 Convert evidence into vocabulary, diagnostics, and track-specific hypotheses.
 
-Status: reset — `music/packs/melodic-progressive-techno/style.yml` now keeps
-only lane routing and technical-hygiene scaffolding while the real music
-evidence is rebuilt.
+Status: shipped — `music/packs/melodic-progressive-techno/style.yml` carries hygiene scaffolding only.
 
 Acceptance:
 
@@ -59,26 +56,35 @@ Acceptance:
 - Example listening notes.
 - Validation command (`setloom validate`).
 
-## Spec 4: MIDI Candidate Generator
+## Spec 4: Candidate Production
 
 Generate editable musical candidates.
 
-Status: retired (2026-06-18) — the deterministic generator (`setloom generate`,
-`src/setloom/parts/`) was removed. Inventing notes in code from built-in
-patterns made the harness an opinion owner, and every real track bypassed it.
-Musical candidates now come from per-track code, genai, and external MIDI,
-composing the unopinionated primitives (`setloom.midi`, and `setloom.conductor`
-theory math). The harness no longer composes.
+Status: shipped — per-track code under `music/tracks/TNN/` composes candidates
+using `setloom.midi`, `setloom.conductor`, external MIDI, and genai. The
+deterministic generator (`setloom generate`) was retired: inventing notes from
+built-in patterns made the harness an opinion owner.
 
-## Spec 5: Render Engine
+Acceptance:
 
-Render stems from specs and MIDI.
+- Per-track code produces editable MIDI for each part.
+- Deterministic seeds for reproducibility where code uses RNG.
+- No final approval without listening notes.
 
-Status: retired (2026-06-18) — the SuperCollider render monolith
-(`scrender.py`, `patches.scd`) baked in a fixed lead/mix/master architecture
-and preset timbres, and was bypassed by every real track (T04/T05 render with
-per-track numpy synthesis). Rendering is now per-track code composing the
-`setloom.audio` DSP-hygiene primitives.
+## Spec 5: Render
+
+Render stems from MIDI and per-track synthesis.
+
+Status: shipped — per-track code renders stems using `setloom.audio` DSP-hygiene
+primitives (loudness, mono-safety, filters, envelopes). The SuperCollider
+render monolith (`scrender.py`, `patches.scd`) was retired: it baked in a fixed
+lead/mix/master architecture and preset timbres.
+
+Acceptance:
+
+- Per-track code renders reproducible stems and a demo mix.
+- DSP hygiene (clip prevention, loudness target, mono-safety) via `setloom.audio`.
+- Render metadata alongside output.
 
 ## Spec 6: Review Gate
 
@@ -123,8 +129,7 @@ Acceptance:
 Generate local candidates from explicit track theses, then route them through
 technical diagnostics and the human listening gate.
 
-Status: partially reset — runtime/model-store plumbing remains useful; old
-pack-prompt recipes are deprecated as musical guidance.
+Status: in progress — runtime and model-store plumbing is in place; candidates route through diagnostics and the listening gate.
 
 Acceptance:
 

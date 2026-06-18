@@ -18,10 +18,9 @@ Before a serious render, make the musical move explicit:
 groove spine -> motif cell -> energy arc -> palette -> what to cut
 ```
 
-This pass is short, but it matters. The harness has no built-in generator to
-decide the track's taste by accident: the agent writes the track's own code and
-decides what to keep, cut, tile, halve, stab, lift, mute, fade, or bypass, then
-renders only the parts that serve that move.
+This pass is short, but it matters. The agent writes the track's own code and
+decides what to keep, cut, tile, halve, stab, lift, mute, fade, or bypass,
+then renders only the parts that serve that move.
 
 The right answer may be less material: no hat bed, no clap, no ride, no shaker,
 no inherited bus, no stale patch. Silence is an arrangement choice.
@@ -100,8 +99,6 @@ local/candidates/                # TNN/ per-track MIDI + renders; genai/ generat
 local/releases/TNN/              # frozen release packages: master, artwork, upload notes
 models/                          # model weights: generation and separation (gitignored)
 ```
-
-The `renders/`–`reports/`–`sets/` companions remain the Spec 7-era target; `music/tracks/` already follows the spec-plus-notes shape.
 
 ## Diagnostics And Listening
 

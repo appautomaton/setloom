@@ -6,7 +6,7 @@ Setloom is an open-source, keyboard-first tool and agentic harness for generatin
 
 ## Tool Drawer
 
-These are available tools, not a required music-understanding pipeline. The harness is a small, unopinionated toolkit plus opt-in diagnostics — it never composes the music. All musical composition lives in per-track code under `music/tracks/TNN/` (the `assemble.py` pattern), bringing its own synthesis and external/genai MIDI.
+The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never composes the music — all musical composition lives in per-track code under `music/tracks/TNN/` (the `assemble.py` pattern), which brings its own synthesis and external/genai MIDI.
 
 - `setloom validate <spec>` — check a track spec against the schema and run the lane pack's technical-hygiene gate. Specs live in `music/tracks/TNN/`.
 - `setloom anatomize [path] --layers` — 53-stem reference lens and technical dossiers.
@@ -17,20 +17,19 @@ These are available tools, not a required music-understanding pipeline. The harn
 ## Context Routing
 
 - Orient with `docs/README.md`; product intent and audience live in `docs/project-charter.md`; scope changes start at `docs/roadmap.md`.
-- `music/packs/*/style.yml` is executable lane/hygiene scaffolding (`docs/style-grammar.md` explains the reset). Each pack carries its own evidence and guides: `music/packs/*/dossier-guide.md` to read anatomize/score output, `music/packs/*/generation-recipes.md` before genai or model-store work, `music/packs/*/component-glossary.md` and `music/packs/*/taste-lexicon.md` for review vocabulary.
+- `music/packs/*/style.yml` is executable hygiene scaffolding (`docs/style-grammar.md` explains the contract). Each pack carries guides: `music/packs/*/dossier-guide.md` to read anatomize/score output, `music/packs/*/generation-recipes.md` before genai or model-store work, `music/packs/*/component-glossary.md` and `music/packs/*/taste-lexicon.md` for review vocabulary.
 - `docs/workflow.md` for the candidate-to-gate loop; `docs/tooling.md` for tool policy; `docs/licensing.md`, `CONTRIBUTING.md`, and `TRADEMARKS.md` before policy-sensitive changes.
 
 ## Musical Rules
 
-- The harness owns **technical hygiene only**: mono safety, clip prevention, loudness target, mixable edges, phrase-grid alignment. Everything else — groove character, kick pattern, bass profile, rhythmic identity, energy arc, timbre — is a musical decision that belongs to the track spec and the taste owner, not the harness.
-- The harness is mostly language: taste routing, producer judgment, and workflow discipline. Code paths are instruments on the desk. They are not doctrine.
-- Code is unopinionated tooling, never opinion. The harness ships primitives (MIDI read/write and tick math, DSP hygiene, music-theory math) and opt-in diagnostics; it composes nothing. Each track's own code assembles the music on the fly. Opinion — groove, melody, energy, timbre, mix — lives in the track spec's prose and in text guidance, not in code.
+- The harness owns **technical hygiene only**: mono safety, clip prevention, loudness target, mixable edges. Everything else — groove character, kick pattern, bass profile, rhythmic identity, energy arc, timbre — belongs to the track spec and the taste owner.
+- Code is unopinionated tooling. The harness ships primitives (MIDI, DSP hygiene, music-theory math) and opt-in diagnostics; it composes nothing. Each track's own code assembles the music. Opinion lives in the track spec's prose and in text guidance, not in code.
 - Producer judgment comes before rendering. Name the groove spine, motif cell, energy move, palette, and intended omissions before writing the track's render code.
-- GenAI excels at melody, motif, atmosphere, timbre, and variation, and at novel groove ideas: seeded rhythmic identities, syncopated kick figures, unconventional bass motion. Per-track composition may call genai, external MIDI, scratch synthesis, and the toolkit primitives. Code translates and renders; it never owns taste.
-- Style packs provide lane routing, technical-hygiene scaffolding, and review vocabulary; each track spec owns all song-specific musical choices. Do not apply pack defaults as musical constraints.
+- GenAI excels at melody, motif, atmosphere, timbre, and variation, including novel groove ideas: seeded rhythmic identities, syncopated kick figures, unconventional bass motion. Per-track composition may call genai, external MIDI, scratch synthesis, and the toolkit primitives.
+- Style packs provide lane routing, technical-hygiene scaffolding, and review vocabulary; each track spec owns all song-specific musical choices.
 - Motifs are musical cells, not full-track obligations. Extract the smallest useful idea, place it against the track's tempo and form, then vary density, register, attack, and silence by section.
 - Deletion is a production move. If a hat, clap, shaker, ride, riser, patch, or bus chain adds preset sheen or weakens the track, cut it. Do not defend a bad lane by turning it down.
-- Reference study starts with listening notes. Low-confidence machine reports are navigation aids only; delete or replace any harness output that starts acting like musical authority. Reference anatomy is evidence, not a template. Use measurements to ask better listening questions; never reuse one global kick/bass pattern across songs. If the anatomy corpus is dominated by a single artist, treat its measurements as that artist's fingerprint, not genre law.
+- Reference study starts with listening notes. Machine reports are navigation aids only; delete or replace any harness output that starts acting like musical authority. Use measurements to ask better listening questions; never reuse one global kick/bass pattern across songs.
 - Nothing is final without the human listening gate; scores are diagnostics, never the taste verdict.
 - Never imitate named artists; references exist to study abstract moves and review vocabulary.
 - Favor club-functional arrangements: mixable edges, clear phrase structure, controlled low end, long-form energy flow.
@@ -38,9 +37,8 @@ These are available tools, not a required music-understanding pipeline. The harn
 ## Harness Skepticism
 
 - Treat existing harness behavior as an implementation candidate, not authority.
-- Before using any command, report, cache, pack rule, prompt, patch, bus chain, or generator path, decide whether it fits the current musical objective. If it does not, bypass it, deprecate it, or replace it.
+- Before using any command, report, cache, pack rule, prompt, patch, or tool path, decide whether it fits the current musical objective. If it does not, bypass it, deprecate it, or replace it.
 - Do not preserve a tool just because it exists. Proof-of-concept paths stay explicit and opt-in until they prove they serve the current workflow.
-- Harness scaffolding may provide events, form, or file routing while the sound itself comes from a scratch synth, external experiment, or hand-shaped process. That is valid when it serves the track.
 - When tool suitability is uncertain, stop and use the question tool to ask the human for feedback or a directional choice. Do not silently continue, and do not keep the human in the dark.
 - State confidence and provenance for machine-derived claims. Keep uncertain outputs in `tmp/` until they earn a durable place.
 

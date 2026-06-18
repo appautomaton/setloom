@@ -1,105 +1,20 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 id: melodic-progressive-techno
-status: reset_for_rebuild
 
 summary: >
-  Provisional lane label for the next melodic/progressive techno rebuild. This
-  pack no longer claims generator authority over BPM, groove, bass motion,
-  kick pattern, break position, arrangement shape, or melodic identity.
-
-reset:
-  date: 2026-06-15
-  reason: >
-    The first pack over-promoted a small, biased, mostly static evidence pass
-    into style law. Those measurements were useful debugging artifacts, but
-    they are not reliable musical grammar and must not drive generation.
-  deprecated_as_authority:
-    - previous metadata corpus
-    - previous anatomy findings
-    - previous BPM and duration defaults
-    - previous bass cells and groove vocabulary
-    - previous model-knowledge review rules
-    - previous score targets that treated musical taste as scalar distance
-
-authority:
-  generator_authority: false
-  musical_rules_authority: false
-  allowed_uses:
-    - route specs to the melodic/progressive techno lane
-    - preserve technical hygiene gates that protect file-based production
-    - hold rebuild notes until a new evidence pass exists
-  not_allowed_uses:
-    - selecting a default BPM
-    - selecting a default bass profile
-    - selecting a default kick pattern
-    - rejecting musical ideas because they do not match old corpus numbers
-    - treating reference-artist measurements as genre law
-
-musical_decision_policy:
-  taste_owner: human
-  track_spec_owns:
-    - groove character
-    - kick pattern
-    - bass profile
-    - rhythmic identity
-    - BPM and key
-    - energy arc
-    - timbre and palette
-    - motif and melody behavior
-  harness_owns_technical_hygiene:
-    - clip prevention
-    - mono and low-end safety
-    - phrase-grid sanity
-    - mixable edges when requested by the track form
-    - reproducible file outputs
-  listening_gate_required: true
+  Lane label for melodic/progressive techno. Carries only technical-hygiene
+  scaffolding; all musical decisions belong to the track spec and the taste
+  owner. See docs/style-grammar.md for the full contract.
 
 generation_defaults:
-  # Operational forms only. These are not style constraints; they keep the
-  # existing gate code loadable while the pack is rebuilt.
   duration_profiles:
     club_extended:
-      duration_minutes: [0.5, 30.0]
       mixable_edges: required
     streaming_edit:
-      duration_minutes: [0.5, 12.0]
       mixable_edges: reduced
 
 rejection_rules:
-  - id: no-listening-no-approval
-    rule: "Never mark a candidate final without human listening notes."
-    basis: policy
   - id: unmixable-edges
     rule: "For forms that request mixable edges, require an intro and outro."
     basis: technical_hygiene
-  - id: low-end-conflict
-    rule: "Flag kick/bass register, timing, or mono-safety conflicts for repair."
-    basis: technical_hygiene
-    severity: repair_required
-  - id: clipping
-    rule: "Reject or repair clipped renders before audition packaging."
-    basis: technical_hygiene
-  - id: mono-safety
-    rule: "Repair unsafe low-end stereo behavior before release packaging."
-    basis: technical_hygiene
-
-rebuild_contract:
-  next_pack_must_include:
-    - reference studies based on listening plus signal evidence
-    - timestamped arrangement and tension observations
-    - abstracted musical moves that do not copy named artists
-    - clear separation between evidence, hypothesis, and executable gate
-    - explicit anti-rules for overfitting tiny corpora into generator defaults
-  next_pack_must_not_include:
-    - corpus-derived BPM defaults treated as style law
-    - global bass or kick cells used as silent fallbacks
-    - score targets that masquerade as taste decisions
-    - named-artist imitation instructions
-
-approval:
-  human_listening_required: true
-  final_states:
-    - keep
-    - revise
-    - reject

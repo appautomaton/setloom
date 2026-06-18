@@ -2,12 +2,6 @@
 
 # Research Plan
 
-Status: reset for rebuild.
-
-The first research pass produced useful project lessons, but its outputs under
-`music/packs/melodic-progressive-techno/` are no longer valid as generation
-rules. The next research pass starts from listening and local corpus work.
-
 ## Goal
 
 Build evidence that explains musical behavior, not just metadata.
