@@ -11,6 +11,10 @@
 # not a tonic pedal), top identity (instrumental ostinato + piano chord bed,
 # not vocal), and construction (external MIDI re-arrangement + Steinway sampling,
 # not pure generation).
+#
+# Construction lives in this track's own render code (external MIDI re-arrangement
+# + custom numpy synthesis + Steinway sampling), not a harness generator. This
+# spec is the routing/intent record; the brief details sources and synthesis.
 
 id: T05
 title: bad-romance-megatron-mashup
@@ -60,87 +64,6 @@ style_vector:
   vocal_presence: 0
   organic_texture: 1
   peak_time_pressure: 8
-
-groove:
-  summary: "External low-end + motif over harness scaffolding; Am-F-C-G conductor loop matches Bad Romance bass centers."
-  harmony:
-    label: t05-am-f-c-g-loop
-    progression: [0, 5, 2, 6]
-    chord_color: triad
-    harmonic_rhythm:
-      break: 4
-      drop: 8
-      peak: 4
-  pad:
-    label: t05-dark-conductor-bed
-    mode: conductor_bed
-    octave: 3
-    note_bars: 4
-    velocity: 44
-    peak_velocity: 52
-  shaker:
-    label: t05-phrase-gated-air
-    mode: phrase_gated
-    phrase_bars: 8
-    active_steps: [2, 6, 10, 14]
-    rest_last_bar: true
-  fx:
-    label: t05-drop-peak-risers
-    mode: entry_riser_impact
-    riser_bars: 4
-    impact_velocity: 118
-  chords:
-    label: t05-am-stabs-and-bed
-    sections:
-      break:
-        mode: sustain
-        color: triad
-        octave: 4
-        bed_velocity: 48
-      drop:
-        mode: stabs
-        color: triad
-        octave: 4
-        stab_velocity: 58
-        duration_steps: 3
-        stab_patterns:
-          - [6]
-          - []
-          - [10]
-          - []
-          - [6, 14]
-          - []
-          - [10]
-          - [14]
-      peak:
-        mode: bed_and_stabs
-        color: triad
-        octave: 4
-        bed_velocity: 42
-        stab_velocity: 64
-        duration_steps: 2
-        bed_lift: 12
-        stab_patterns:
-          - [6]
-          - [10]
-          - []
-          - [14]
-          - [6, 14]
-          - []
-          - [10]
-          - [14]
-  arp:
-    label: t05-mute-harness-arp
-    sections:
-      drop:
-        mode: mute
-      peak:
-        mode: mute
-  drums:
-    label: t05-techno-pocket
-    phrase_bars: 16
-    percussion_patterns:
-      - [[3, 10], [7], [11, 14], [], [3], [7, 13], [10], [3, 14], [7], [11], [3, 10], [14], [], [7, 11], [3], [10, 14]]
 
 render_targets:
   midi:

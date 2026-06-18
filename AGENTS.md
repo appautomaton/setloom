@@ -6,12 +6,12 @@ Setloom is an open-source, keyboard-first tool and agentic harness for generatin
 
 ## Tool Drawer
 
-These are available tools, not a required music-understanding pipeline.
+These are available tools, not a required music-understanding pipeline. The harness is a small, unopinionated toolkit plus opt-in diagnostics — it never composes the music. All musical composition lives in per-track code under `music/tracks/TNN/` (the `assemble.py` pattern), bringing its own synthesis and external/genai MIDI.
 
-- `setloom validate <spec>` — check a track spec against schema and lane pack. Specs live in `music/tracks/TNN/`.
-- `setloom generate <spec>` — deterministic MIDI candidate variants into `local/candidates/`.
+- `setloom validate <spec>` — check a track spec against the schema and run the lane pack's technical-hygiene gate. Specs live in `music/tracks/TNN/`.
 - `setloom anatomize [path] --layers` — 53-stem reference lens and technical dossiers.
 - `setloom score <audio>` — optional technical diagnostic report beside the dossier; scores are not taste, truth, or style distance.
+- Importable primitives for per-track code: `setloom.midi` (MIDI read/write, tick/bar math, `NoteEvent`), `setloom.audio` (DSP hygiene: loudness, mono-safety, clip, filters, envelopes), `setloom.conductor` (music-theory math: key/scale parsing, chord-tone and scale-degree helpers).
 - `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai experiments into `local/candidates/genai/`; they require explicit track-specific prompts.
 
 ## Context Routing
@@ -24,8 +24,9 @@ These are available tools, not a required music-understanding pipeline.
 
 - The harness owns **technical hygiene only**: mono safety, clip prevention, loudness target, mixable edges, phrase-grid alignment. Everything else — groove character, kick pattern, bass profile, rhythmic identity, energy arc, timbre — is a musical decision that belongs to the track spec and the taste owner, not the harness.
 - The harness is mostly language: taste routing, producer judgment, and workflow discipline. Code paths are instruments on the desk. They are not doctrine.
-- Producer judgment comes before rendering. Name the groove spine, motif cell, energy move, palette, and intended omissions before asking a generator to speak.
-- GenAI excels at melody, motif, atmosphere, timbre, and variation. GenAI is also capable of novel groove ideas: seeded rhythmic identities, syncopated kick figures, unconventional bass motion. Deterministic generators are execution tools, not taste owners. Do not conflate "we render groove deterministically" with "groove cannot be creative."
+- Code is unopinionated tooling, never opinion. The harness ships primitives (MIDI read/write and tick math, DSP hygiene, music-theory math) and opt-in diagnostics; it composes nothing. Each track's own code assembles the music on the fly. Opinion — groove, melody, energy, timbre, mix — lives in the track spec's prose and in text guidance, not in code.
+- Producer judgment comes before rendering. Name the groove spine, motif cell, energy move, palette, and intended omissions before writing the track's render code.
+- GenAI excels at melody, motif, atmosphere, timbre, and variation, and at novel groove ideas: seeded rhythmic identities, syncopated kick figures, unconventional bass motion. Per-track composition may call genai, external MIDI, scratch synthesis, and the toolkit primitives. Code translates and renders; it never owns taste.
 - Style packs provide lane routing, technical-hygiene scaffolding, and review vocabulary; each track spec owns all song-specific musical choices. Do not apply pack defaults as musical constraints.
 - Motifs are musical cells, not full-track obligations. Extract the smallest useful idea, place it against the track's tempo and form, then vary density, register, attack, and silence by section.
 - Deletion is a production move. If a hat, clap, shaker, ride, riser, patch, or bus chain adds preset sheen or weakens the track, cut it. Do not defend a bad lane by turning it down.
@@ -74,7 +75,7 @@ The corpus is evidence for study, not a lawbook. Your track must say something d
 
 1. Read the local spec before changing behavior; keep edits scoped to the roadmap item.
 2. Prefer schemas, tests, and file formats over vague prose; write clear, high-signal English everywhere.
-3. Generate multiple candidate options with a compact review report; separate technical checks from taste decisions.
+3. Prepare multiple candidate options — per-track code, genai, external MIDI — with a compact review report; separate technical checks from taste decisions.
 4. Do not hide uncertainty. If the uncertainty is about tool suitability, ask the human with the question tool before proceeding; if it is about taste, route it to the listening gate.
 5. Implement only the design stage the human commissioned; an approved artifact is not permission to start the next stage.
 6. Never hoard. The tree carries only what serves current context — git history is the bookkeeping, artifacts are regenerable from spec, seed, and recipe, and every name says what a thing is today.

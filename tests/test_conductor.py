@@ -1,48 +1,37 @@
 # SPDX-License-Identifier: AGPL-3.0-only
+"""Music-theory helper tests: key parsing and scale-degree/chord-tone math."""
 
-from pathlib import Path
+import pytest
 
-from setloom.conductor import build_conductor
-from setloom.schema import load_spec
-
-REPO_ROOT = Path(__file__).resolve().parents[1]
-T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
-T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
+from setloom.conductor import SCALES, chord_tones, degree_note, parse_key, scale_offset
 
 
-def test_conductor_exposes_shared_phrase_and_harmony_clock() -> None:
-    spec = load_spec(T02)
-    conductor = build_conductor(spec)
-
-    assert len(conductor.progression) == 4
-    assert len(set(conductor.progression)) >= 3
-    assert conductor.harmonic_events
-
-    point = conductor.phrase_point(16)
-    assert point.section == "break_1"
-    assert point.section_kind == "break"
-    assert point.is_8bar_boundary
-    assert point.is_16bar_boundary
-    assert point.chord == conductor.chord_at_bar(16)
+def test_parse_key_returns_pitch_class_and_quality() -> None:
+    assert parse_key("D minor") == (2, "minor")
+    assert parse_key("A minor") == (9, "minor")
+    assert parse_key("C major") == (0, "major")
 
 
-def test_conductor_energy_tracks_section_function() -> None:
-    spec = load_spec(T02)
-    conductor = build_conductor(spec)
-
-    intro = conductor.energy_at_bar(0)
-    drop = conductor.energy_at_bar(32)
-    peak = conductor.energy_at_bar(72)
-
-    assert intro < drop < peak
-    assert conductor.foreground_owner("break") == "lead"
-    assert conductor.foreground_owner("drop") == "groove"
+def test_parse_key_rejects_unsupported() -> None:
+    with pytest.raises(ValueError, match="unsupported key"):
+        parse_key("H dorian")
 
 
-def test_t04_overrides_shared_t02_harmony_template() -> None:
-    t02 = build_conductor(load_spec(T02))
-    t04 = build_conductor(load_spec(T04))
+def test_scale_offset_wraps_octaves() -> None:
+    minor = SCALES["minor"]
+    assert scale_offset(minor, 0) == 0
+    assert scale_offset(minor, 4) == 7  # fifth
+    assert scale_offset(minor, 7) == 12  # tonic, one octave up
 
-    assert t04.progression != t02.progression
-    assert t04.progression == (0, 6, 3, 5)
-    assert t04.chord_color == "sus2"
+
+def test_degree_note_places_tonic_in_octave() -> None:
+    # D minor tonic in octave 3 is MIDI 50.
+    assert degree_note(2, SCALES["minor"], 0, 3) == 50
+
+
+def test_chord_tones_voicings() -> None:
+    minor = SCALES["minor"]
+    assert chord_tones(minor, 0) == (0, 3, 7)  # triad default
+    assert chord_tones(minor, 0, "sus2") == (0, 2, 7)
+    assert chord_tones(minor, 0, "sus4") == (0, 5, 7)
+    assert chord_tones(minor, 0, "add9") == (0, 3, 7, 14)

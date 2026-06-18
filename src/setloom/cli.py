@@ -1,5 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Keyboard-first CLI for Setloom."""
+"""Keyboard-first CLI for Setloom.
+
+Three commands: ``validate`` (spec contract + technical-hygiene gate),
+``anatomize`` and ``score`` (opt-in reference diagnostics). Musical
+composition lives in per-track code, not in this harness.
+"""
 
 import argparse
 import sys
@@ -19,23 +24,6 @@ def _format_validation_error(exc: ValidationError) -> str:
     return "\n".join(lines)
 
 
-def _grammar_warnings(spec: TrackSpec, spec_path: Path) -> list[str]:
-    """Non-fatal style-grammar checks against the spec's style pack."""
-    warnings: list[str] = []
-    pack_path = Path("music/packs") / spec.style_pack / "style.yml"
-    if not pack_path.is_file():
-        warnings.append(f"style pack '{spec.style_pack}' not found at {pack_path}; grammar checks skipped")
-        return warnings
-    pack = yaml.safe_load(pack_path.read_text(encoding="utf-8"))
-    bpm_range = (pack.get("generation_defaults") or {}).get("bpm_range")
-    if bpm_range and not (bpm_range[0] <= spec.bpm <= bpm_range[1]):
-        warnings.append(
-            f"bpm {spec.bpm:g} is outside {spec.style_pack} bpm_range "
-            f"[{bpm_range[0]}, {bpm_range[1]}] (generation will gate on this)"
-        )
-    return warnings
-
-
 def _load_spec_or_fail(spec_path: Path) -> TrackSpec | None:
     try:
         return load_spec(spec_path)
@@ -47,54 +35,34 @@ def _load_spec_or_fail(spec_path: Path) -> TrackSpec | None:
         return None
 
 
+def _gate_warnings(spec: TrackSpec) -> list[str]:
+    """Run the style pack's technical-hygiene gate; return non-fatal warnings.
+
+    The gate owns hygiene only (bpm lane, duration window, mixable edges,
+    short-edit identity). Missing or partial pack rules are acceptable during a
+    pack rebuild, so violations are reported as warnings, not hard failures.
+    """
+    from setloom.stylepack import evaluate_gate, load_style_pack
+
+    try:
+        pack = load_style_pack(spec.style_pack)
+    except FileNotFoundError:
+        return [f"style pack '{spec.style_pack}' not found; hygiene gate skipped"]
+    try:
+        result = evaluate_gate(spec, pack)
+    except ValueError as exc:
+        return [f"hygiene gate could not run: {exc}"]
+    return [f"gate {v.rule_id}: {v.message}" for v in result.blocking]
+
+
 def _cmd_validate(args: argparse.Namespace) -> int:
-    spec_path = Path(args.spec)
-    spec = _load_spec_or_fail(spec_path)
-    if spec is None:
-        return 1
-
-    for warning in _grammar_warnings(spec, spec_path):
-        print(f"warning: {warning}", file=sys.stderr)
-    print(f"OK: {spec.id} '{spec.title}' ({spec.bpm:g} BPM, {spec.key}, {spec.duration_bars} bars)")
-    return 0
-
-
-def _cmd_generate(args: argparse.Namespace) -> int:
-    from setloom.generate import GateError, generate_candidates
-    from setloom.stylepack import load_style_pack
-
     spec = _load_spec_or_fail(Path(args.spec))
     if spec is None:
         return 1
-    try:
-        pack = load_style_pack(spec.style_pack)
-    except FileNotFoundError as exc:
-        print(f"generation failed: {exc}", file=sys.stderr)
-        return 1
 
-    try:
-        result = generate_candidates(
-            spec,
-            pack,
-            out_dir=args.out,
-            variants=args.variants,
-            seed=args.seed,
-            allow_overrides=set(args.allow_override or []),
-        )
-    except GateError as exc:
-        print(f"generation rejected: {exc}", file=sys.stderr)
-        for violation in exc.result.blocking:
-            print(f"  {violation.rule_id}: {violation.message}", file=sys.stderr)
-        print("  (use --allow-override <rule-id> to override deliberately)", file=sys.stderr)
-        return 2
-    except ValueError as exc:
-        print(f"generation failed: {exc}", file=sys.stderr)
-        return 1
-
-    for variant in result.variants:
-        print(f"wrote {variant.directory} ({len(variant.note_counts)} parts)")
-    print(f"report: {result.report_path}")
-    print("reminder: candidates require human listening notes before approval")
+    for warning in _gate_warnings(spec):
+        print(f"warning: {warning}", file=sys.stderr)
+    print(f"OK: {spec.id} '{spec.title}' ({spec.bpm:g} BPM, {spec.key}, {spec.duration_bars} bars)")
     return 0
 
 
@@ -152,19 +120,6 @@ def build_parser() -> argparse.ArgumentParser:
     p_validate = sub.add_parser("validate", help="validate a track spec YAML file")
     p_validate.add_argument("spec", help="path to the track spec YAML")
     p_validate.set_defaults(func=_cmd_validate)
-
-    p_generate = sub.add_parser("generate", help="generate MIDI candidate variants from a spec")
-    p_generate.add_argument("spec", help="path to the track spec YAML")
-    p_generate.add_argument("--variants", type=int, default=3, help="number of variants (default 3)")
-    p_generate.add_argument("--seed", type=int, default=None, help="override the spec seed")
-    p_generate.add_argument("--out", default="local/candidates", help="output root (default local/candidates/)")
-    p_generate.add_argument(
-        "--allow-override",
-        action="append",
-        metavar="RULE_ID",
-        help="override a named rejection rule (repeatable); overrides are recorded in the report",
-    )
-    p_generate.set_defaults(func=_cmd_generate)
 
     p_anatomize = sub.add_parser(
         "anatomize", help="dissect local reference audio into anatomy dossiers"
