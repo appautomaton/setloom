@@ -63,33 +63,28 @@ Acceptance:
 
 Generate editable musical candidates.
 
-Status: shipped — `setloom generate` (deterministic seeds, multiple variants), `src/setloom/parts/`, `src/setloom/conductor.py`.
-
-Acceptance:
-
-- MIDI generation for drums, bass, chords, arp, lead motif, and fills.
-- Multiple variants per request.
-- Deterministic seeds for reproducibility.
-- No final approval without listening notes.
+Status: retired (2026-06-18) — the deterministic generator (`setloom generate`,
+`src/setloom/parts/`) was removed. Inventing notes in code from built-in
+patterns made the harness an opinion owner, and every real track bypassed it.
+Musical candidates now come from per-track code, genai, and external MIDI,
+composing the unopinionated primitives (`setloom.midi`, and `setloom.conductor`
+theory math). The harness no longer composes.
 
 ## Spec 5: Render Engine
 
 Render stems from specs and MIDI.
 
-Status: shipped — `src/setloom/scrender.py` and its `src/setloom/patches.scd` synth definitions (SuperCollider path).
-
-Acceptance:
-
-- Open-source synthesis path.
-- Stem export for kick, bass, drums, chords, pads, lead, and FX.
-- Demo mix export.
-- Render metadata.
+Status: retired (2026-06-18) — the SuperCollider render monolith
+(`scrender.py`, `patches.scd`) baked in a fixed lead/mix/master architecture
+and preset timbres, and was bypassed by every real track (T04/T05 render with
+per-track numpy synthesis). Rendering is now per-track code composing the
+`setloom.audio` DSP-hygiene primitives.
 
 ## Spec 6: Review Gate
 
 Separate automated checks from human taste decisions.
 
-Status: shipped — diagnostic tools exist in `setloom anatomize` and `setloom score` (`src/setloom/anatomy/`); musical review stays listening notes with keep/revise/reject.
+Status: shipped — the technical-hygiene gate runs in `setloom validate`; diagnostic tools are `setloom anatomize` and `setloom score` (`src/setloom/anatomy/`); musical review stays listening notes with keep/revise/reject.
 
 Acceptance:
 

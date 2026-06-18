@@ -7,6 +7,10 @@
 # Two-cycle form kept at this length: break_1 teases the hook, break_2 is the
 # main break carrying the full sung verse, peak returns the hook. The voice
 # visits the track (vocal share <= 0.15 of bars); never wall-to-wall.
+#
+# Construction lives in this track's own code, not a harness generator:
+# assemble.py + production.yml render engine stems + genai atmosphere + the
+# locked female vocal. This spec is the routing/intent record.
 
 id: T04
 title: nova-flamma
@@ -55,100 +59,6 @@ style_vector:
   vocal_presence: 3
   organic_texture: 1
   peak_time_pressure: 6
-
-groove:
-  summary: "Vocal-led roller: leave call/answer holes around the sung lead while keeping a D-root low-end anchor."
-  harmony:
-    label: t04-vocal-dawn-harmony
-    progression: [0, 6, 3, 5]
-    chord_color: sus2
-    harmonic_rhythm:
-      drop: 8
-      peak: 4
-  pad:
-    label: t04-conductor-shadow-pad
-    mode: conductor_bed
-    octave: 3
-    note_bars: 4
-    velocity: 42
-    peak_velocity: 50
-  shaker:
-    label: t04-phrase-gated-air
-    mode: phrase_gated
-    phrase_bars: 8
-    active_steps: [2, 6, 10, 14]
-    rest_last_bar: true
-  fx:
-    label: t04-phrase-mark-fx
-    mode: phrase_marks
-    mark_every_bars: 8
-    mark_velocity: 66
-  bass:
-    label: t04-deep-sidechain-roller
-    phrase_bars: 8
-    velocity_swell_per_bar: 2
-    first_phrase_tonic: false
-    neighbor_interval: -2
-    bars:
-      - [[1, 90, 3], [5, 94, 3], [9, 88, 3], [13, 96, 3], [14, 104, 2]]
-      - [[1, 88, 3], [6, 100, 2], [9, 90, 3], [13, 96, 3]]
-      - [[1, 90, 3], [5, 92, 3], [10, 100, 2], [13, 90, 3]]
-      - [[1, 88, 3], [6, 98, 2], [9, 90, 3], [14, 106, 2]]
-    phrase_end_bar: [[1, 92, 3], [5, 96, 3], [9, 90, 3], [11, 102, 2], [13, 98, 2], [14, 108, 2]]
-    neighbor_steps: [11, 13]
-  chords:
-    label: t04-dark-vocal-pressure-bed
-    sections:
-      break:
-        mode: sustain
-        color: add9
-        octave: 4
-        bed_velocity: 46
-      drop:
-        mode: stabs
-        color: sus2
-        octave: 4
-        stab_velocity: 56
-        duration_steps: 3
-        stab_patterns:
-          - [6]
-          - []
-          - [10]
-          - []
-          - [6, 14]
-          - []
-          - [10]
-          - [14]
-      peak:
-        mode: bed_and_stabs
-        color: sus4
-        octave: 4
-        bed_velocity: 40
-        stab_velocity: 62
-        duration_steps: 2
-        bed_lift: 12
-        stab_patterns:
-          - [6]
-          - [10]
-          - []
-          - [14]
-          - [6, 14]
-          - []
-          - [10]
-          - [14]
-  arp:
-    label: t04-no-foreground-arp
-    sections:
-      drop:
-        mode: mute
-      peak:
-        mode: mute
-  drums:
-    label: t04-vocal-pocket-topline
-    phrase_bars: 16
-    percussion_patterns:
-      - [[3, 10], [7], [11, 14], [], [3], [7, 13], [10], [3, 14], [7], [11], [3, 10], [14], [], [7, 11], [3], [10, 14]]
-      - [[7], [], [3, 11], [14], [7, 10], [], [3], [11, 14], [11], [3], [], [10, 14], [7, 11], [], [3, 10], [14]]
 
 render_targets:
   midi:

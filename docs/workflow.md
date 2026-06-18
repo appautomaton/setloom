@@ -18,9 +18,10 @@ Before a serious render, make the musical move explicit:
 groove spine -> motif cell -> energy arc -> palette -> what to cut
 ```
 
-This pass is short, but it matters. A generator should not decide the track's
-taste by accident. The agent decides what to keep, cut, tile, halve, stab,
-lift, mute, fade, or bypass, then renders only the parts that serve that move.
+This pass is short, but it matters. The harness has no built-in generator to
+decide the track's taste by accident: the agent writes the track's own code and
+decides what to keep, cut, tile, halve, stab, lift, mute, fade, or bypass, then
+renders only the parts that serve that move.
 
 The right answer may be less material: no hat bed, no clap, no ride, no shaker,
 no inherited bus, no stale patch. Silence is an arrangement choice.
@@ -30,16 +31,16 @@ must not be read as style evidence or promoted into durable musical contracts.
 `setloom anatomize --layers` comes later, only when the selected reference
 raises a concrete technical question.
 
-The track spec is the authority for song-specific generator choices. A style
-pack supplies lane routing, technical-hygiene scaffolding, and review
-vocabulary; it must not become a reusable musical rulebook. If a candidate is
-described as a custom groove, the spec or generator path must show the custom
-bass/drum plan.
+The track spec and its per-track code are the authority for song-specific
+musical choices. A style pack supplies lane routing, technical-hygiene
+scaffolding, and review vocabulary; it must not become a reusable musical
+rulebook. If a candidate is described as a custom groove, the track's own code
+must show that custom bass/drum plan.
 
 ## Harness Judgment
 
 The harness is a working surface, not a source of truth. Existing commands,
-reports, caches, prompts, and generators must be judged against the current
+reports, caches, prompts, and tools must be judged against the current
 musical objective before use.
 
 ```text
@@ -95,7 +96,7 @@ local/corpus/audio/<artist>/     # reference audio (copyrighted, never committed
 local/corpus/notes/              # listening notes and low-confidence scratch reports
 local/corpus/stems53/            # active 53-stem layer cache
 local/corpus/dossiers/           # anatomize dossiers and the corpus summary
-local/candidates/                # TNN/ deterministic MIDI + renders; genai/ generated audio (corpus-exempt)
+local/candidates/                # TNN/ per-track MIDI + renders; genai/ generated audio (corpus-exempt)
 local/releases/TNN/              # frozen release packages: master, artwork, upload notes
 models/                          # model weights: generation and separation (gitignored)
 ```

@@ -47,9 +47,9 @@ AGENTS.md             High-signal instructions for coding agents.
 docs/                 Charter, roadmap, licensing, lane-pack contract, and workflow notes.
 music/packs/          Per-lane packs: technical scaffolds, vocabulary, and rebuild notes.
 music/tracks/         Track registry: spec, brief, and listening notes per track.
-src/setloom/          Python harness package: CLI, schemas, generators, parts, anatomy and scoring, render orchestration and synth patches.
+src/setloom/          Python toolkit: CLI (validate/anatomize/score), track-spec schema, hygiene gate, MIDI + audio-hygiene + music-theory primitives, and anatomy/score diagnostics.
 scripts/              Local genai candidate and smoke-clip scripts.
-tests/                Schema, gate, generator, conductor, audio, part, and render tests.
+tests/                Schema, gate, theory-helper, audio, and anatomy/score tests.
 local/                Machine-local material (gitignored): corpus lab, candidates, releases.
 models/               Model weights store (gitignored).
 pyproject.toml        uv-managed Python package definition and CLI entry point.

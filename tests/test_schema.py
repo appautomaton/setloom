@@ -7,7 +7,7 @@ import pytest
 from pydantic import ValidationError
 
 from setloom import cli
-from setloom.schema import TrackSpec, load_spec
+from setloom.schema import load_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 T01 = Path(__file__).resolve().parent / "fixtures" / "spec-t01.yml"
@@ -59,7 +59,6 @@ def test_broken_fixture_cli_exit_nonzero(
 # --- Duration profiles: T02 streaming edit (change 2026-06-07-duration-profiles) ---
 
 T02 = Path(__file__).resolve().parent / "fixtures" / "spec-t02.yml"
-T04 = REPO_ROOT / "music/tracks/T04/spec.yml"
 
 
 def test_t02_validates_streaming_profile() -> None:
@@ -70,48 +69,3 @@ def test_t02_validates_streaming_profile() -> None:
 
 def test_default_profile_is_club_extended() -> None:
     assert load_spec(T01).duration_profile == "club_extended"
-
-
-def test_t04_validates_with_track_groove_plan() -> None:
-    spec = load_spec(T04)
-    assert spec.groove is not None
-    assert spec.groove.bass is not None
-    assert spec.groove.bass.label == "t04-deep-sidechain-roller"
-    assert spec.groove.chords is not None
-    assert spec.groove.chords.label == "t04-dark-vocal-pressure-bed"
-    assert spec.groove.arp is not None
-    assert spec.groove.arp.label == "t04-no-foreground-arp"
-    assert spec.groove.drums is not None
-    assert spec.groove.drums.phrase_bars == 16
-
-
-def test_track_bass_groove_rejects_beat_tick() -> None:
-    raw = load_spec(T04).model_dump(mode="python")
-    raw["groove"]["bass"]["bars"][0][0] = (4, 96, 1)
-    with pytest.raises(ValidationError) as excinfo:
-        TrackSpec.model_validate(raw)
-    assert "beat tick reserved for kick space" in str(excinfo.value)
-
-
-def test_track_percussion_groove_rejects_beat_tick() -> None:
-    raw = load_spec(T04).model_dump(mode="python")
-    raw["groove"]["drums"]["percussion_patterns"][0][0] = [3, 8]
-    with pytest.raises(ValidationError) as excinfo:
-        TrackSpec.model_validate(raw)
-    assert "beat tick reserved for kick space" in str(excinfo.value)
-
-
-def test_track_chord_groove_rejects_beat_tick() -> None:
-    raw = load_spec(T04).model_dump(mode="python")
-    raw["groove"]["chords"]["sections"]["drop"]["stab_patterns"][0] = [4]
-    with pytest.raises(ValidationError) as excinfo:
-        TrackSpec.model_validate(raw)
-    assert "beat tick reserved for kick space" in str(excinfo.value)
-
-
-def test_track_arp_groove_rejects_beat_tick() -> None:
-    raw = load_spec(T04).model_dump(mode="python")
-    raw["groove"]["arp"]["sections"]["drop"] = {"mode": "dark_pulse", "steps": [8]}
-    with pytest.raises(ValidationError) as excinfo:
-        TrackSpec.model_validate(raw)
-    assert "beat tick reserved for kick space" in str(excinfo.value)
