@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Keyboard-first CLI for Setloom.
 
-Three commands: ``validate`` (spec contract + technical-hygiene gate),
-``anatomize`` and ``score`` (opt-in reference diagnostics). Musical
-composition lives in per-track code, not in this harness.
+Commands: ``validate`` (spec + hygiene gate), ``new`` (scaffold a track),
+``play`` (audition audio), ``anatomize`` and ``score`` (opt-in diagnostics).
+Musical composition lives in per-track code, not in this harness.
 """
 
 import argparse
@@ -113,6 +113,43 @@ def _cmd_score(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_new(args: argparse.Namespace) -> int:
+    from setloom.scaffold import create_track
+
+    title = args.title or args.id.lower()
+    try:
+        track_dir = create_track(
+            args.id, title, bpm=args.bpm, key=args.key, root="."
+        )
+    except FileExistsError as exc:
+        print(f"new failed: {exc}", file=sys.stderr)
+        return 1
+    print(f"created {track_dir}")
+    print(f"  spec:             {track_dir / 'spec.yml'}")
+    print(f"  assemble:         {track_dir / 'assemble.py'}")
+    print(f"  listening notes:  {track_dir / 'listening-notes.yml'}")
+    print("edit the spec, then run the assembler from the repo root:")
+    print(f"  uv run --no-sync python {track_dir / 'assemble.py'}")
+    return 0
+
+
+def _cmd_play(args: argparse.Namespace) -> int:
+    import shutil
+    import subprocess
+
+    audio = Path(args.audio)
+    if not audio.is_file():
+        print(f"play failed: {audio} is not a file", file=sys.stderr)
+        return 1
+    player = shutil.which("afplay")
+    if player is None:
+        print("play failed: afplay not found (macOS built-in)", file=sys.stderr)
+        return 1
+    print(f"playing: {audio}")
+    subprocess.run([player, str(audio)])
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="setloom", description="Setloom track and set harness")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -162,6 +199,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--out", default="local/corpus/dossiers", help="dossier root (default local/corpus/dossiers)"
     )
     p_score.set_defaults(func=_cmd_score)
+
+    p_new = sub.add_parser("new", help="scaffold a new track directory")
+    p_new.add_argument("id", help="track id, e.g. T06")
+    p_new.add_argument("--title", help="track title (defaults to id lowercased)")
+    p_new.add_argument("--bpm", type=float, default=128.0, help="tempo (default 128)")
+    p_new.add_argument("--key", default="A minor", help="key, e.g. 'D minor' (default 'A minor')")
+    p_new.set_defaults(func=_cmd_new)
+
+    p_play = sub.add_parser("play", help="play an audio file for the listening gate")
+    p_play.add_argument("audio", help="path to the audio file")
+    p_play.set_defaults(func=_cmd_play)
 
     return parser
 

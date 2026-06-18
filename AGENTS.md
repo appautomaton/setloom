@@ -9,6 +9,8 @@ Setloom is an open-source, keyboard-first tool and agentic harness for generatin
 The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never composes the music — all musical composition lives in per-track code under `music/tracks/TNN/` (the `assemble.py` pattern), which brings its own synthesis and external/genai MIDI.
 
 - `setloom validate <spec>` — check a track spec against the schema and run the lane pack's technical-hygiene gate. Specs live in `music/tracks/TNN/`.
+- `setloom new <id>` — scaffold a new track directory with a minimal spec, runnable `assemble.py`, and listening-notes template.
+- `setloom play <audio>` — play an audio file for the listening gate (macOS `afplay`).
 - `setloom anatomize [path] --layers` — 53-stem reference lens and technical dossiers.
 - `setloom score <audio>` — optional technical diagnostic report beside the dossier; scores are not taste, truth, or style distance.
 - Importable primitives for per-track code: `setloom.midi` (MIDI read/write, tick/bar math, `NoteEvent`), `setloom.audio` (DSP hygiene: loudness, mono-safety, clip, filters, envelopes), `setloom.conductor` (music-theory math: key/scale parsing, chord-tone and scale-degree helpers).
