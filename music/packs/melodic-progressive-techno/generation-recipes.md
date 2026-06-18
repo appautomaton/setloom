@@ -44,7 +44,7 @@ cell, choose the low-end spine, rebuild the form at the target BPM, and decide
 what should disappear.
 
 Good generation work may bypass stale patches, preset drum lanes, or the mix
-bus entirely. A scratch synth in `/tmp` is acceptable when it exposes a better
+bus entirely. A scratch synth in `tmp/` is acceptable when it exposes a better
 sound. Promote only the idea that survives listening, not the experiment that
 found it.
 

@@ -51,7 +51,7 @@ ask          -> when suitability is unclear
 ```
 
 When suitability is unclear, the agent asks the human with the question tool
-before proceeding. Scratch analysis stays in `/tmp` until confidence and purpose
+before proceeding. Scratch analysis stays in `tmp/` until confidence and purpose
 are explicit.
 
 ## Human Role

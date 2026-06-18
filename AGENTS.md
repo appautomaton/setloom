@@ -42,7 +42,7 @@ These are available tools, not a required music-understanding pipeline. The harn
 - Do not preserve a tool just because it exists. Proof-of-concept paths stay explicit and opt-in until they prove they serve the current workflow.
 - Harness scaffolding may provide events, form, or file routing while the sound itself comes from a scratch synth, external experiment, or hand-shaped process. That is valid when it serves the track.
 - When tool suitability is uncertain, stop and use the question tool to ask the human for feedback or a directional choice. Do not silently continue, and do not keep the human in the dark.
-- State confidence and provenance for machine-derived claims. Keep uncertain outputs in `/tmp` or another scratch root until they earn a durable place.
+- State confidence and provenance for machine-derived claims. Keep uncertain outputs in `tmp/` until they earn a durable place.
 
 ## Track Differentiation
 
@@ -66,7 +66,7 @@ The corpus is evidence for study, not a lawbook. Your track must say something d
 - Models join the one `uv` env via dependency groups (`anatomy`, `genai`); never per-model virtualenvs. `.references/` clones are read-only.
 - Weights live in gitignored `models/`; never commit audio, MIDI, weights, or proprietary samples. Never override `HF_HOME` — it holds the user's Hugging Face login.
 - GPU use is allowed when it materially improves analysis or generation, but serialize heavy ML jobs — separation, generation, transcription, and GPU rendering — one at a time.
-- Stage disposable ML/render scratch in `/tmp` or another temp root, then clean it after use; retain only named candidate artifacts in `local/candidates/`.
+- Stage disposable ML/render scratch in `tmp/`, then clean it up after use; retain only named candidate artifacts in `local/candidates/`. Gitignored directories are not dumping grounds: keep `local/` organized under its named subdirs (`corpus/`, `candidates/`, `releases/`) and `tmp/` for scratch. Never create ad-hoc top-level scratch dirs.
 - Keep unified-memory headroom during heavy jobs and avoid workflows likely to approach the 80-90 GB danger zone on this machine.
 - Committed configs pin stock PyPI `torch`; machine-tuned wheels stay local behind capability checks.
 - Genai candidates land in `local/candidates/genai/` and never enter the corpus summary.

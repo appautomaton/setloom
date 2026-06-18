@@ -21,6 +21,9 @@ build/
 # separation caches, analysis dossiers, candidates, release packages.
 /local/
 
+# Disposable scratch experiments. Never committed.
+/tmp/
+
 # Model weights store (HF_HUB_CACHE target). Never committed.
 /models/
 
