@@ -8,7 +8,7 @@ listener can audit fewer places.
 
 Run from the repo root:
 
-    uv run --no-sync python scripts/detect_vocal_breaths.py path/to/vocal.wav \
+    uv run --no-sync python music/tracks/T04/tools/detect_vocal_breaths.py path/to/vocal.wav \
         --csv local/candidates/T04/motif-auditions/voice-repair/breath-candidates.csv
 """
 

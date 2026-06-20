@@ -57,7 +57,7 @@ The corpus is evidence for study, not a lawbook. Your track must say something d
 ## Tooling Rules
 
 - Open-source, CLI-controllable tools for the public core; Python is the control plane; keyboard-first, never manual clicking.
-- No new Homebrew packages; one repo-local `uv` environment for everything; Node tooling stays in-project.
+- Agents do not unilaterally install system packages (Homebrew, global npm); propose the package and reason, and get human approval first. Prefer the one repo-local `uv` environment for Python; keep Node tooling in-project.
 - The listening gate is no-click: agents prepare and play short audition audio; the human only listens and types.
 - Everything generated is file-based and reproducible: specs, MIDI, stems, renders, reports, notes.
 

@@ -1,0 +1,228 @@
+{
+  "schema": "setloom.t5.lux-in-umbra.manifest.v1",
+  "track_id": "T5",
+  "project_name": "Lux in Umbra",
+  "project_slug": "T5-lux-in-umbra",
+  "definition": "Git-tracked production source harness for regenerating Lux in Umbra. Rendered audio and cover binaries are intentionally not tracked here; final MIDI exports are tracked for sharing and audit.",
+  "tempo_bpm": 123.0,
+  "total_bars": 120,
+  "duration_seconds": 234.14634146341464,
+  "primary_entrypoint": "render.py",
+  "midi_export_entrypoint": "export_midi.py",
+  "recover_command": "PYTHONDONTWRITEBYTECODE=1 UV_CACHE_DIR=tmp/uv-cache uv run --no-sync python music/T5-lux-in-umbra/render.py",
+  "midi_export_command": "PYTHONDONTWRITEBYTECODE=1 UV_CACHE_DIR=tmp/uv-cache uv run --no-sync python music/T5-lux-in-umbra/export_midi.py",
+  "composition_source": [
+    "source/score.json",
+    "source/pluck-synth.json",
+    "source/kick-synth.json",
+    "source/mix-plan.json",
+    "source/remapped-bass-events.json",
+    "source/midi/full-arrangement.mid"
+  ],
+  "renderer_helpers": [
+    "render.py",
+    "export_midi.py",
+    "harness/context.py",
+    "harness/events.py",
+    "harness/dsp.py",
+    "harness/kick.py",
+    "harness/bass.py",
+    "harness/piano.py",
+    "harness/pluck.py",
+    "harness/texture.py",
+    "harness/bed.py",
+    "harness/runner.py",
+    "harness/midi_export.py"
+  ],
+  "external_runtime_assets": [
+    {
+      "kind": "synth_runtime",
+      "path": "/Applications/SuperCollider.app/Contents/Resources/scsynth"
+    },
+    {
+      "kind": "piano_samples",
+      "path": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Keyboard/Acoustic Piano/Other"
+    },
+    {
+      "kind": "python_environment",
+      "path": "repo uv environment"
+    }
+  ],
+  "expected_render_outputs": [
+    "render/full-mix.wav",
+    "render/bed.wav",
+    "render/stem-piano.wav",
+    "render/stem-pluck.wav",
+    "render/stem-support.wav",
+    "render/stem-space.wav",
+    "render/stem-bass.wav",
+    "render/stem-kick.wav",
+    "render/stem-top.wav",
+    "render/render-report.txt"
+  ],
+  "midi_outputs": [
+    "source/midi/full-arrangement.mid",
+    "source/midi/lane-piano.mid",
+    "source/midi/lane-pluck.mid",
+    "source/midi/lane-support.mid",
+    "source/midi/lane-bass.mid",
+    "source/midi/lane-kick.mid"
+  ],
+  "source_files": [
+    {
+      "path": ".gitignore",
+      "sha256": "9868db5827f73ecebe5533f38a92f188fc925f80604e2a0685b01499db6df37e",
+      "bytes": 209
+    },
+    {
+      "path": "README.md",
+      "sha256": "5e45f071f76d61e15905ac8d98ee081dab94fe03ba6f027855a903027090b7b5",
+      "bytes": 2887
+    },
+    {
+      "path": "render.py",
+      "sha256": "a24c0ec60c611c8efac79a4194a45c767efe1c8d9bc64c901c1f461d1c70a19f",
+      "bytes": 233
+    },
+    {
+      "path": "export_midi.py",
+      "sha256": "9a0ab4af3f151cb34edd3577126182558a31033140fdc996f2c2d770acf4c79f",
+      "bytes": 231
+    },
+    {
+      "path": "harness/README.md",
+      "sha256": "ba59e18de46232f55e9ce00667f0bdce51f7fb773e8f86a488d7822c36d3a9b8",
+      "bytes": 858
+    },
+    {
+      "path": "harness/__init__.py",
+      "sha256": "f24b77e9c1e786ace088032939fba7c717cf11fb48ba6386ee90b54bc567a7a7",
+      "bytes": 94
+    },
+    {
+      "path": "harness/context.py",
+      "sha256": "96a7ba7b7275959313a2d6b7b09fe9630aa9d425387f259468d3da7e8fc6e8fc",
+      "bytes": 1232
+    },
+    {
+      "path": "harness/events.py",
+      "sha256": "8b8e2a248fda41a27f118f6dece3d7d9ecaaa7cc461e7d1a2887b7390c3f1996",
+      "bytes": 1585
+    },
+    {
+      "path": "harness/dsp.py",
+      "sha256": "a5d1c870a339a6a5630e9815cf6e9991953b8221b4ac549d1b5d2adb73b7bc2a",
+      "bytes": 7583
+    },
+    {
+      "path": "harness/kick.py",
+      "sha256": "786e6f05f891bfba9991692cfd2bea4d4739239db89dcab67c954ddf2cca55b7",
+      "bytes": 3247
+    },
+    {
+      "path": "harness/bass.py",
+      "sha256": "5fa783478024d417e804498f93dcf698029b0427f454b0a5d96f2ded058f5b05",
+      "bytes": 2649
+    },
+    {
+      "path": "harness/piano.py",
+      "sha256": "6462a6b246e4c507d78e0074c386cd8ab02ac83cc9e1b2baf2099c6d88a515fc",
+      "bytes": 2215
+    },
+    {
+      "path": "harness/pluck.py",
+      "sha256": "694de17c0ad4d1f68d7ec100d4f5389efd6c94ad164bdb3a01421ed0105d4cc5",
+      "bytes": 8738
+    },
+    {
+      "path": "harness/texture.py",
+      "sha256": "3ff144065720fd7b558a9a9dd969f169717546bbc2afc77ba7a7be25c3a05ca2",
+      "bytes": 3067
+    },
+    {
+      "path": "harness/bed.py",
+      "sha256": "057e013952d70e4a0d747548f4bc64e85b60fd6c5bf657ed01fe4c687c7941a6",
+      "bytes": 3687
+    },
+    {
+      "path": "harness/runner.py",
+      "sha256": "cd97e39681a136a439f62cd6c1ec33a6b93d158c8f992d21e83d1f0764cc3402",
+      "bytes": 3117
+    },
+    {
+      "path": "harness/midi_export.py",
+      "sha256": "9acdb65224b54188c9496f1dbd4702805d00d35586e99a2257b4862819e22e2e",
+      "bytes": 5587
+    },
+    {
+      "path": "source/README.md",
+      "sha256": "1798f5a0931da3f9ad3a79f068d285ed23b97cb2542ba7bdcd5ab2cc35d83bdd",
+      "bytes": 1308
+    },
+    {
+      "path": "source/score.json",
+      "sha256": "7713551b547267b12219a46b55f8c5488324a88c7d90ca3d8d1ca27829dcf29e",
+      "bytes": 206946
+    },
+    {
+      "path": "source/pluck-synth.json",
+      "sha256": "aec0193030227510248ad49f87472122f53be73618b2e31608a04d276b728953",
+      "bytes": 5464
+    },
+    {
+      "path": "source/kick-synth.json",
+      "sha256": "ce2c86b8cad045422798ff6e039704179aa3ed823a4be5c8f39c7aa32cf342f1",
+      "bytes": 1289
+    },
+    {
+      "path": "source/mix-plan.json",
+      "sha256": "b6d7d7b9c76a363f46a7a04b65752ef8e8f0b86ca8ccbae6911ed0e8d0dc49cf",
+      "bytes": 7463
+    },
+    {
+      "path": "source/remapped-bass-events.json",
+      "sha256": "13b897fd6214ac7a8c4919951c19def1033ad988c5527abc934013b69b898273",
+      "bytes": 89348
+    },
+    {
+      "path": "source/midi/README.md",
+      "sha256": "4b880c3e915bf4976927bbda520d59dfaf3617c080fdacaff449dc2b3ff0b8c8",
+      "bytes": 522
+    },
+    {
+      "path": "source/midi/full-arrangement.mid",
+      "sha256": "110227dded59c95bdc6f8ce3519ce8867180b2b8108bb123e5556c664dffc1f0",
+      "bytes": 20169
+    },
+    {
+      "path": "source/midi/lane-piano.mid",
+      "sha256": "73c2d4957a18f0143a54c28ecaecad5e962f28ecd78cc9014c1b153767882dd2",
+      "bytes": 8946
+    },
+    {
+      "path": "source/midi/lane-pluck.mid",
+      "sha256": "3781eecba4ed961af6a927f6259ecf494a06b1de2b12f870a8cc9816dc0cf072",
+      "bytes": 1719
+    },
+    {
+      "path": "source/midi/lane-support.mid",
+      "sha256": "8bc0a3f7c6a5fb317339d31de8a0c6f807e0b93abe6a29908e940c71cbdd7135",
+      "bytes": 701
+    },
+    {
+      "path": "source/midi/lane-bass.mid",
+      "sha256": "1b3ce46eab4c3cb6134c1b8efa6dd7dab50bde47ca5def00532ce3b644cfe78d",
+      "bytes": 4498
+    },
+    {
+      "path": "source/midi/lane-kick.mid",
+      "sha256": "8b7b5a4ab0321a3135a3bc2c2049822208dfc3fb8331e81554c01722b68e6230",
+      "bytes": 4361
+    },
+    {
+      "path": "artwork/cover-spec.md",
+      "sha256": "53528e4511270faaa835a00b25ba4f7685ee4725b3f0165ca7ccd80f544e4e5b",
+      "bytes": 555
+    }
+  ]
+}

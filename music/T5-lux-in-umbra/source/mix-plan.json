@@ -1,0 +1,564 @@
+{
+  "schema": "setloom.t5.lux-in-umbra.mix-plan.v1",
+  "description": "Explicit lane, bed, and mix processing constants/envelopes for Lux in Umbra.",
+  "sample_rate": 44100,
+  "tempo_bpm": 123.0,
+  "total_bars": 120,
+  "external_runtime_assets": {
+    "supercollider_scsynth": "/Applications/SuperCollider.app/Contents/Resources/scsynth",
+    "steinway_sample_dir": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Keyboard/Acoustic Piano/Other"
+  },
+  "piano_samples": {
+    "48": "I-95 Chronicle Piano_C3.aif",
+    "60": "I-95 Chronicle Piano_C5.aif",
+    "72": "I-95 Chronicle Piano_C5.aif",
+    "fallback": "additive synthesized piano fallback in render.py if sample missing",
+    "output_peak": 0.62
+  },
+  "support": {
+    "highpass_hz": 180.0,
+    "lowpass_hz": 2400.0,
+    "output_peak": 0.34,
+    "env": [
+      [
+        0,
+        0.48
+      ],
+      [
+        8,
+        0.34
+      ],
+      [
+        24,
+        0.42
+      ],
+      [
+        40,
+        0.78
+      ],
+      [
+        56,
+        0.5
+      ],
+      [
+        88,
+        0.76
+      ],
+      [
+        104,
+        0.86
+      ],
+      [
+        116,
+        0.48
+      ],
+      [
+        120,
+        0.0
+      ]
+    ]
+  },
+  "space": {
+    "source_piano_gain": 0.55,
+    "source_pluck_gain": 0.75,
+    "source_highpass_hz": 300.0,
+    "return_highpass_hz": 420.0,
+    "return_lowpass_hz": 7200.0,
+    "peak_limit": 0.28,
+    "taps": [
+      [
+        0.5,
+        0.12,
+        0.58
+      ],
+      [
+        0.75,
+        0.1,
+        0.42
+      ],
+      [
+        1.5,
+        0.07,
+        0.64
+      ],
+      [
+        2.25,
+        0.045,
+        0.36
+      ]
+    ],
+    "env": [
+      [
+        0,
+        0.2
+      ],
+      [
+        8,
+        0.22
+      ],
+      [
+        24,
+        0.28
+      ],
+      [
+        40,
+        0.55
+      ],
+      [
+        56,
+        0.34
+      ],
+      [
+        88,
+        0.58
+      ],
+      [
+        104,
+        0.62
+      ],
+      [
+        116,
+        0.34
+      ],
+      [
+        120,
+        0.0
+      ]
+    ]
+  },
+  "bass_render": {
+    "gain": 1.1,
+    "pan_seed": 1
+  },
+  "bed": {
+    "kick_split_hz": 1200.0,
+    "kick_body_band_hz": [
+      62.0,
+      230.0
+    ],
+    "kick_low_env": [
+      [
+        0,
+        0.78
+      ],
+      [
+        8,
+        0.92
+      ],
+      [
+        24,
+        0.97
+      ],
+      [
+        40,
+        0.56
+      ],
+      [
+        56,
+        1.0
+      ],
+      [
+        88,
+        0.9
+      ],
+      [
+        104,
+        1.08
+      ],
+      [
+        116,
+        0.7
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "kick_high_env": [
+      [
+        0,
+        0.18
+      ],
+      [
+        8,
+        0.62
+      ],
+      [
+        24,
+        0.74
+      ],
+      [
+        40,
+        0.25
+      ],
+      [
+        56,
+        0.84
+      ],
+      [
+        88,
+        0.58
+      ],
+      [
+        104,
+        1.0
+      ],
+      [
+        116,
+        0.34
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "kick_body_env": [
+      [
+        0,
+        0.06
+      ],
+      [
+        8,
+        0.14
+      ],
+      [
+        24,
+        0.2
+      ],
+      [
+        40,
+        0.07
+      ],
+      [
+        56,
+        0.26
+      ],
+      [
+        88,
+        0.18
+      ],
+      [
+        104,
+        0.36
+      ],
+      [
+        116,
+        0.08
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "kick_low_gain": 1.12,
+    "kick_high_gain": 1.18,
+    "kick_body_gain": 1.86,
+    "kick_peak": 0.62,
+    "bass_env": [
+      [
+        0,
+        0.82
+      ],
+      [
+        8,
+        1.0
+      ],
+      [
+        40,
+        0.92
+      ],
+      [
+        56,
+        1.04
+      ],
+      [
+        88,
+        0.96
+      ],
+      [
+        104,
+        1.06
+      ],
+      [
+        116,
+        0.82
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "bass_mix_gain": 0.5,
+    "bass_mono_cutoff_hz": 150.0,
+    "bass_mid_lowpass_hz": 700.0,
+    "bass_sub_env": [
+      [
+        0,
+        0.82
+      ],
+      [
+        8,
+        0.96
+      ],
+      [
+        40,
+        0.86
+      ],
+      [
+        56,
+        1.02
+      ],
+      [
+        88,
+        0.94
+      ],
+      [
+        104,
+        1.08
+      ],
+      [
+        116,
+        0.8
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "bass_mid_env": [
+      [
+        0,
+        0.74
+      ],
+      [
+        8,
+        0.94
+      ],
+      [
+        40,
+        0.72
+      ],
+      [
+        56,
+        1.0
+      ],
+      [
+        88,
+        0.86
+      ],
+      [
+        104,
+        1.08
+      ],
+      [
+        116,
+        0.72
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "bass_bright_env": [
+      [
+        0,
+        0.24
+      ],
+      [
+        8,
+        0.52
+      ],
+      [
+        24,
+        0.64
+      ],
+      [
+        40,
+        0.28
+      ],
+      [
+        56,
+        0.76
+      ],
+      [
+        72,
+        0.8
+      ],
+      [
+        88,
+        0.5
+      ],
+      [
+        104,
+        0.96
+      ],
+      [
+        116,
+        0.28
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "bass_presence_env": [
+      [
+        0,
+        0.08
+      ],
+      [
+        8,
+        0.18
+      ],
+      [
+        24,
+        0.26
+      ],
+      [
+        40,
+        0.1
+      ],
+      [
+        56,
+        0.4
+      ],
+      [
+        72,
+        0.44
+      ],
+      [
+        88,
+        0.26
+      ],
+      [
+        104,
+        0.58
+      ],
+      [
+        116,
+        0.1
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "bass_sub_gain": 1.03,
+    "bass_mid_gain": 1.18,
+    "bass_presence_gain": 1.62,
+    "bass_peak": 0.68,
+    "kick_room": {
+      "body_drive_pre_gain": 8.2,
+      "body_drive": 2.05,
+      "body_peak": 0.6,
+      "body_hpf_hz": 170.0,
+      "send_gain": 0.95,
+      "hp": 170.0,
+      "lp": 3200.0,
+      "taps_ms": [
+        [
+          18.0,
+          0.34,
+          0.14
+        ],
+        [
+          32.0,
+          0.3,
+          0.86
+        ],
+        [
+          51.0,
+          0.18,
+          0.38
+        ]
+      ],
+      "drive": 1.52
+    },
+    "bass_wide": {
+      "presence_amount": 0.62,
+      "hp": 185.0,
+      "lp": 1450.0,
+      "taps_ms": [
+        [
+          8.0,
+          0.18,
+          0.12
+        ],
+        [
+          15.0,
+          0.18,
+          0.88
+        ],
+        [
+          26.0,
+          0.08,
+          0.65
+        ]
+      ],
+      "drive": 1.48
+    },
+    "return_env": [
+      [
+        0,
+        0.12
+      ],
+      [
+        8,
+        0.3
+      ],
+      [
+        24,
+        0.44
+      ],
+      [
+        40,
+        0.18
+      ],
+      [
+        56,
+        0.6
+      ],
+      [
+        72,
+        0.66
+      ],
+      [
+        88,
+        0.42
+      ],
+      [
+        104,
+        0.86
+      ],
+      [
+        116,
+        0.2
+      ],
+      [
+        120,
+        0.0
+      ]
+    ],
+    "kick_room_return_gain": 1.95,
+    "bass_wide_return_gain": 1.58,
+    "bed_sum_gain": 1.22,
+    "bed_soft_limit_drive": 1.16,
+    "bed_peak": 0.88,
+    "kick_source": "source/kick-synth.json",
+    "kick_gain": 0.7
+  },
+  "top_mix": {
+    "piano_hpf_hz": 135.0,
+    "piano_gain": 0.58,
+    "pluck_hpf_hz": 360.0,
+    "pluck_gain": 0.43,
+    "support_hpf_hz": 210.0,
+    "support_gain": 0.4,
+    "space_gain": 0.36,
+    "top_peak": 0.86
+  },
+  "final_mix": {
+    "bed_gain": 1.02,
+    "peak": 0.94
+  }
+}

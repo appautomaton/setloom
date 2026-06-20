@@ -1,0 +1,4442 @@
+{
+  "description": "Final bass score for Lux in Umbra: timing, durations, velocities, and remapped E-minor pitches used by the renderer.",
+  "events": [
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 15360,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 15600,
+      "duration_ticks": 301,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 16080,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 16560,
+      "duration_ticks": 301,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 17040,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 17280,
+      "duration_ticks": 124,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 17520,
+      "duration_ticks": 301,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 18000,
+      "duration_ticks": 124,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 18480,
+      "duration_ticks": 301,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 18960,
+      "duration_ticks": 120,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 19200,
+      "duration_ticks": 120,
+      "source_note": 32,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 19440,
+      "duration_ticks": 301,
+      "source_note": 32,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 19920,
+      "duration_ticks": 120,
+      "source_note": 32,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 20400,
+      "duration_ticks": 301,
+      "source_note": 32,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 20880,
+      "duration_ticks": 141,
+      "source_note": 32,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 21120,
+      "duration_ticks": 159,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 21360,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 21840,
+      "duration_ticks": 159,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 22320,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 22800,
+      "duration_ticks": 142,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 25,
+      "start_tick": 23040,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 22,
+      "start_tick": 23280,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 12,
+      "start_tick": 23520,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 12,
+      "start_tick": 23520,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 5,
+      "start_tick": 24000,
+      "duration_ticks": 120,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 30720,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 30960,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 31200,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 31440,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 31680,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 31920,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 32160,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 32400,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 32640,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 32880,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 33120,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 33360,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 33600,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 33840,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 34080,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 34320,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 34560,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 34800,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 35040,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 35280,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 35520,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 35760,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 36000,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 36240,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 36720,
+      "duration_ticks": 321,
+      "source_note": 43,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 37200,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 37680,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 38160,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 38640,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 39120,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 39600,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 40080,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 40560,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 41040,
+      "duration_ticks": 122,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 41520,
+      "duration_ticks": 301,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 42000,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 42480,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 42960,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 43440,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 43920,
+      "duration_ticks": 141,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 44400,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 44880,
+      "duration_ticks": 159,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 45360,
+      "duration_ticks": 301,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 45840,
+      "duration_ticks": 142,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 46320,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 46800,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 47280,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 47760,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 48240,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 48720,
+      "duration_ticks": 122,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 49200,
+      "duration_ticks": 301,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 49680,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 50160,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 50640,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 51120,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 51600,
+      "duration_ticks": 141,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 52080,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 52560,
+      "duration_ticks": 159,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 53040,
+      "duration_ticks": 301,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 53520,
+      "duration_ticks": 142,
+      "source_note": 38,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 54000,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 54480,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 54960,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 55440,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 55920,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 56400,
+      "duration_ticks": 122,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 56880,
+      "duration_ticks": 301,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 57360,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 57840,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 58320,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 58800,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 59280,
+      "duration_ticks": 141,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 59760,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 60240,
+      "duration_ticks": 159,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 60720,
+      "duration_ticks": 301,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 61200,
+      "duration_ticks": 142,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 61680,
+      "duration_ticks": 301,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 62160,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 62640,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 63120,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 63600,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 64080,
+      "duration_ticks": 122,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 64560,
+      "duration_ticks": 301,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 65040,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 65520,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 66000,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 66480,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 66960,
+      "duration_ticks": 141,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 67440,
+      "duration_ticks": 301,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 67920,
+      "duration_ticks": 160,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 68400,
+      "duration_ticks": 301,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 68880,
+      "duration_ticks": 142,
+      "source_note": 38,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 69360,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 69840,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 70080,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 70320,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 70560,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 70800,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 71280,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 71520,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 71760,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 72000,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 72240,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 72480,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 72720,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 73200,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 73680,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 73920,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 74160,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 74400,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 74640,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 75120,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 75600,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 76080,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 76560,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 76800,
+      "duration_ticks": 960,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 78720,
+      "duration_ticks": 960,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 80640,
+      "duration_ticks": 960,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 82560,
+      "duration_ticks": 960,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 84480,
+      "duration_ticks": 960,
+      "source_note": 29,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 86400,
+      "duration_ticks": 960,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 88320,
+      "duration_ticks": 960,
+      "source_note": 32,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 90240,
+      "duration_ticks": 960,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 92160,
+      "duration_ticks": 960,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 94080,
+      "duration_ticks": 960,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 96000,
+      "duration_ticks": 960,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 97920,
+      "duration_ticks": 960,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 99840,
+      "duration_ticks": 960,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 101760,
+      "duration_ticks": 960,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 103680,
+      "duration_ticks": 960,
+      "source_note": 32,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 105600,
+      "duration_ticks": 960,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 107520,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 107760,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 108000,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 108240,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 108480,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 108720,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 108960,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 109200,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 109440,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 109680,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 109920,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 110160,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 110400,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 110640,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 110880,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 111120,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 111360,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 111600,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 111840,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 112080,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 112320,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 112560,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 112800,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 113040,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 113520,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 114000,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 114480,
+      "duration_ticks": 326,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 114960,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 115440,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 115920,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 116400,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 116880,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 117360,
+      "duration_ticks": 237,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 117840,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 118320,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 118800,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 119280,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 119760,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 120240,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 120720,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 121200,
+      "duration_ticks": 237,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 121680,
+      "duration_ticks": 237,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 122160,
+      "duration_ticks": 238,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 122640,
+      "duration_ticks": 238,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 123120,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 123600,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 124080,
+      "duration_ticks": 237,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 124560,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 125040,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 125520,
+      "duration_ticks": 237,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 126000,
+      "duration_ticks": 237,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 126480,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 126960,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 127440,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 127920,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 128400,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 128880,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 129360,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 129840,
+      "duration_ticks": 238,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 130320,
+      "duration_ticks": 238,
+      "source_note": 38,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 130800,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 131280,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 131760,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 132240,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 132720,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 133200,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 133680,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 134160,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 134640,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 135120,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 135600,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 136080,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 136560,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 137040,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 137520,
+      "duration_ticks": 238,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 138000,
+      "duration_ticks": 238,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 138480,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 138960,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 139440,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 139920,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 140400,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 140880,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 141360,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 141840,
+      "duration_ticks": 238,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 142320,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 142800,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 143280,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 143760,
+      "duration_ticks": 238,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 144240,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 144720,
+      "duration_ticks": 238,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 145200,
+      "duration_ticks": 238,
+      "source_note": 31,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 145680,
+      "duration_ticks": 238,
+      "source_note": 38,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 146160,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 146640,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 146880,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 147120,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 147360,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 147600,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 148080,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 148320,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 148560,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 148800,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 149040,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 149280,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 149520,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 150000,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 150480,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 150720,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 150960,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 151200,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 151440,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 151920,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 152400,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 152880,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 153360,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 153600,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 153840,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 154320,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 154800,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 155280,
+      "duration_ticks": 205,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 155520,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 155760,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 156240,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 156720,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 157200,
+      "duration_ticks": 185,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 157440,
+      "duration_ticks": 201,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 157680,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 158160,
+      "duration_ticks": 201,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 158640,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 159120,
+      "duration_ticks": 230,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 159360,
+      "duration_ticks": 182,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 159600,
+      "duration_ticks": 389,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 160080,
+      "duration_ticks": 248,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 160560,
+      "duration_ticks": 389,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 161040,
+      "duration_ticks": 230,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 161280,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 161520,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 162000,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 162480,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 162960,
+      "duration_ticks": 205,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 163200,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 163440,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 163920,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 164400,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 164880,
+      "duration_ticks": 185,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 165120,
+      "duration_ticks": 201,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 165360,
+      "duration_ticks": 389,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 165840,
+      "duration_ticks": 201,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 166320,
+      "duration_ticks": 389,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 166800,
+      "duration_ticks": 230,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 167040,
+      "duration_ticks": 165,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 167280,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 167760,
+      "duration_ticks": 248,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 168240,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 168720,
+      "duration_ticks": 230,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 168960,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 169200,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 169680,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 170160,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 170640,
+      "duration_ticks": 205,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 170880,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 171120,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 171600,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 172080,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 172560,
+      "duration_ticks": 185,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 172800,
+      "duration_ticks": 201,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 173040,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 173520,
+      "duration_ticks": 201,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 174000,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 174480,
+      "duration_ticks": 230,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 174720,
+      "duration_ticks": 182,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 174960,
+      "duration_ticks": 389,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 175440,
+      "duration_ticks": 247,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 175920,
+      "duration_ticks": 389,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 176400,
+      "duration_ticks": 230,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 176640,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 176880,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 177360,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 177840,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 178320,
+      "duration_ticks": 205,
+      "source_note": 29,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 178560,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 178800,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 179280,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 179760,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 28,
+      "velocity": 39,
+      "start_tick": 180240,
+      "duration_ticks": 185,
+      "source_note": 31,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 180480,
+      "duration_ticks": 201,
+      "source_note": 32,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 180720,
+      "duration_ticks": 389,
+      "source_note": 32,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 181200,
+      "duration_ticks": 201,
+      "source_note": 32,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 181680,
+      "duration_ticks": 389,
+      "source_note": 32,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 182160,
+      "duration_ticks": 230,
+      "source_note": 32,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 24,
+      "velocity": 39,
+      "start_tick": 182400,
+      "duration_ticks": 165,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 182640,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 183120,
+      "duration_ticks": 248,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 183600,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 184080,
+      "duration_ticks": 230,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 184320,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 184560,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 184800,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 185040,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 185280,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 185520,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 185760,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 186000,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 186240,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 186480,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 186720,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 186960,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 187200,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 187440,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 187680,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 187920,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 188160,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 188400,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 188640,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 188880,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 189120,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 189360,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 189600,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 189840,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 190320,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 190800,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 191280,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 191760,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 192000,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 192240,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 192480,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 192720,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 192960,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 193200,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 193440,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 193680,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 193920,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 194160,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 194400,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 194640,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 194880,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 195120,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 195360,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 195600,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 195840,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 196080,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 196320,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 196560,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 196800,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 197040,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 197280,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 197520,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 198000,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 198480,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 198960,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 45,
+      "velocity": 39,
+      "start_tick": 199440,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 199920,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 200400,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 200640,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 200880,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 201120,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 201360,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 201840,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 202080,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 202320,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 202560,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 202800,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 203040,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 203280,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 203760,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 40,
+      "velocity": 39,
+      "start_tick": 204240,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 204480,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 204720,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 204960,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 205200,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 205680,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 206160,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 206640,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 47,
+      "velocity": 39,
+      "start_tick": 207120,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "Em"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 207600,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 208080,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 208320,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 208560,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 208800,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 209040,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 209520,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 209760,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 210000,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 210240,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 210480,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 210720,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 210960,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 211440,
+      "duration_ticks": 120,
+      "source_note": 33,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 36,
+      "velocity": 39,
+      "start_tick": 211920,
+      "duration_ticks": 120,
+      "source_note": 36,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 212160,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 212400,
+      "duration_ticks": 120,
+      "source_note": 40,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 212640,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 212880,
+      "duration_ticks": 120,
+      "source_note": 41,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 213360,
+      "duration_ticks": 320,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 213840,
+      "duration_ticks": 125,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 214320,
+      "duration_ticks": 345,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 214800,
+      "duration_ticks": 165,
+      "source_note": 43,
+      "target_chord": "C"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 215040,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 215280,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 215760,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 216240,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 216720,
+      "duration_ticks": 205,
+      "source_note": 29,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 216960,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 217200,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 217680,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 218160,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 35,
+      "velocity": 39,
+      "start_tick": 218640,
+      "duration_ticks": 185,
+      "source_note": 31,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 218880,
+      "duration_ticks": 201,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 219120,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 219600,
+      "duration_ticks": 201,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 220080,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 38,
+      "velocity": 39,
+      "start_tick": 220560,
+      "duration_ticks": 230,
+      "source_note": 33,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 31,
+      "velocity": 39,
+      "start_tick": 220800,
+      "duration_ticks": 182,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 221040,
+      "duration_ticks": 389,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 221520,
+      "duration_ticks": 248,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 222000,
+      "duration_ticks": 389,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 43,
+      "velocity": 39,
+      "start_tick": 222480,
+      "duration_ticks": 230,
+      "source_note": 36,
+      "target_chord": "G"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 222720,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 222960,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 223440,
+      "duration_ticks": 200,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 223920,
+      "duration_ticks": 389,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 224400,
+      "duration_ticks": 205,
+      "source_note": 29,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 224640,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 224880,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 225360,
+      "duration_ticks": 211,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 225840,
+      "duration_ticks": 389,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 30,
+      "velocity": 39,
+      "start_tick": 226320,
+      "duration_ticks": 185,
+      "source_note": 31,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 226560,
+      "duration_ticks": 201,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 226800,
+      "duration_ticks": 389,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 227280,
+      "duration_ticks": 201,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 227760,
+      "duration_ticks": 389,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 228240,
+      "duration_ticks": 230,
+      "source_note": 32,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 26,
+      "velocity": 39,
+      "start_tick": 228480,
+      "duration_ticks": 165,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 228720,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 229200,
+      "duration_ticks": 248,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 229680,
+      "duration_ticks": 389,
+      "source_note": 33,
+      "target_chord": "D"
+    },
+    {
+      "channel": 1,
+      "note": 33,
+      "velocity": 39,
+      "start_tick": 230160,
+      "duration_ticks": 230,
+      "source_note": 33,
+      "target_chord": "D"
+    }
+  ]
+}

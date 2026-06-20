@@ -1,0 +1,50 @@
+{
+  "schema": "setloom.t5.lux-in-umbra.kick-synth.v1",
+  "description": "Deterministic source for the strict 123 BPM kick voice used by Lux in Umbra. The renderer generates the kick from this source file; no frozen kick WAV input is required.",
+  "sample_rate": 44100,
+  "tempo_bpm": 123.0,
+  "bars": 8,
+  "render_tail_seconds": 0.5,
+  "beats": 32,
+  "kick_voice": {
+    "duration_seconds": 0.34,
+    "frequency_start_hz": 98.0,
+    "frequency_end_hz": 44.0,
+    "pitch_decay_seconds": 0.042,
+    "amp_decay_seconds": 0.14,
+    "attack_seconds": 0.003,
+    "thump_lowpass_hz": 180.0,
+    "thump_gain": 1.08,
+    "click_seed": 123,
+    "click_bandpass_hz": [
+      1800.0,
+      5200.0
+    ],
+    "click_decay_seconds": 0.008,
+    "click_gain": 0.034,
+    "body_layer": {
+      "enabled": true,
+      "bandpass_hz": [
+        72.0,
+        260.0
+      ],
+      "drive": 2.25,
+      "gain": 0.24,
+      "decay_seconds": 0.19,
+      "attack_seconds": 0.006
+    },
+    "soft_limit_drive": 1.02,
+    "soft_limit_peak": 0.78
+  },
+  "pattern": {
+    "type": "four_on_floor",
+    "gain": 0.82,
+    "peak_cap": 0.78
+  },
+  "compatibility_steps": {
+    "pcm16_roundtrip_before_trim": true,
+    "trim_to_exact_bars": true,
+    "edge_fade_seconds": 0.015,
+    "pcm16_roundtrip_after_fade": true
+  }
+}

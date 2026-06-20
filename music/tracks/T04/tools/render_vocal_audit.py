@@ -18,9 +18,10 @@ from typing import Any
 import numpy as np
 import soundfile as sf
 
-ROOT = Path(__file__).resolve().parent.parent
-ASSEMBLE_PATH = ROOT / "music/tracks/T04/assemble.py"
-OUT = ROOT / "local/candidates/T04/vocal-audit"
+TRACK_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = TRACK_ROOT.parents[2]
+ASSEMBLE_PATH = TRACK_ROOT / "assemble.py"
+OUT = REPO_ROOT / "local/candidates/T04/vocal-audit"
 SR = 44100
 ORDER = {"tease": 1, "fullverse": 2, "hook1": 3, "hook2": 4}
 
@@ -191,7 +192,7 @@ def main() -> int:
                 "uv",
                 "run",
                 "python",
-                "scripts/detect_vocal_breaths.py",
+                "music/tracks/T04/tools/detect_vocal_breaths.py",
                 str(voice_path),
                 "--csv",
                 str(detector_csv),
@@ -200,7 +201,7 @@ def main() -> int:
                 "--top",
                 "12",
             ],
-            cwd=ROOT,
+            cwd=REPO_ROOT,
             check=True,
             capture_output=True,
             text=True,
@@ -208,7 +209,7 @@ def main() -> int:
     finally:
         shutil.rmtree(temp_root, ignore_errors=True)
 
-    print(f"wrote vocal audit folder: {OUT.relative_to(ROOT)}")
+    print(f"wrote vocal audit folder: {OUT.relative_to(REPO_ROOT)}")
     return 0
 
 

@@ -1,0 +1,12 @@
+# Generated render artifacts stay local.
+/render/
+
+# Cover binaries are release assets, not music-generation source.
+/artwork/*.png
+/artwork/*.jpg
+/artwork/*.jpeg
+/artwork/*.webp
+
+__pycache__/
+*.pyc
+.DS_Store

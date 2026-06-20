@@ -8,7 +8,7 @@ review, not for fully automatic vocal editing.
 
 Example:
 
-    uv run --no-sync python scripts/repair_vocal_breaths.py \
+    uv run --no-sync python music/tracks/T04/tools/repair_vocal_breaths.py \
         local/candidates/genai/latin-vocal-clean-take6-tailfix.wav \
         local/candidates/T04/voice/source/latin-vocal-clean-take6-tailfix-breathfix.wav \
         --window 11.007:11.537 --window 18.747:19.307 --mode cut-fill
