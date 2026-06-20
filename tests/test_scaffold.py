@@ -6,6 +6,7 @@ import yaml
 
 from setloom.cli import main
 from setloom.scaffold import assemble_template, create_track, spec_template
+from setloom.schema import load_spec
 
 
 def test_spec_template_is_valid_yaml():
@@ -40,16 +41,16 @@ def test_create_track_rejects_existing(tmp_path):
         create_track("T06", "second", root=tmp_path)
 
 
-def test_cli_new_creates_validatable_spec(tmp_path, monkeypatch):
+def test_cli_new_creates_loadable_spec(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     rc = main(["new", "T06", "--title", "test-track", "--bpm", "130", "--key", "D minor"])
     assert rc == 0
     spec_path = tmp_path / "music/tracks/T06/spec.yml"
     assert spec_path.is_file()
 
-    # Validate the scaffolded spec
-    rc = main(["validate", str(spec_path)])
-    assert rc == 0
+    spec = load_spec(spec_path)
+    assert spec.id == "T06"
+    assert spec.bpm == 130
 
 
 def test_cli_new_rejects_duplicate(tmp_path, monkeypatch):

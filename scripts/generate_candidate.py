@@ -6,7 +6,9 @@ A documented local experiment recipe, not a product surface: candidates are
 audition material for the taste owner. Technical diagnostics are optional; the
 listening gate judges.
 
-Run from the repo root (requires the genai dependency group):
+ACE-Step is intentionally not a root project dependency. Its local experiment
+dependency list lives in pyproject.acestep.toml and must be installed explicitly
+before running this script.
 
     uv run --no-sync python scripts/generate_candidate.py --caption TEXT
         --bpm BPM --keyscale KEY [--name NAME] [--seed N] [--duration SECONDS]

@@ -13,8 +13,8 @@ helps agents move faster; it does not replace producer judgment.
 
 ## What It Is
 
-- A small Python toolkit for track specs, MIDI, audio hygiene, theory helpers,
-  playback, and opt-in reference anatomy.
+- A small Python toolkit for per-track source, MIDI, audio helpers, theory
+  helpers, playback, audio inspection, and opt-in reference anatomy.
 - A file-based workflow for per-track source, sheet music, config, renders,
   stems, listening notes, and release assets.
 - A collaboration surface where agents prepare candidates and the human owns
@@ -45,9 +45,9 @@ source under `music/`.
 ## Core Commands
 
 ```bash
-uv run setloom validate music/tracks/T04/spec.yml
 uv run setloom new T06 --title my-track --bpm 123 --key "E minor"
 uv run setloom play path/to/audio.wav
+uv run setloom inspect path/to/audio.wav --view all --out tmp/inspect.png
 uv run setloom anatomize local/corpus/audio --layers
 ```
 
@@ -59,10 +59,10 @@ side virtualenvs or install global tools for normal Setloom work.
 ```text
 AGENTS.md                  Instructions for coding agents.
 docs/                      Short workflow and tooling notes.
-music/tracks/              Older TNN track specs and per-track source.
+music/tracks/              Older TNN track notes and per-track source.
 music/T5-lux-in-umbra/     Production source harness for Lux in Umbra.
-src/setloom/               Reusable CLI, schema, hygiene, MIDI/audio/theory,
-                           and reference-anatomy primitives.
+src/setloom/               Reusable CLI, MIDI/audio/theory, inspection,
+                           scaffold, schema-loader, and anatomy primitives.
 scripts/                   Local genAI and plotting helpers.
 tests/                     Behavior tests for the reusable toolkit.
 local/                     Gitignored corpus, candidates, releases, and lab data.

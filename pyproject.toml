@@ -7,47 +7,18 @@ description = "Open-source, keyboard-first tool and agentic harness for generati
 license = "AGPL-3.0-only"
 requires-python = ">=3.11"
 dependencies = [
-    "pydantic>=2.7",
-    "mido>=1.3",
-    "pyyaml>=6.0",
-    "numpy>=2.4.6",
-    "pedalboard>=0.9.23",
-    "soundfile>=0.14.0",
-    "scipy>=1.17.1",
-    "pyloudnorm>=0.2.0",
-    "librosa>=0.11.0",
+    "librosa>=0.11.0", "matplotlib>=3.7", "mido>=1.3", "numpy>=2.4.6",
+    "pedalboard>=0.9.23", "pydantic>=2.7", "pyloudnorm>=0.2.0", "pyyaml>=6.0",
+    "scipy>=1.17.1", "soundfile>=0.14.0",
 ]
 
 [project.scripts]
 setloom = "setloom.cli:run"
 
 [dependency-groups]
-anatomy = [
-    "beartype>=0.22.9",
-    "einops>=0.8.2",
-    "essentia==2.1b6.dev1389",
-    "rotary-embedding-torch>=0.8.9",
-    "torch>=2.12.0",
-    "torchfcpe>=0.0.4",
-]
-dev = [
-    "pytest>=8.0",
-    "ruff>=0.4",
-]
-# GenAI generation pillars in the one project env (no per-model venvs).
-# Weights download to the gitignored project model store (models/) via
-# HF_HUB_CACHE.
-genai = [
-    "ace-step",
-    "magenta-rt[mlx]>=2.0.2",
-    "huggingface-hub[cli]",
-]
-# Audio-to-MIDI transcription scaffold. Basic Pitch is currently a Python
-# 3.11 tool for this project; run it as an optional group, not core runtime.
-transcription = [
-    "basic-pitch>=0.4.0; python_version < '3.12' and sys_platform == 'darwin'",
-    "setuptools<72",
-]
+anatomy = ["beartype>=0.22.9", "einops>=0.8.2", "essentia==2.1b6.dev1389", "rotary-embedding-torch>=0.8.9", "torch>=2.12.0", "torchfcpe>=0.0.4"]
+dev = ["pytest>=8.0", "ruff>=0.4"]
+transcription = ["basic-pitch==0.4.0; sys_platform == 'darwin'"]
 
 [build-system]
 requires = ["hatchling"]
@@ -56,86 +27,14 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/setloom"]
 
-[tool.uv]
-# recurrentgemma 1.0.1 (transitive of magenta-rt via sequence_layers; upstream
-# marks it for removal) caps numpy <2.4 against our core numpy>=2.4.6. The cap
-# is conservative metadata; the Magenta MLX smoke test exercises the override.
-override-dependencies = ["numpy>=2.4.6"]
-
-[tool.uv.sources]
-ace-step = { git = "https://github.com/ace-step/ACE-Step-1.5", rev = "dce621408bee8c31b4fcf4811682eb9359e1bc94" }
-
-# Basic Pitch 0.4.0 publishes broad TensorFlow runtime metadata that conflicts
-# with this repo's genai group during universal locking. For Setloom we use the
-# macOS CoreML CLI path as an optional transcription scaffold, verified locally
-# with Python 3.11, and intentionally do not install TensorFlow for it.
 [[tool.uv.dependency-metadata]]
 name = "basic-pitch"
 version = "0.4.0"
-requires-python = ">=3.11,<3.12"
-requires-dist = [
-    "librosa>=0.8.0",
-    "mir-eval>=0.6",
-    "numpy>=1.18",
-    "pretty-midi>=0.2.9",
-    "resampy>=0.2.2,<0.4.3",
-    "scikit-learn",
-    "scipy>=1.4.1",
-    "typing-extensions",
-    "coremltools; sys_platform == 'darwin'",
-]
-
-# ACE-Step 1.5 declares requires-python ">=3.11,<3.13"; its full macOS arm64
-# dependency set resolves and installs on 3.13 (verified 2026-06-10), so the
-# cap is treated as stale metadata. This block mirrors upstream's dependency
-# list at the pinned rev with two adaptations: upstream's exact CUDA torch
-# pins (torch==2.7.1 win / ==2.10.0 linux, +cuXXX tags) become floors so the
-# universal lock coexists with the anatomy group's torch>=2.12 — on those
-# platforms ace-step is best-effort; macOS arm64 keeps upstream's real
-# constraints. Remove this block when upstream supports 3.13.
-[[tool.uv.dependency-metadata]]
-name = "ace-step"
-version = "1.5.0"
 requires-python = ">=3.11"
 requires-dist = [
-    "torch>=2.7.1; sys_platform == 'win32'",
-    "torchvision; sys_platform == 'win32'",
-    "torchaudio>=2.7.1; sys_platform == 'win32'",
-    "torch>=2.10.0; sys_platform == 'linux'",
-    "torchvision; sys_platform == 'linux'",
-    "torchaudio>=2.10.0; sys_platform == 'linux'",
-    "torch>=2.9.1; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "torchvision; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "torchaudio>=2.9.1; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "transformers>=4.51.0,<4.58.0",
-    "diffusers>=0.37.0",
-    "gradio==6.2.0",
-    "matplotlib>=3.7.5",
-    "scipy>=1.10.1",
-    "soundfile>=0.13.1",
-    "loguru>=0.7.3",
-    "einops>=0.8.1",
-    "accelerate>=1.12.0",
-    "fastapi>=0.110.0",
-    "diskcache",
-    "uvicorn[standard]>=0.27.0",
-    "numba>=0.63.1",
-    "vector-quantize-pytorch>=1.27.15",
-    "torchcodec>=0.9.1; platform_machine != 'aarch64'",
-    "torchao>=0.16.0,<0.17.0; platform_machine != 'aarch64'",
-    "torchao; platform_machine == 'aarch64'",
-    "toml",
-    "mlx>=0.25.2; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "mlx-lm>=0.20.0; sys_platform == 'darwin' and platform_machine == 'arm64'",
-    "peft>=0.18.0",
-    "lycoris-lora",
-    "lightning>=2.0.0",
-    "tensorboard>=2.20.0",
-    "modelscope",
-    "typer-slim>=0.21.1",
-    "pytorch-wavelets>=1.3.0",
-    "pywavelets>=1.9.0",
-    "setuptools<72",
+    "coremltools; sys_platform == 'darwin'", "librosa>=0.8.0", "mir-eval>=0.6",
+    "numpy>=1.18", "pretty-midi>=0.2.9", "resampy>=0.2.2,<0.4.3",
+    "scikit-learn", "scipy>=1.4.1", "typing-extensions",
 ]
 
 [tool.ruff]

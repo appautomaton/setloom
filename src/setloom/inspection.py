@@ -22,15 +22,10 @@ blue means A has more energy.
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
+from typing import Any
 
-import matplotlib
-
-matplotlib.use("Agg")
-
-import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
-from matplotlib.colors import LinearSegmentedColormap
 import numpy as np
 import soundfile as sf
 from scipy import signal
@@ -45,7 +40,9 @@ WAVE_R = "#41d6c3"
 LINE = "#ffd36b"
 DIFF = "#ff6b8a"
 CMAP = "inferno"
-DIFF_CMAP = LinearSegmentedColormap.from_list("setloom_diff", ["#2c5cff", "#101820", "#ffb84d"])
+plt: Any = None
+ticker: Any = None
+DIFF_CMAP: Any = None
 DEFAULT_WIDTH_PX = 2400
 DEFAULT_HEIGHT_BY_ROWS = {1: 920, 2: 1600, 3: 2200, 4: 3000}
 TITLE_SIZE = 24
@@ -55,8 +52,33 @@ TICK_SIZE = 17
 LEGEND_SIZE = 15
 
 
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
+def load_plotting_backend() -> None:
+    global DIFF_CMAP, plt, ticker
+    if plt is not None:
+        return
+    cache_root = Path("tmp") / "matplotlib"
+    xdg_cache = Path("tmp") / "xdg-cache"
+    cache_root.mkdir(parents=True, exist_ok=True)
+    xdg_cache.mkdir(parents=True, exist_ok=True)
+    os.environ.setdefault("MPLCONFIGDIR", str(cache_root.resolve()))
+    os.environ.setdefault("XDG_CACHE_HOME", str(xdg_cache.resolve()))
+
+    import matplotlib
+
+    matplotlib.use("Agg")
+
+    import matplotlib.pyplot as mpl_pyplot
+    import matplotlib.ticker as mpl_ticker
+    from matplotlib.colors import LinearSegmentedColormap
+
+    plt = mpl_pyplot
+    ticker = mpl_ticker
+    DIFF_CMAP = LinearSegmentedColormap.from_list(
+        "setloom_diff", ["#2c5cff", "#101820", "#ffb84d"]
+    )
+
+
+def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument("audio")
     parser.add_argument("--out")
     parser.add_argument("--compare", help="second audio file for A/B visual comparison")
@@ -91,7 +113,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dpi", type=int, default=160)
     parser.add_argument("--width-px", type=int, default=DEFAULT_WIDTH_PX, help="target output width in pixels")
     parser.add_argument("--height-px", type=int, help="target output height in pixels; defaults by view")
-    return parser.parse_args()
+    return parser
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = configure_parser(argparse.ArgumentParser(description=__doc__))
+    return parser.parse_args(argv)
 
 
 def window_seconds(args: argparse.Namespace, duration_s: float) -> tuple[float, float]:
@@ -530,8 +557,8 @@ def render_compare(
     return 0
 
 
-def main() -> int:
-    args = parse_args()
+def run(args: argparse.Namespace) -> int:
+    load_plotting_backend()
     path = Path(args.audio)
     y, sr = read_audio(path)
     compare_path = Path(args.compare) if args.compare else None
@@ -622,6 +649,10 @@ def main() -> int:
             format_time_axis(ax, start_s, end_s)
     save(fig, out, args.dpi)
     return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    return run(parse_args(argv))
 
 
 if __name__ == "__main__":

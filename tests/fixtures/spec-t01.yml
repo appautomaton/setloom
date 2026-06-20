@@ -15,8 +15,7 @@ intent:
     - "overcrowded bassline"
     - "long break that loses dancefloor motion"
 
-# Section bars must sum to duration_bars (256). The hygiene gate no longer
-# treats BPM or club length as musical rejection rules.
+# Section bars must sum to duration_bars (256).
 sections:
   intro: 16
   groove_a: 32

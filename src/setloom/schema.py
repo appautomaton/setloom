@@ -1,12 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Track spec schema.
+"""Track spec loader for scaffolded and legacy track source.
 
-Formalizes the track-spec shape: a routing + technical-hygiene + intent
-contract. The spec describes a track (tempo, key, form, palette, intended
-feel) and where to render it; it does NOT encode generator note-plans. Musical
-composition lives in per-track code, not in a harness generator fed by this
-schema. Validation errors point at the offending field; spec-evaluable hygiene
-checks live in the CLI.
+The spec describes a track (tempo, key, form, palette, intended feel) and where
+to render it; it does NOT encode generator note-plans. Musical composition
+lives in per-track code, not in a harness generator fed by this schema.
 
 Most fields document creator intent for humans and per-track code: `energy`,
 `intent`, `palette`, and `style_vector` are descriptive guidance, not inputs to
@@ -91,7 +88,7 @@ class TrackSpec(BaseModel):
 
 
 def load_spec(path: str | Path) -> TrackSpec:
-    """Load and validate a track spec YAML file."""
+    """Load a track spec YAML file into the internal schema model."""
     raw = yaml.safe_load(Path(path).read_text(encoding="utf-8"))
     if not isinstance(raw, dict):
         raise ValueError(f"{path}: spec file must contain a YAML mapping")

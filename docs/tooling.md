@@ -15,7 +15,7 @@ Do not install new Homebrew packages for this project. Python work must use the 
 | Layer | Preferred Tools | Purpose |
 | --- | --- | --- |
 | MIDI composition | Python, Mido, pretty_midi, music21 | Compose and edit MIDI for any part. |
-| Alignment and automation | Python packages, CLI scripts, file-based manifests | Analyze timing, route candidates, prepare audition files, and keep the human gate no-click capable. |
+| Alignment and automation | Python packages, `setloom inspect`, file-based manifests | Analyze timing, inspect waveforms/spectra, route candidates, prepare audition files, and keep the human gate no-click capable. |
 | Synthesis and rendering | Headless, scriptable renderers orchestrated by Python | Render reproducible stems and demo mixes without a required DAW export path. |
 | DSP and mixing | Python audio packages, Faust, LV2 plugins, SoX, FFmpeg | Build and apply effects, meters, exports, and checks. |
 | DAW/reference surface | Optional Logic Pro inspection when installed; scriptable open-source paths when needed | Reference timbre categories and audition targets. Do not treat DAW bounces as Setloom core output. |
@@ -36,7 +36,7 @@ Use this stack before reaching for ad hoc shell-only processing. SoX and FFmpeg 
 
 ## ML Environment
 
-All machine learning runs in the one repo-local `uv` environment. Model integrations join it through dependency groups (`uv sync --group anatomy --group genai`); per-model virtualenvs are never created.
+Project dependencies stay narrow: the root `pyproject.toml` carries the basic harness plus optional Basic Pitch transcription support. Generative model stacks such as Magenta and ACE-Step are not main project dependencies and do not belong in the root project metadata.
 
 Model weights live in the gitignored project store:
 
@@ -49,7 +49,7 @@ Model weights live in the gitignored project store:
 
 Never override `HF_HOME`: it holds the user's Hugging Face login token. Route caches with `HF_HUB_CACHE` only.
 
-Upstream reference clones under `.references/` are read-only working aids; their conflicting Python and torch pins are exactly why models are ported into this environment instead of run in theirs. Stale upstream pins are resolved in `pyproject.toml` (`[tool.uv] override-dependencies`, `[[tool.uv.dependency-metadata]]`) with the reasoning kept next to each override.
+Upstream reference clones under `.references/` are read-only working aids. Generative-model pins and compatibility overrides stay outside the root project file unless the model becomes part of the commissioned project surface.
 
 Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — 53-stem layer analysis, generation, transcription — run one at a time, never concurrently.
 

@@ -14,9 +14,9 @@ forensics. Do not pretend the harness has solved composition.
 
 The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never composes the music — all musical composition lives in per-track source under `music/tracks/TNN/` or a named production harness such as `music/T5-lux-in-umbra/`.
 
-- `setloom validate <spec>` — check a track spec against the schema and run the built-in technical-hygiene gate.
 - `setloom new <id>` — scaffold a new track directory with a minimal spec, runnable `assemble.py`, and listening-notes template.
 - `setloom play <audio>` — play an audio file for the listening gate (macOS `afplay`).
+- `setloom inspect <audio>` — render waveform, spectrum, spectrogram, and stereo inspection plots; supports A/B comparison.
 - `setloom anatomize [path] --layers` — 53-stem reference lens and technical dossiers.
 - Importable primitives for per-track code: `setloom.midi` (MIDI read/write, tick/bar math, `NoteEvent`), `setloom.audio` (DSP hygiene: loudness, mono-safety, clip, filters, envelopes), `setloom.conductor` (music-theory math: key/scale parsing, chord-tone and scale-degree helpers).
 - `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai experiments into `local/candidates/genai/`; they require explicit track-specific prompts.

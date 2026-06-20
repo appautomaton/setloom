@@ -1,60 +1,14 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Keyboard-first CLI for Setloom.
 
-Commands: ``validate`` (spec + hygiene gate), ``new`` (scaffold a track),
-``play`` (audition audio), and ``anatomize`` (opt-in diagnostics). Musical
-composition lives in per-track code, not in this harness.
+Commands: ``new`` (scaffold a track), ``play`` (audition audio), ``inspect``
+(waveform/spectrum/spectrogram plots), and ``anatomize`` (opt-in diagnostics).
+Musical composition lives in per-track code, not in this harness.
 """
 
 import argparse
 import sys
 from pathlib import Path
-
-import yaml
-from pydantic import ValidationError
-
-from setloom.schema import TrackSpec, load_spec
-
-
-def _format_validation_error(exc: ValidationError) -> str:
-    lines = ["spec validation failed:"]
-    for err in exc.errors():
-        loc = ".".join(str(part) for part in err["loc"]) or "(root)"
-        lines.append(f"  {loc}: {err['msg']}")
-    return "\n".join(lines)
-
-
-def _load_spec_or_fail(spec_path: Path) -> TrackSpec | None:
-    try:
-        return load_spec(spec_path)
-    except ValidationError as exc:
-        print(_format_validation_error(exc), file=sys.stderr)
-        return None
-    except (OSError, yaml.YAMLError, ValueError) as exc:
-        print(f"spec validation failed: {exc}", file=sys.stderr)
-        return None
-
-
-def _gate_warnings(spec: TrackSpec) -> list[str]:
-    """Run spec-level technical hygiene checks; return non-fatal warnings."""
-    from setloom.hygiene import evaluate_hygiene_gate
-
-    try:
-        result = evaluate_hygiene_gate(spec)
-    except ValueError as exc:
-        return [f"hygiene gate could not run: {exc}"]
-    return [f"gate {v.rule_id}: {v.message}" for v in result.blocking]
-
-
-def _cmd_validate(args: argparse.Namespace) -> int:
-    spec = _load_spec_or_fail(Path(args.spec))
-    if spec is None:
-        return 1
-
-    for warning in _gate_warnings(spec):
-        print(f"warning: {warning}", file=sys.stderr)
-    print(f"OK: {spec.id} '{spec.title}' ({spec.bpm:g} BPM, {spec.key}, {spec.duration_bars} bars)")
-    return 0
 
 
 def _cmd_anatomize(args: argparse.Namespace) -> int:
@@ -79,6 +33,12 @@ def _cmd_anatomize(args: argparse.Namespace) -> int:
     print(f"dossiers: {args.out}")
     print("reminder: dossiers are technical evidence; musical judgment stays with the listening gate")
     return 0
+
+
+def _cmd_inspect(args: argparse.Namespace) -> int:
+    from setloom.inspection import run as run_inspection
+
+    return run_inspection(args)
 
 
 def _cmd_new(args: argparse.Namespace) -> int:
@@ -122,10 +82,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="setloom", description="Setloom track and set harness")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_validate = sub.add_parser("validate", help="validate a track spec YAML file")
-    p_validate.add_argument("spec", help="path to the track spec YAML")
-    p_validate.set_defaults(func=_cmd_validate)
-
     p_anatomize = sub.add_parser(
         "anatomize", help="dissect local reference audio into anatomy dossiers"
     )
@@ -153,6 +109,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="53-stem model cache root (default models/roformer)",
     )
     p_anatomize.set_defaults(func=_cmd_anatomize)
+
+    p_inspect = sub.add_parser(
+        "inspect",
+        help="render waveform, spectrum, spectrogram, and stereo inspection plots",
+    )
+    from setloom.inspection import configure_parser as configure_inspection_parser
+
+    configure_inspection_parser(p_inspect)
+    p_inspect.set_defaults(func=_cmd_inspect)
 
     p_new = sub.add_parser("new", help="scaffold a new track directory")
     p_new.add_argument("id", help="track id, e.g. T06")
