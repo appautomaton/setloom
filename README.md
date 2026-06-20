@@ -2,69 +2,94 @@
 
 # Setloom
 
-Producer-first agentic tools for weaving club tracks and DJ sets.
+Setloom by AppAutomaton is a keyboard-first harness for building club-track
+source, rendering auditions, inspecting audio, and keeping agent/human music
+work organized.
 
-Setloom by AppAutomaton is a keyboard-first co-production harness for generating, tuning, mixing, and sequencing club tracks and DJ sets. The public core stays small: reusable primitives, opt-in diagnostics, and per-track production harnesses.
-
-Setloom is built for creators with rhythm, taste, and rave intuition who want to type their way through music production without surrendering musical judgment to presets or stale automation.
+It is not a solved automatic melodic-techno generator. The useful loop today is
+disciplined iteration: human listening feedback, focused source edits, optional
+external research, reproducible renders, and visual/audio checks. The harness
+helps agents move faster; it does not replace producer judgment.
 
 ## What It Is
 
-- A file-based harness for track specs, MIDI, stems, renders, review notes, and set plans.
-- An agentic workflow where AI prepares candidates, the human owns taste, and every serious render starts with a producer decision.
-- A practical bridge between algorithmic music tools, generative agents, and DJ-set-aware arrangement.
+- A small Python toolkit for track specs, MIDI, audio hygiene, theory helpers,
+  playback, and opt-in reference anatomy.
+- A file-based workflow for per-track source, sheet music, config, renders,
+  stems, listening notes, and release assets.
+- A collaboration surface where agents prepare candidates and the human owns
+  every taste decision.
 
 ## What It Is Not
 
-- Not a traditional DAW replacement.
-- Not a one-click hit generator.
-- Not a professional sound engineering course.
-- Not a closed hosted music service.
+- Not a DAW replacement.
+- Not a one-click music generator.
+- Not a reusable genre rulebook.
+- Not a place to archive failed candidates or scratch files.
 
-## V1 Artifact
-
-V1 targets editable outputs:
+## Current Workflow
 
 ```text
-MIDI + stems + review notes
+producer thesis
+  -> per-track source edit
+  -> render audition
+  -> play / inspect waveform + spectrum
+  -> human listening note
+  -> revise or promote
 ```
 
-The project should preserve control. A final WAV is useful, but the editable materials matter more.
+Use project-local `./tmp/` for disposable work. Keep durable candidates under
+`local/candidates/`, release assets under `local/releases/`, and production
+source under `music/`.
 
-## Core Principle
+## Core Commands
 
-```text
-Agents prepare candidates.
-Technical checks protect playback and low end.
-Producer judgment shapes the music.
-Humans make the listening decision.
+```bash
+uv run setloom validate music/tracks/T04/spec.yml
+uv run setloom new T06 --title my-track --bpm 123 --key "E minor"
+uv run setloom play path/to/audio.wav
+uv run setloom anatomize local/corpus/audio --layers
 ```
+
+All Python work should go through the repo-local `uv` project. Do not create
+side virtualenvs or install global tools for normal Setloom work.
 
 ## Repository Map
 
 ```text
-AGENTS.md             High-signal instructions for coding agents.
-docs/                 Short routing, workflow, and tooling notes.
-music/tracks/         Track registry where a track still uses the TNN spec pattern.
-music/T5-lux-in-umbra Production source harness, sheet music, config, and MIDI exports.
-src/setloom/          Python toolkit: CLI (validate/anatomize/play/new), track-spec schema, hygiene gate, MIDI + audio-hygiene + music-theory primitives, and anatomy diagnostics.
-scripts/              Local genai candidate and smoke-clip scripts.
-tests/                Schema, gate, theory-helper, audio, and anatomy tests.
-local/                Machine-local material (gitignored): corpus lab, candidates, releases.
-models/               Model weights store (gitignored).
-pyproject.toml        uv-managed Python package definition and CLI entry point.
-LICENSE               AGPL-3.0-only text for the core project.
-LICENSES/             Canonical license texts used by the project.
+AGENTS.md                  Instructions for coding agents.
+docs/                      Short workflow and tooling notes.
+music/tracks/              Older TNN track specs and per-track source.
+music/T5-lux-in-umbra/     Production source harness for Lux in Umbra.
+src/setloom/               Reusable CLI, schema, hygiene, MIDI/audio/theory,
+                           and reference-anatomy primitives.
+scripts/                   Local genAI and plotting helpers.
+tests/                     Behavior tests for the reusable toolkit.
+local/                     Gitignored corpus, candidates, releases, and lab data.
+models/                    Gitignored model weights.
+tmp/                       Gitignored scratch space for temporary experiments.
 ```
 
-Start with [docs/README.md](docs/README.md) for context routing.
+## Release Artifacts
+
+The project values editable source over opaque bounces:
+
+```text
+sheet/source JSON + MIDI + stems + render code + listening notes
+```
+
+Audio files, proprietary samples, model weights, and disposable renders are not
+committed unless a specific release workflow says otherwise.
 
 ## License
 
-Core code, harness prompts, schemas, and automation logic are licensed under AGPL-3.0-only.
+Core code, harness prompts, schemas, and automation logic are licensed under
+AGPL-3.0-only.
 
-Project documentation is licensed under CC BY-SA 4.0 unless explicitly marked otherwise.
+Project documentation is licensed under CC BY-SA 4.0 unless explicitly marked
+otherwise.
 
-Generated music outputs belong to the user who creates them, subject to the user's own third-party samples, models, and inputs.
+Generated music outputs belong to the user who creates them, subject to the
+user's own third-party samples, models, and inputs.
 
 Canonical license texts live in [LICENSE](LICENSE) and [LICENSES/](LICENSES/).
