@@ -1,0 +1,18 @@
+Setloom
+Copyright AppAutomaton
+
+This product includes software derived from third parties.
+
+Basic Pitch
+  Copyright 2022 Spotify AB
+  Licensed under the Apache License, Version 2.0:
+  https://www.apache.org/licenses/LICENSE-2.0
+  Source: https://github.com/spotify/basic-pitch
+
+  The note-decoding and pitch-bend algorithms in
+  src/setloom/transcription/basic_pitch.py are derived from Basic Pitch's
+  note_creation.py and inference.py, reimplemented on Setloom's stack
+  (mido rather than pretty_midi). Algorithm design and constants are
+  credited to Spotify AB. Setloom as a whole is licensed under AGPL-3.0-only;
+  this notice satisfies the Apache-2.0 attribution requirement for the
+  derived portions.

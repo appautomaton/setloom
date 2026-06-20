@@ -6,8 +6,7 @@ from pathlib import Path
 
 import pytest
 
-REPO_ROOT = Path(__file__).resolve().parents[1]
-ASSEMBLE = REPO_ROOT / "music/tracks/T04/assemble.py"
+ASSEMBLE = Path(__file__).resolve().with_name("assemble.py")
 
 
 @pytest.fixture(scope="module")

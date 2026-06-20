@@ -2,59 +2,56 @@
 
 # Tooling
 
-Setloom is open-source first and keyboard-first for its public core. Python is the control plane for MIDI, analysis, automation, candidate routing, reports, and listening-gate handoff.
+Setloom is open-source and keyboard-first. Python is the control plane:
+composition, analysis, rendering, and the handoff to the listening gate all run
+as code, so every step is scriptable, inspectable, and reproducible. The active
+workstation target is macOS.
 
-User-owned proprietary tools can be useful as references, but they must not silently become the Setloom output path. Logic Pro may be inspected as a local reference surface for timbre vocabulary, preset categories, and short audition targets when the user has it installed. Logic Pro is not the Setloom final renderer, project-output chain, or required production dependency.
+The guiding principle is simple: prefer open, scriptable tools over manual
+clicking. A track should be buildable from files and commands, not from a
+sequence of mouse gestures no one can replay.
 
-Do not add tacky third-party GUI synths, preset browsers, or DAWs just to search for timbre. If a GUI reference check is unavoidable and the user has Logic Pro, prefer Logic Pro over introducing another application. Prefer Python packages, CLI tools, MIDI files, scripts, and file-based automation over manual clicking.
+## The stack
 
-Do not install new Homebrew packages for this project. Python work must use the repo-local `uv` environment. If Node tooling is needed, install and resolve it through this project's `node_modules`, not a global toolchain.
-
-## Core Tooling Direction
-
-| Layer | Preferred Tools | Purpose |
-| --- | --- | --- |
-| MIDI composition | Python, Mido, pretty_midi, music21 | Compose and edit MIDI for any part. |
-| Alignment and automation | Python packages, `setloom inspect`, file-based manifests | Analyze timing, inspect waveforms/spectra, route candidates, prepare audition files, and keep the human gate no-click capable. |
-| Synthesis and rendering | Headless, scriptable renderers orchestrated by Python | Render reproducible stems and demo mixes without a required DAW export path. |
-| DSP and mixing | Python audio packages, Faust, LV2 plugins, SoX, FFmpeg | Build and apply effects, meters, exports, and checks. |
-| DAW/reference surface | Optional Logic Pro inspection when installed; scriptable open-source paths when needed | Reference timbre categories and audition targets. Do not treat DAW bounces as Setloom core output. |
-
-## Python Audio Stack
-
-The production-grade audio package set is:
+The audio work rests on a small, production-grade Python stack:
 
 | Package | Role |
 | --- | --- |
 | `soundfile` | Read and write audio as NumPy arrays. |
-| `scipy.signal` | Filters, resampling, envelopes, convolution, and deterministic DSP primitives. |
-| `pedalboard` | Scriptable effects chains: filters, compression, distortion, delay, reverb, limiting, and optional plug-in hosting. |
-| `pyloudnorm` | LUFS measurement and loudness normalization for candidate reports and mastering checks. |
-| `librosa` | Music/audio analysis: tempo, onset, chroma, spectral features, and reference diagnostics. |
+| `scipy.signal` | Deterministic DSP: filters, resampling, envelopes, convolution. |
+| `pedalboard` | Scriptable effects chains, and optional plug-in hosting. |
+| `pyloudnorm` | LUFS measurement and loudness normalization. |
+| `librosa` | Analysis: tempo, onset, chroma, spectral features. |
+| `mido` | MIDI read and write for every part. |
 
-Use this stack before reaching for ad hoc shell-only processing. SoX and FFmpeg remain useful export and inspection tools, but they should not be the only mix architecture.
+SoX and FFmpeg handle conversion and export. SuperCollider drives scriptable
+synth lanes: the [Lux in Umbra](../music/T5-lux-in-umbra/) harness routes
+`scsynth` from source-controlled patches. Where heavier DSP helps, Faust and LV2
+plug-ins are fair game. The list grows as tracks demand it, not before.
 
-## ML Environment
+## Reference surfaces
 
-Project dependencies stay narrow: the root `pyproject.toml` carries the basic harness plus optional Basic Pitch transcription support. Generative model stacks such as Magenta and ACE-Step are not main project dependencies and do not belong in the root project metadata.
+User-owned tools like Logic Pro are welcome as *reference* surfaces, for checking
+a timbre, auditioning a target, or browsing a sample library. They are not the
+Setloom output path. The render that ships comes from source-controlled code, so
+anyone with the repo can rebuild it; a DAW bounce can't be. Keeping that line
+clear is what keeps the project reproducible.
 
-Model weights live in the gitignored project store:
+## Generative models
 
-| Store | Path | Routed by |
-| --- | --- | --- |
-| ACE-Step weights | `models/acestep/` | `ACESTEP_CHECKPOINTS_DIR` |
-| Magenta RT weights | `models/magenta/` | `MAGENTA_HOME` |
-| Hugging Face hub cache | `models/hf/` | `HF_HUB_CACHE` |
-| 53-stem BS-RoFormer weights | `models/roformer/` | active `anatomize --layers` reference lens |
+Setloom is built to call generative models where they shine (melody, motif,
+atmosphere, timbre, and fresh groove ideas) alongside deterministic rendering for
+the parts that need exact control: mono-safe low end, clip prevention, phrase
+alignment, reproducible stems.
 
-Never override `HF_HOME`: it holds the user's Hugging Face login token. Route caches with `HF_HUB_CACHE` only.
+The boundary that matters is not which tool you use; it's who decides. A model
+can propose a hook, deterministic code can execute a mixdown, and neither one
+owns the musical call. That belongs to the track's spec and, finally, to the
+person at the listening gate.
 
-Upstream reference clones under `.references/` are read-only working aids. Generative-model pins and compatibility overrides stay outside the root project file unless the model becomes part of the commissioned project surface.
-
-Committed configs pin stock PyPI `torch`; machine-tuned wheels are local installs only, with optimized code paths gated on capability checks (for example `"+m5max" in torch.__version__`). Heavy model jobs — 53-stem layer analysis, generation, transcription — run one at a time, never concurrently.
-
-## GenAI Boundary
-
-Use GenAI for musical ideas when it helps: melody, motifs, atmosphere, timbre, and groove directions. Do not let GenAI or deterministic code silently own the musical decision — that belongs to the track spec and the listening gate.
-
-Deterministic rendering remains useful for execution and technical control: mono-safe low end, reproducible MIDI/stems, clip prevention, phrase alignment, and audition packaging.
+Today the harness can reach for ACE-Step and Magenta on the generation side,
+Basic Pitch for audio-to-MIDI on macOS, and a 53-stem separator for taking
+references apart. These paths are opt-in: heavy, explicit, and pulled in only
+when a track actually needs them. The operational details (local model paths,
+environment routing, hardware limits) live with the agent instructions in
+[AGENTS.md](../AGENTS.md).

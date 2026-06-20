@@ -18,7 +18,7 @@ setloom = "setloom.cli:run"
 [dependency-groups]
 anatomy = ["beartype>=0.22.9", "einops>=0.8.2", "essentia==2.1b6.dev1389", "rotary-embedding-torch>=0.8.9", "torch>=2.12.0", "torchfcpe>=0.0.4"]
 dev = ["pytest>=8.0", "ruff>=0.4"]
-transcription = ["basic-pitch==0.4.0; sys_platform == 'darwin'"]
+transcription = ["coremltools>=9.0"]
 
 [build-system]
 requires = ["hatchling"]
@@ -26,16 +26,6 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/setloom"]
-
-[[tool.uv.dependency-metadata]]
-name = "basic-pitch"
-version = "0.4.0"
-requires-python = ">=3.11"
-requires-dist = [
-    "coremltools; sys_platform == 'darwin'", "librosa>=0.8.0", "mir-eval>=0.6",
-    "numpy>=1.18", "pretty-midi>=0.2.9", "resampy>=0.2.2,<0.4.3",
-    "scikit-learn", "scipy>=1.4.1", "typing-extensions",
-]
 
 [tool.ruff]
 line-length = 100

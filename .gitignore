@@ -13,6 +13,11 @@ __pycache__/
 .venv/
 .cache/
 
+# Claude Code: session-local config and worktrees (never committed). Shared
+# .claude/settings.json and any .claude/skills, hooks, or commands stay tracked.
+.claude/settings.local.json
+.claude/worktrees/
+
 node_modules/
 dist/
 build/

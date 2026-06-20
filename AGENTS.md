@@ -17,6 +17,7 @@ The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never 
 - `setloom new <id>` — scaffold a new track directory with a minimal spec, runnable `assemble.py`, and listening-notes template.
 - `setloom play <audio>` — play an audio file for the listening gate (macOS `afplay`).
 - `setloom inspect <audio>` — render waveform, spectrum, spectrogram, and stereo inspection plots; supports A/B comparison.
+- `setloom transcribe <audio> --out <midi>` — recover note events from audio with Setloom's local macOS Basic Pitch path.
 - `setloom anatomize [path] --layers` — 53-stem reference lens and technical dossiers.
 - Importable primitives for per-track code: `setloom.midi` (MIDI read/write, tick/bar math, `NoteEvent`), `setloom.audio` (DSP hygiene: loudness, mono-safety, clip, filters, envelopes), `setloom.conductor` (music-theory math: key/scale parsing, chord-tone and scale-degree helpers).
 - `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai experiments into `local/candidates/genai/`; they require explicit track-specific prompts.
@@ -25,7 +26,7 @@ The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never 
 
 - Orient with `docs/README.md`, then read only the referenced file needed for the task.
 - `docs/workflow.md` covers the candidate-to-gate loop; `docs/tooling.md` covers tool policy.
-- For policy-sensitive changes, read `LICENSE`, `LICENSES/`, `CONTRIBUTING.md`, and `TRADEMARKS.md`.
+- For policy-sensitive changes, read `LICENSE`, `CONTRIBUTING.md`, and `LICENSES/` (which holds the license texts, `NOTICE`, and `TRADEMARKS.md`).
 
 ## Musical Rules
 
@@ -66,7 +67,7 @@ When writing or finalizing a release spec, each new track must establish a disti
 
 1. **Check prior track specs** — compare BPM, key, bass profile, kick pattern, energy arc, and style vector values.
 2. **Diverge on at least three primary axes.** Same BPM + same bass profile across consecutive releases is a failure mode, not a safe default.
-3. **Name the departure angle in the spec's `intent` block.** State explicitly how this track differs from prior releases. "Darker version of T04" is not a valid departure angle.
+3. **Name the departure angle in the spec's `intent` block.** State explicitly how this track differs from prior releases. "Darker version of a prior track" is not a valid departure angle.
 
 The corpus is evidence for study, not a lawbook. Your track must say something distinct, and the listening gate decides whether it works.
 
