@@ -131,7 +131,7 @@ wet-only reverb ghost, voice-to-bed −6.3 dB), drop_1 chops at bars 40/48/56
 at bars 76/79/83 (P1→P2→P3, intimate reverb, +6.1 to +8.7 dB), peak hook at
 bars 96/98 and 104/106 (P4→P5 with the dissolve tail closing each pass,
 dotted-eighth echo + wide reverb, +3.1 to +5.3 dB). Vocal share measured by
-the scorer: 0.10 (budget was 0.14; in the corpus near-absent band).
+the arrangement audit: 0.10 (budget was 0.14; in the corpus near-absent band).
 
 Voice-to-bed ratios are corpus-anchored: Human Nature's separated stems put
 featured breakdown vocals at up to +8.5 dB, full-section vocals at +3 to +6,
@@ -147,9 +147,9 @@ edges stay mixable.
 
 Master: glue compressor + 4x-oversampled limiter (chain in `assemble.py`),
 −8.9 LUFS integrated (corpus window −9..−8), LRA 11.1, true peak −0.9 dBFS.
-Grammar score 4 in / 3 out; the three outs are spec-gated streaming-edit
-decisions (duration 4.36 min, main break at 0.55, bass occupancy 0.70 from
-the long no-bass break_2).
+Streaming-edit deviations are deliberate: duration is 4.36 min, main break is
+late at 0.55, and bass occupancy is lower because break_2 leaves room for the
+voice.
 
 Known quirk, deliberate exclusion: scrender still renders its internal lead
 bus (`stem-lead*.wav`) even with the lead lane removed from the spec; the
@@ -181,7 +181,6 @@ Active v2 outputs:
   `reimagined-drop1-body.wav`, `reimagined-mainbreak-fullverse.wav`,
   `reimagined-peak-hook.wav`
 
-Technical check: `setloom score` reports 4 in / 3 out. BPM, LUFS, key mode,
-and vocal share are in; the outs are bass occupancy, main-break position, and
-duration against the club-extended corpus target. These are technical distance
-flags, not taste approval.
+Technical checks are supporting evidence only. Current musical truth for T04
+lives in the spec, production config, source code, locked vocal file, and human
+listening notes.

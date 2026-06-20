@@ -1,10 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-# Reset-pack fixture: schema-valid spec at 138 BPM. The reset pack no longer
-# treats BPM as a musical rejection rule.
+# Hygiene fixture: schema-valid spec at 138 BPM. The gate no longer treats BPM
+# as a musical rejection rule.
 
 id: G01
 title: gate-bpm-138
-style_pack: melodic-progressive-techno
 seed: 42
 bpm: 138
 key: F minor

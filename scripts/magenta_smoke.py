@@ -3,8 +3,7 @@
 """Magenta RT 2 smoke proof: a short MLX-generated clip from the unified env.
 
 Proves the jam pillar runs in setloom's one environment — not the realtime jam
-workflow (live audio routing and MIDI steering are a future change). See
-music/packs/melodic-progressive-techno/generation-recipes.md.
+workflow (live audio routing and MIDI steering are a future change).
 
 Run from the repo root (requires the genai dependency group):
 

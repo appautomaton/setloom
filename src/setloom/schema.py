@@ -5,8 +5,8 @@ Formalizes the track-spec shape: a routing + technical-hygiene + intent
 contract. The spec describes a track (tempo, key, form, palette, intended
 feel) and where to render it; it does NOT encode generator note-plans. Musical
 composition lives in per-track code, not in a harness generator fed by this
-schema. Validation errors point at the offending field; grammar-level checks
-(style-pack ranges, hygiene gate) live in the CLI and style-pack loader.
+schema. Validation errors point at the offending field; spec-evaluable hygiene
+checks live in the CLI.
 
 Most fields document creator intent for humans and per-track code: `energy`,
 `intent`, `palette`, and `style_vector` are descriptive guidance, not inputs to
@@ -60,8 +60,7 @@ class TrackSpec(BaseModel):
 
     id: str
     title: str
-    style_pack: str
-    duration_profile: str = "club_extended"  # product form; windows live in the style pack
+    duration_profile: str = "club_extended"
     seed: int = Field(ge=0)
     bpm: float = Field(gt=0)
     key: str

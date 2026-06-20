@@ -55,6 +55,6 @@ Committed configs pin stock PyPI `torch`; machine-tuned wheels are local install
 
 ## GenAI Boundary
 
-Use GenAI for musical ideas when it helps: melody, motifs, atmosphere, timbre, and groove directions. Do not let GenAI, deterministic code, or a style pack silently own the musical decision — that belongs to the track spec and the listening gate.
+Use GenAI for musical ideas when it helps: melody, motifs, atmosphere, timbre, and groove directions. Do not let GenAI or deterministic code silently own the musical decision — that belongs to the track spec and the listening gate.
 
 Deterministic rendering remains useful for execution and technical control: mono-safe low end, reproducible MIDI/stems, clip prevention, phrase alignment, and audition packaging.

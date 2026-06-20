@@ -31,10 +31,8 @@ must not be read as style evidence or promoted into durable musical contracts.
 raises a concrete technical question.
 
 The track spec and its per-track code are the authority for song-specific
-musical choices. A style pack supplies lane routing, technical-hygiene
-scaffolding, and review vocabulary; it must not become a reusable musical
-rulebook. If a candidate is described as a custom groove, the track's own code
-must show that custom bass/drum plan.
+musical choices. If a candidate is described as a custom groove, the track's
+own code must show that custom bass/drum plan.
 
 ## Harness Judgment
 
@@ -102,9 +100,8 @@ models/                          # model weights: generation and separation (git
 
 ## Diagnostics And Listening
 
-Automated checks can catch technical and structural problems. `setloom score`
-is a technical diagnostic against whatever pack targets currently exist. It is
-never a taste verdict, and missing targets are acceptable during a pack rebuild.
+Automated checks can catch technical and structural problems. `setloom anatomize`
+is an optional reference lens, not a taste verdict or style authority.
 
 Human listening catches musical judgment.
 

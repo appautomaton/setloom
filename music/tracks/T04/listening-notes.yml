@@ -17,7 +17,7 @@ verdict:
   remix: "t04-adauroram-v01r2.wav rebuilt via scrender.mix() without the lead parts (official gain staging + master chain), vocal re-placed; re-auditioned same windows."
 
 technical:
-  score_v01: "5 in / 2 out — main_break_start_frac 0.46 (in window), vocal_share 0.11 (in lane); misses: lufs -11.4 (unmastered), bass_occupancy 0.68."
+  technical_v01: "Old diagnostic note: main_break_start_frac 0.46, vocal_share 0.11, lufs -11.4 before mastering, bass_occupancy 0.68."
   placement: "verse cut at source downbeat 23.17s (16 bars) -> bar 84; hook cut 83.66s (8 bars) -> bar 104 (peak entry)."
 
 routing:

@@ -2,8 +2,8 @@
 """Keyboard-first CLI for Setloom.
 
 Commands: ``validate`` (spec + hygiene gate), ``new`` (scaffold a track),
-``play`` (audition audio), ``anatomize`` and ``score`` (opt-in diagnostics).
-Musical composition lives in per-track code, not in this harness.
+``play`` (audition audio), and ``anatomize`` (opt-in diagnostics). Musical
+composition lives in per-track code, not in this harness.
 """
 
 import argparse
@@ -36,20 +36,11 @@ def _load_spec_or_fail(spec_path: Path) -> TrackSpec | None:
 
 
 def _gate_warnings(spec: TrackSpec) -> list[str]:
-    """Run the style pack's technical-hygiene gate; return non-fatal warnings.
-
-    The gate owns hygiene only (bpm lane, duration window, mixable edges,
-    short-edit identity). Missing or partial pack rules are acceptable during a
-    pack rebuild, so violations are reported as warnings, not hard failures.
-    """
-    from setloom.stylepack import evaluate_gate, load_style_pack
+    """Run spec-level technical hygiene checks; return non-fatal warnings."""
+    from setloom.hygiene import evaluate_hygiene_gate
 
     try:
-        pack = load_style_pack(spec.style_pack)
-    except FileNotFoundError:
-        return [f"style pack '{spec.style_pack}' not found; hygiene gate skipped"]
-    try:
-        result = evaluate_gate(spec, pack)
+        result = evaluate_hygiene_gate(spec)
     except ValueError as exc:
         return [f"hygiene gate could not run: {exc}"]
     return [f"gate {v.rule_id}: {v.message}" for v in result.blocking]
@@ -87,29 +78,6 @@ def _cmd_anatomize(args: argparse.Namespace) -> int:
         print(f"{track}: {', '.join(status)}")
     print(f"dossiers: {args.out}")
     print("reminder: dossiers are technical evidence; musical judgment stays with the listening gate")
-    return 0
-
-
-def _cmd_score(args: argparse.Namespace) -> int:
-    from setloom.anatomy.score import report_lines, score_track
-    from setloom.stylepack import load_style_pack
-
-    audio = Path(args.audio)
-    if not audio.is_file():
-        print(f"score failed: {audio} is not a file", file=sys.stderr)
-        return 1
-    try:
-        pack = load_style_pack(args.pack)
-    except FileNotFoundError as exc:
-        print(f"score failed: {exc}", file=sys.stderr)
-        return 1
-    try:
-        report, score_path = score_track(audio, pack, out_dir=Path(args.out))
-    except RuntimeError as exc:
-        print(f"score failed: {exc}", file=sys.stderr)
-        return 1
-    print("\n".join(report_lines(report)))
-    print(f"score: {score_path}")
     return 0
 
 
@@ -185,20 +153,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="53-stem model cache root (default models/roformer)",
     )
     p_anatomize.set_defaults(func=_cmd_anatomize)
-
-    p_score = sub.add_parser(
-        "score", help="write a technical diagnostic report for an anatomized track"
-    )
-    p_score.add_argument("audio", help="audio file to score from an existing quick dossier")
-    p_score.add_argument(
-        "--pack",
-        default="melodic-progressive-techno",
-        help="style pack id (default melodic-progressive-techno)",
-    )
-    p_score.add_argument(
-        "--out", default="local/corpus/dossiers", help="dossier root (default local/corpus/dossiers)"
-    )
-    p_score.set_defaults(func=_cmd_score)
 
     p_new = sub.add_parser("new", help="scaffold a new track directory")
     p_new.add_argument("id", help="track id, e.g. T06")

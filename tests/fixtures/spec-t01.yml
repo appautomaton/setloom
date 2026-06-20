@@ -2,7 +2,6 @@
 
 id: T01
 title: dark-orbit-draft
-style_pack: melodic-progressive-techno
 seed: 1001
 bpm: 124
 key: D minor
@@ -16,7 +15,7 @@ intent:
     - "overcrowded bassline"
     - "long break that loses dancefloor motion"
 
-# Section bars must sum to duration_bars (256). The reset style pack no longer
+# Section bars must sum to duration_bars (256). The hygiene gate no longer
 # treats BPM or club length as musical rejection rules.
 sections:
   intro: 16

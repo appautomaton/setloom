@@ -12,7 +12,6 @@ def spec_template(track_id: str, title: str, bpm: float, key: str) -> str:
 
 id: {track_id}
 title: {title}
-style_pack: melodic-progressive-techno
 duration_profile: club_extended
 seed: 0
 bpm: {bpm:g}

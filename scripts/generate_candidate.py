@@ -4,7 +4,7 @@
 
 A documented local experiment recipe, not a product surface: candidates are
 audition material for the taste owner. Technical diagnostics are optional; the
-listening gate judges. See music/packs/melodic-progressive-techno/generation-recipes.md.
+listening gate judges.
 
 Run from the repo root (requires the genai dependency group):
 

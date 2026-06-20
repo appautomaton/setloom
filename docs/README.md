@@ -2,21 +2,14 @@
 
 # Docs
 
-Use this index to keep context small.
+Use this index to keep context small. Do not load every doc by default.
 
 | Need | Read |
 | --- | --- |
-| Project intent, audience, and non-goals | `project-charter.md` |
-| Spec-based progress model | `roadmap.md` |
-| Style-pack contract | `style-grammar.md` |
-| Current executable hygiene scaffold | `../music/packs/melodic-progressive-techno/style.yml` |
 | Candidate and listening workflow | `workflow.md` |
-| Component names for listening notes | `../music/packs/melodic-progressive-techno/component-glossary.md` |
-| Reading anatomize/score dossiers | `../music/packs/melodic-progressive-techno/dossier-guide.md` |
-| Listening vocabulary | `../music/packs/melodic-progressive-techno/taste-lexicon.md` |
-| Local model-store notes | `../music/packs/melodic-progressive-techno/generation-recipes.md` |
-| Open-source tool direction | `tooling.md` |
-| Deep survey plan | `research-plan.md` |
-| License, hosted service, output, sample, and model policy | `licensing.md` |
+| Tool policy and local runtime boundaries | `tooling.md` |
+| Reusable Python primitives | `../src/setloom/` |
+| Production track harness example | `../music/T5-lux-in-umbra/` |
+| License texts | `../LICENSE`, `../LICENSES/` |
 
 Read only the docs needed for the current task.

@@ -4,13 +4,13 @@
 
 Producer-first agentic tools for weaving club tracks and DJ sets.
 
-Setloom by AppAutomaton is a keyboard-first co-production harness for generating, tuning, mixing, and sequencing club tracks and DJ sets. It starts with melodic/progressive techno, then expands through lane packs for house, tech house, and adjacent electronic music lanes.
+Setloom by AppAutomaton is a keyboard-first co-production harness for generating, tuning, mixing, and sequencing club tracks and DJ sets. The public core stays small: reusable primitives, opt-in diagnostics, and per-track production harnesses.
 
 Setloom is built for creators with rhythm, taste, and rave intuition who want to type their way through music production without surrendering musical judgment to presets or stale automation.
 
 ## What It Is
 
-- A file-based harness for track specs, lane packs, MIDI, stems, renders, review notes, and set plans.
+- A file-based harness for track specs, MIDI, stems, renders, review notes, and set plans.
 - An agentic workflow where AI prepares candidates, the human owns taste, and every serious render starts with a producer decision.
 - A practical bridge between algorithmic music tools, generative agents, and DJ-set-aware arrangement.
 
@@ -44,12 +44,12 @@ Humans make the listening decision.
 
 ```text
 AGENTS.md             High-signal instructions for coding agents.
-docs/                 Charter, roadmap, licensing, lane-pack contract, and workflow notes.
-music/packs/          Per-lane packs: technical scaffolds and review vocabulary.
-music/tracks/         Track registry: spec, brief, and listening notes per track.
-src/setloom/          Python toolkit: CLI (validate/anatomize/score), track-spec schema, hygiene gate, MIDI + audio-hygiene + music-theory primitives, and anatomy/score diagnostics.
+docs/                 Short routing, workflow, and tooling notes.
+music/tracks/         Track registry where a track still uses the TNN spec pattern.
+music/T5-lux-in-umbra Production source harness, sheet music, config, and MIDI exports.
+src/setloom/          Python toolkit: CLI (validate/anatomize/play/new), track-spec schema, hygiene gate, MIDI + audio-hygiene + music-theory primitives, and anatomy diagnostics.
 scripts/              Local genai candidate and smoke-clip scripts.
-tests/                Schema, gate, theory-helper, audio, and anatomy/score tests.
+tests/                Schema, gate, theory-helper, audio, and anatomy tests.
 local/                Machine-local material (gitignored): corpus lab, candidates, releases.
 models/               Model weights store (gitignored).
 pyproject.toml        uv-managed Python package definition and CLI entry point.
@@ -61,10 +61,10 @@ Start with [docs/README.md](docs/README.md) for context routing.
 
 ## License
 
-Core code, harness prompts, schemas, executable lane packs, and automation logic are licensed under AGPL-3.0-only.
+Core code, harness prompts, schemas, and automation logic are licensed under AGPL-3.0-only.
 
 Project documentation is licensed under CC BY-SA 4.0 unless explicitly marked otherwise.
 
 Generated music outputs belong to the user who creates them, subject to the user's own third-party samples, models, and inputs.
 
-See [docs/licensing.md](docs/licensing.md).
+Canonical license texts live in [LICENSE](LICENSE) and [LICENSES/](LICENSES/).
