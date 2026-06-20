@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Setloom — Taste in. Tracks out.</title>
+<meta name="description" content="Setloom is an open-source, keyboard-first agentic harness for producing club tracks and DJ sets. You bring taste; the agent brings labor." />
+<meta property="og:title" content="Setloom — Taste in. Tracks out." />
+<meta property="og:description" content="A keyboard-first harness for producing club tracks. You own every listening decision; the agent writes the source, renders, and inspects." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#08070d" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2308070d'/%3E%3Cg stroke-width='3' stroke-linecap='round'%3E%3Cline x1='8' y1='20' x2='8' y2='12' stroke='%23b14cff'/%3E%3Cline x1='14' y1='23' x2='14' y2='9' stroke='%23c04cff'/%3E%3Cline x1='20' y1='21' x2='20' y2='11' stroke='%2329e7e0'/%3E%3Cline x1='26' y1='18' x2='26' y2='14' stroke='%2322d3ee'/%3E%3C/g%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #08070d;
+    --ink-2: #0d0b16;
+    --ink-3: #141121;
+    --line: #221d35;
+    --violet: #b14cff;
+    --violet-soft: #c98bff;
+    --cyan: #29e7e0;
+    --cyan-soft: #7ff3ef;
+    --text: #ece9f7;
+    --muted: #938cad;
+    --muted-2: #6c6685;
+    --grad: linear-gradient(110deg, var(--violet) 0%, #8b6cff 42%, var(--cyan) 100%);
+    --glow-violet: 0 0 40px -6px rgba(177, 76, 255, 0.55);
+    --glow-cyan: 0 0 40px -6px rgba(41, 231, 224, 0.45);
+    --font-display: "Chakra Petch", "Hanken Grotesk", sans-serif;
+    --font-body: "Hanken Grotesk", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+    --maxw: 1120px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--ink);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Ambient club lighting: drifting violet + cyan blooms over ink, plus grain. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -25%;
+    z-index: -2;
+    background:
+      radial-gradient(38% 44% at 18% 12%, rgba(177, 76, 255, 0.22), transparent 70%),
+      radial-gradient(42% 48% at 88% 80%, rgba(41, 231, 224, 0.18), transparent 72%),
+      radial-gradient(50% 50% at 50% 50%, rgba(40, 28, 70, 0.35), transparent 80%);
+    filter: blur(10px);
+    animation: drift 22s ease-in-out infinite alternate;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @keyframes drift {
+    0%   { transform: translate3d(-2%, -1%, 0) scale(1); }
+    100% { transform: translate3d(3%, 2%, 0) scale(1.08); }
+  }
+
+  .wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 28px; }
+
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: rgba(177, 76, 255, 0.35); color: #fff; }
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 4px; }
+
+  .mono { font-family: var(--font-mono); }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--cyan-soft);
+  }
+  .grad-text {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ---------- Nav ---------- */
+  header.nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px);
+    background: linear-gradient(var(--ink), rgba(8, 7, 13, 0.6));
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { display: flex; align-items: center; gap: 11px; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.04em; font-size: 19px; }
+  .brand .eq-mini { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
+  .brand .eq-mini i { width: 3px; background: var(--grad); border-radius: 2px; animation: bar 1.1s ease-in-out infinite alternate; }
+  .brand .eq-mini i:nth-child(1) { height: 40%; animation-delay: -0.2s; }
+  .brand .eq-mini i:nth-child(2) { height: 95%; animation-delay: -0.5s; }
+  .brand .eq-mini i:nth-child(3) { height: 60%; animation-delay: -0.8s; }
+  .brand .eq-mini i:nth-child(4) { height: 80%; animation-delay: -0.1s; }
+  .nav-links { display: flex; align-items: center; gap: 30px; }
+  .nav-links a { font-size: 14.5px; color: var(--muted); transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    padding: 9px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .nav-cta:hover { border-color: var(--violet); box-shadow: var(--glow-violet); }
+  @media (max-width: 760px) { .nav-links a:not(.nav-cta) { display: none; } }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: var(--font-mono); font-size: 14px; font-weight: 600;
+    padding: 14px 24px; border-radius: 10px; cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.25s ease, border-color 0.2s;
+  }
+  .btn-primary { color: #0a0712; background: var(--grad); box-shadow: var(--glow-violet); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px -4px rgba(177, 76, 255, 0.7); }
+  .btn-ghost { color: var(--text); border: 1px solid var(--line); background: rgba(255, 255, 255, 0.02); }
+  .btn-ghost:hover { transform: translateY(-2px); border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding: 92px 0 64px; }
+  .hero .eyebrow { opacity: 0; animation: rise 0.7s 0.05s ease forwards; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(46px, 9vw, 104px);
+    line-height: 0.98;
+    letter-spacing: -0.015em;
+    margin: 22px 0 0;
+    text-wrap: balance;
+  }
+  .hero h1 .l1 { display: block; opacity: 0; animation: rise 0.8s 0.12s ease forwards; }
+  .hero h1 .l2 { display: block; opacity: 0; animation: rise 0.8s 0.24s ease forwards; }
+  .hero h1 .l2 { text-shadow: 0 0 60px rgba(41, 231, 224, 0.25); }
+  .hero .lede {
+    max-width: 600px; margin-top: 28px; font-size: clamp(17px, 2.2vw, 20px);
+    color: #c4bedb; opacity: 0; animation: rise 0.8s 0.36s ease forwards;
+  }
+  .hero .lede b { color: var(--text); font-weight: 600; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 38px; opacity: 0; animation: rise 0.8s 0.48s ease forwards; }
+  .hero .credit { margin-top: 30px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted-2); letter-spacing: 0.04em; opacity: 0; animation: rise 0.8s 0.6s ease forwards; }
+  .hero .credit span { color: var(--cyan-soft); }
+
+  /* Spectrum analyzer band */
+  .spectrum {
+    display: flex; align-items: flex-end; gap: 4px; height: 120px;
+    margin-top: 56px; padding: 0 2px;
+    opacity: 0; animation: rise 1s 0.7s ease forwards;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .spectrum b {
+    flex: 1; min-width: 3px; border-radius: 3px 3px 0 0;
+    background: var(--grad);
+    transform-origin: bottom;
+    animation: spec var(--d, 1.4s) var(--o, 0s) ease-in-out infinite alternate;
+    opacity: 0.85;
+  }
+  @keyframes spec { from { transform: scaleY(var(--lo, 0.12)); } to { transform: scaleY(var(--hi, 1)); } }
+  @keyframes bar { from { transform: scaleY(0.5); } to { transform: scaleY(1); } }
+  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes drift-line { to { background-position: 200% 0; } }
+
+  /* ---------- Section scaffolding ---------- */
+  section { position: relative; padding: 84px 0; }
+  .divider { height: 1px; border: 0; background: linear-gradient(90deg, transparent, var(--violet), var(--cyan), transparent); background-size: 200% 100%; opacity: 0.4; animation: drift-line 8s linear infinite; }
+  .sec-head { max-width: 680px; margin-bottom: 48px; }
+  .sec-head h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(30px, 5vw, 46px); line-height: 1.05; letter-spacing: -0.01em; margin-top: 16px; }
+  .sec-head p { margin-top: 18px; color: var(--muted); font-size: 18px; }
+
+  /* Gatekeeper editorial block */
+  .gate p { font-family: var(--font-display); font-weight: 500; font-size: clamp(24px, 3.6vw, 40px); line-height: 1.28; letter-spacing: -0.01em; max-width: 18ch; }
+  .gate .big { max-width: 22ch; }
+  .gate em { font-style: normal; }
+  .gate .kill { color: var(--violet-soft); }
+  .gate .keep { color: var(--cyan-soft); }
+  .gate .foot { font-family: var(--font-body); font-weight: 400; font-size: 18px; color: var(--muted); margin-top: 32px; max-width: 56ch; line-height: 1.6; }
+
+  /* Role cards */
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 880px) { .roles { grid-template-columns: 1fr; } }
+  .card {
+    position: relative; padding: 30px 28px 32px; border-radius: 16px;
+    background: linear-gradient(180deg, var(--ink-2), var(--ink));
+    border: 1px solid var(--line); overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.25s, box-shadow 0.3s;
+  }
+  .card::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--grad); opacity: 0.8; }
+  .card:hover { transform: translateY(-4px); border-color: rgba(177, 76, 255, 0.4); box-shadow: 0 24px 60px -30px rgba(177, 76, 255, 0.6); }
+  .card .role-tag { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan-soft); }
+  .card h3 { font-family: var(--font-display); font-weight: 600; font-size: 23px; margin: 12px 0 14px; }
+  .card p { color: var(--muted); font-size: 15.5px; }
+  .card .num { position: absolute; top: 22px; right: 26px; font-family: var(--font-mono); font-size: 13px; color: var(--muted-2); }
+
+  /* The loop */
+  .loop { display: flex; flex-wrap: wrap; align-items: stretch; gap: 12px; }
+  .loop .step {
+    flex: 1 1 150px; padding: 20px 18px; border-radius: 13px;
+    background: var(--ink-2); border: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 14px; position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .loop .step:hover { border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+  .loop .step .k { color: var(--muted-2); font-size: 11px; letter-spacing: 0.1em; }
+  .loop .step .v { color: var(--text); margin-top: 7px; display: block; }
+  .loop .step.terminal { background: linear-gradient(180deg, rgba(177,76,255,0.12), var(--ink-2)); border-color: rgba(177,76,255,0.4); }
+  .loop-note { margin-top: 22px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); }
+  .loop-note span { color: var(--violet-soft); }
+
+  /* Capability grid */
+  .caps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 880px) { .caps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .caps { grid-template-columns: 1fr; } }
+  .cap { padding: 22px 22px; border-radius: 13px; border: 1px solid var(--line); background: rgba(255,255,255,0.012); transition: background 0.2s, border-color 0.2s; }
+  .cap:hover { background: rgba(255,255,255,0.03); border-color: var(--line); }
+  .cap .cmd { font-family: var(--font-mono); font-size: 13px; color: var(--cyan); }
+  .cap h4 { font-size: 16px; font-weight: 600; margin: 10px 0 6px; }
+  .cap p { color: var(--muted); font-size: 14px; }
+
+  /* Terminal / quick start */
+  .term { border-radius: 14px; border: 1px solid var(--line); overflow: hidden; background: #0a0810; box-shadow: 0 30px 80px -40px rgba(0,0,0,0.9); }
+  .term-bar { display: flex; align-items: center; gap: 8px; padding: 13px 16px; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--line); }
+  .term-bar i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .term-bar i:nth-child(1) { background: #ff5f8f; }
+  .term-bar i:nth-child(2) { background: var(--violet); }
+  .term-bar i:nth-child(3) { background: var(--cyan); }
+  .term-bar span { margin-left: 10px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted-2); }
+  .term pre { margin: 0; padding: 24px 22px; overflow-x: auto; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.95; }
+  .term .p { color: var(--violet-soft); }
+  .term .c { color: var(--text); }
+  .term .f { color: var(--cyan); }
+  .term .cm { color: var(--muted-2); }
+
+  /* Honesty block */
+  .honest { border-radius: 18px; border: 1px solid var(--line); background: linear-gradient(150deg, rgba(177,76,255,0.06), rgba(41,231,224,0.04)); padding: 48px clamp(28px, 5vw, 56px); }
+  .honest h2 { font-family: var(--font-display); font-weight: 600; font-size: clamp(26px, 4vw, 40px); letter-spacing: -0.01em; }
+  .honest p { color: #c1bbd6; font-size: 18px; margin-top: 20px; max-width: 64ch; }
+  .honest p.dim { color: var(--muted); font-size: 16px; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--line); padding: 60px 0 70px; margin-top: 30px; }
+  .foot-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 36px; }
+  .foot-brand { font-family: var(--font-display); font-weight: 700; font-size: 22px; letter-spacing: 0.04em; }
+  .foot-brand + p { color: var(--muted); margin-top: 10px; font-size: 14.5px; max-width: 30ch; }
+  .foot-cols { display: flex; gap: 64px; flex-wrap: wrap; }
+  .foot-col h5 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 14px; }
+  .foot-col a, .foot-col p { display: block; color: var(--muted); font-size: 14.5px; margin-bottom: 9px; transition: color 0.2s; }
+  .foot-col a:hover { color: var(--cyan-soft); }
+  .foot-base { margin-top: 48px; padding-top: 26px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; font-family: var(--font-mono); font-size: 12.5px; color: var(--muted-2); }
+  .foot-base .gate-line { color: var(--violet-soft); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; scroll-behavior: auto; }
+    .hero .eyebrow, .hero h1 .l1, .hero h1 .l2, .hero .lede, .hero .actions, .hero .credit, .spectrum { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Setloom home">
+      <span class="eq-mini" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      SETLOOM
+    </a>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#loop">The loop</a>
+      <a href="#start">Quick start</a>
+      <a class="nav-cta" href="https://github.com/appautomaton/setloom">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Open-source · Keyboard-first · Agentic</p>
+      <h1>
+        <span class="l1">Taste in.</span>
+        <span class="l2 grad-text">Tracks out.</span>
+      </h1>
+      <p class="lede">
+        Setloom is a keyboard-first harness for producing club tracks and DJ sets.
+        <b>You bring taste. The agent brings labor</b> — it writes each track's source,
+        renders the audition, and inspects the result. You listen and say what's wrong.
+        You never open a DAW.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#start">$ get started</a>
+        <a class="btn btn-ghost" href="https://github.com/appautomaton/setloom">View on GitHub ↗</a>
+      </div>
+      <p class="credit">by <span>AppAutomaton</span> · code AGPL-3.0-only · composition is not solved, and we say so</p>
+
+      <div class="spectrum" aria-hidden="true">
+        <b style="--lo:.10;--hi:.55;--d:1.5s;--o:-.2s"></b>
+        <b style="--lo:.18;--hi:.92;--d:1.2s;--o:-.9s"></b>
+        <b style="--lo:.12;--hi:.70;--d:1.7s;--o:-.4s"></b>
+        <b style="--lo:.25;--hi:1.0;--d:1.1s;--o:-.7s"></b>
+        <b style="--lo:.14;--hi:.60;--d:1.6s;--o:-.1s"></b>
+        <b style="--lo:.20;--hi:.85;--d:1.3s;--o:-1.1s"></b>
+        <b style="--lo:.10;--hi:.48;--d:1.9s;--o:-.5s"></b>
+        <b style="--lo:.30;--hi:.95;--d:1.0s;--o:-.3s"></b>
+        <b style="--lo:.16;--hi:.78;--d:1.4s;--o:-.8s"></b>
+        <b style="--lo:.12;--hi:.66;--d:1.6s;--o:-.6s"></b>
+        <b style="--lo:.22;--hi:1.0;--d:1.15s;--o:-1.0s"></b>
+        <b style="--lo:.14;--hi:.54;--d:1.8s;--o:-.2s"></b>
+        <b style="--lo:.26;--hi:.88;--d:1.25s;--o:-.9s"></b>
+        <b style="--lo:.10;--hi:.62;--d:1.55s;--o:-.45s"></b>
+        <b style="--lo:.20;--hi:.96;--d:1.05s;--o:-.75s"></b>
+        <b style="--lo:.15;--hi:.72;--d:1.65s;--o:-.15s"></b>
+        <b style="--lo:.12;--hi:.50;--d:1.95s;--o:-1.05s"></b>
+        <b style="--lo:.28;--hi:.90;--d:1.1s;--o:-.55s"></b>
+        <b style="--lo:.16;--hi:.80;--d:1.45s;--o:-.85s"></b>
+        <b style="--lo:.11;--hi:.58;--d:1.7s;--o:-.35s"></b>
+        <b style="--lo:.24;--hi:1.0;--d:1.2s;--o:-.65s"></b>
+        <b style="--lo:.13;--hi:.64;--d:1.6s;--o:-.25s"></b>
+        <b style="--lo:.19;--hi:.86;--d:1.3s;--o:-.95s"></b>
+        <b style="--lo:.10;--hi:.52;--d:1.85s;--o:-.5s"></b>
+        <b style="--lo:.27;--hi:.94;--d:1.05s;--o:-.7s"></b>
+        <b style="--lo:.15;--hi:.74;--d:1.5s;--o:-.4s"></b>
+        <b style="--lo:.12;--hi:.60;--d:1.75s;--o:-1.0s"></b>
+        <b style="--lo:.21;--hi:.98;--d:1.15s;--o:-.6s"></b>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap"><hr class="divider" /></div>
+
+  <!-- GATEKEEPER -->
+  <section class="gate" id="why">
+    <div class="wrap">
+      <p class="eyebrow">The gatekeeper</p>
+      <p class="big" style="margin-top:18px">
+        Music production has a gatekeeper: <em class="kill">the interface.</em>
+        Setloom <em class="keep">removes it.</em>
+      </p>
+      <p class="foot">
+        The piano roll, the plug-in maze, the mixing-desk vocabulary: decades of craft
+        stacked between you and the idea already playing in your head. The only skills
+        Setloom asks for are the ones you already have — hearing a track, and knowing
+        whether it moves you.
+      </p>
+    </div>
+  </section>
+
+  <!-- THREE ROLES -->
+  <section id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">How it works</p>
+        <h2>Three roles, one loop.</h2>
+        <p>One division of labor runs the whole system: the human is the taste owner; the agent does everything else.</p>
+      </div>
+      <div class="roles">
+        <article class="card">
+          <span class="num">01</span>
+          <p class="role-tag">You</p>
+          <h3>The taste owner</h3>
+          <p>You give direction in plain language: <em>the bass is too busy before the break; make the arp darker.</em> You make every musical decision. Nothing is final until you say so.</p>
+        </article>
+        <article class="card">
+          <span class="num">02</span>
+          <p class="role-tag">The agent</p>
+          <h3>The producer</h3>
+          <p>It turns your direction into concrete source changes: writes the track's own code, renders a fresh audition, plays it back, and reports the tradeoffs. It proposes; it never decides for you.</p>
+        </article>
+        <article class="card">
+          <span class="num">03</span>
+          <p class="role-tag">The harness</p>
+          <h3>The studio</h3>
+          <p>A small, unopinionated toolkit that scaffolds tracks, renders, inspects audio, and keeps the work reproducible. It owns technical hygiene only. It composes nothing.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE LOOP -->
+  <section id="loop">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">The loop</p>
+        <h2>Audition, react, repeat.</h2>
+        <p>Every pass is short. The agent prepares and plays the audio; you only listen and type. The listening gate is no-click.</p>
+      </div>
+      <div class="loop">
+        <div class="step"><span class="k">01</span><span class="v">producer thesis</span></div>
+        <div class="step"><span class="k">02</span><span class="v">per-track source edit</span></div>
+        <div class="step"><span class="k">03</span><span class="v">render audition</span></div>
+        <div class="step"><span class="k">04</span><span class="v">play / inspect</span></div>
+        <div class="step terminal"><span class="k">05</span><span class="v">human listening note</span></div>
+        <div class="step"><span class="k">06</span><span class="v">revise or promote</span></div>
+      </div>
+      <p class="loop-note">↻ <span>Nothing is final without the human listening gate.</span> Machine reports and plots are diagnostics, never the verdict.</p>
+    </div>
+  </section>
+
+  <div class="wrap"><hr class="divider" /></div>
+
+  <!-- CAPABILITIES -->
+  <section id="do">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">The tool drawer</p>
+        <h2>What you can do from the keyboard.</h2>
+        <p>A small, CLI-controllable toolkit plus opt-in diagnostics. It never composes the music.</p>
+      </div>
+      <div class="caps">
+        <div class="cap"><div class="cmd">setloom new</div><h4>Scaffold a track</h4><p>Spec, runnable assembler, and listening-notes template from a single command.</p></div>
+        <div class="cap"><div class="cmd">assemble.py</div><h4>Render from source</h4><p>Each track's own editable code assembles the music. Renders are reproducible.</p></div>
+        <div class="cap"><div class="cmd">setloom inspect</div><h4>Inspect audio</h4><p>Waveform, spectrum, spectrogram, stereo field, and A/B comparisons from the CLI.</p></div>
+        <div class="cap"><div class="cmd">setloom transcribe</div><h4>Recover notes</h4><p>Pull note candidates from reference audio with a local macOS path.</p></div>
+        <div class="cap"><div class="cmd">setloom.midi</div><h4>Import primitives</h4><p>MIDI, DSP hygiene, and music-theory math your track code builds on.</p></div>
+        <div class="cap"><div class="cmd">scsynth · Logic</div><h4>Drive real surfaces</h4><p>SuperCollider for scriptable synth lanes; Logic Pro as a local reference surface.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK START -->
+  <section id="start">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Quick start</p>
+        <h2>One repo-local environment. No side virtualenvs.</h2>
+        <p>Setloom runs through one <span class="mono">uv</span> project. Everything generated is file-based and reproducible.</p>
+      </div>
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>setloom — zsh</span></div>
+<pre><span class="cm"># scaffold a track; assemble.py starts as a skeleton the agent fills in</span>
+<span class="p">$</span> <span class="c">uv run setloom new</span> <span class="f">T06 --title midnight-signal --bpm 124 --key "F# minor"</span>
+<span class="p">$</span> <span class="c">uv run --no-sync python</span> <span class="f">music/tracks/T06/assemble.py</span>
+
+<span class="cm"># audition and inspect the render</span>
+<span class="p">$</span> <span class="c">uv run setloom play</span> <span class="f">local/candidates/T06/seed-0/demo.wav</span>
+<span class="p">$</span> <span class="c">uv run setloom inspect</span> <span class="f">local/candidates/T06/seed-0/demo.wav --view all</span>
+
+<span class="cm"># study a reference: recover its notes, then dissect its anatomy</span>
+<span class="p">$</span> <span class="c">uv run --group transcription setloom transcribe</span> <span class="f">reference.wav --out tmp/notes.mid</span>
+<span class="p">$</span> <span class="c">uv run setloom anatomize</span> <span class="f">local/corpus/audio --layers</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHERE IT STANDS -->
+  <section id="today">
+    <div class="wrap">
+      <div class="honest">
+        <p class="eyebrow">Where it stands today</p>
+        <h2 style="margin-top:14px">Not a one-click generator. We don't pretend it is.</h2>
+        <p>What works today is the loop: an agent that converts human feedback into concrete source changes quickly, researches when it helps, renders and inspects reproducibly, and keeps the workspace clean enough that the next pass continues without forensics.</p>
+        <p class="dim">The leverage is disciplined iteration, not automation that replaces judgment. That honesty is the foundation everything else is built on.</p>
+        <div class="actions" style="margin-top:34px">
+          <a class="btn btn-primary" href="https://github.com/appautomaton/setloom">Read the source ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand">SETLOOM</div>
+        <p>Producer-first agentic tools for club music, by AppAutomaton.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h5>Project</h5>
+          <a href="https://github.com/appautomaton/setloom">GitHub repository ↗</a>
+          <a href="#how">How it works</a>
+          <a href="#start">Quick start</a>
+          <a href="#today">Where it stands</a>
+        </div>
+        <div class="foot-col">
+          <h5>License</h5>
+          <p>Code &amp; harness: AGPL-3.0-only</p>
+          <p>Documentation: CC BY-SA 4.0</p>
+          <p>Your music is yours</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© 2026 AppAutomaton · Setloom is a project name; see TRADEMARKS.md</span>
+      <span class="gate-line">Nothing is final without the listening gate.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
