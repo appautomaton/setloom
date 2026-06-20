@@ -43,6 +43,9 @@ The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never 
 ## Harness Skepticism
 
 - Treat existing harness behavior as an implementation candidate, not authority.
+- Reason from the current situation before acting. Check the actual files,
+  candidate state, user goal, and workspace cleanliness; do not operate from a
+  stale mental model or a previous-track habit.
 - Do not worship automation. Use code to make rendering reproducible and edits
   auditable, but do not prematurely freeze musical imagination into a generic
   generator, style recipe, or rigid abstraction.
@@ -52,7 +55,9 @@ The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never 
   were execution.
 - Before using any command, report, cache, prompt, patch, or tool path, decide whether it fits the current musical objective. If it does not, bypass it, deprecate it, or replace it.
 - Do not preserve a tool just because it exists. Proof-of-concept paths stay explicit and opt-in until they prove they serve the current workflow.
-- When tool suitability is uncertain, stop and use the question tool to ask the human for feedback or a directional choice. Do not silently continue, and do not keep the human in the dark.
+- Do not make unilateral decisions when placement, scope, tool suitability,
+  cleanup policy, or musical direction is uncertain. Use the question tool to
+  ask for a directional choice and keep the human guiding the solution.
 - State confidence and provenance for machine-derived claims. Keep uncertain outputs in project-local `./tmp/` until they earn a durable place.
 
 ## Track Differentiation
@@ -86,10 +91,12 @@ The corpus is evidence for study, not a lawbook. Your track must say something d
 
 ## Agent Workflow
 
-1. Read the local spec before changing behavior; keep edits scoped to the roadmap item.
+1. Read the local spec or candidate source before changing behavior; keep edits scoped to the commissioned task.
 2. Prefer schemas, tests, and file formats over vague prose; write clear, high-signal English everywhere.
 3. Prepare multiple candidate options — per-track code, genai, external MIDI — with a compact review report; separate technical checks from taste decisions.
-4. Do not hide uncertainty. If the uncertainty is about tool suitability, ask the human with the question tool before proceeding; if it is about taste, route it to the listening gate.
+4. Do not hide uncertainty. If the uncertainty affects the path forward, ask the
+   human with the question tool before proceeding; if it is about taste, route
+   it to the listening gate.
 5. Implement only the design stage the human commissioned; an approved artifact is not permission to start the next stage.
 6. Never hoard. The tree carries only what serves current context — git history is the bookkeeping, artifacts are regenerable from spec, seed, and recipe, and every name says what a thing is today.
 7. Clean rejected work promptly. If the human kills a candidate, failed render,
