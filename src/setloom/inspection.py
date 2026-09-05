@@ -23,8 +23,9 @@ from __future__ import annotations
 
 import argparse
 import os
+from dataclasses import dataclass, fields
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import numpy as np
 import soundfile as sf
@@ -50,6 +51,40 @@ PANEL_TITLE_SIZE = 20
 LABEL_SIZE = 19
 TICK_SIZE = 17
 LEGEND_SIZE = 15
+
+CompareLayout = Literal["overlay", "stack", "side", "diff"]
+GridMode = Literal["off", "beats", "bars"]
+InspectionSignal = Literal["channel", "left", "right", "mid", "side", "mono"]
+InspectionView = Literal["both", "wave", "spectrogram", "spectrum", "stereo", "all"]
+
+
+@dataclass(frozen=True)
+class AudioInspectionRequest:
+    """Self-contained request for rendering one Setloom audio inspection plot."""
+
+    audio: str | Path
+    out: str | Path | None = None
+    compare: str | Path | None = None
+    compare_label_a: str = "A"
+    compare_label_b: str = "B"
+    compare_layout: CompareLayout = "overlay"
+    bpm: float = 123.0
+    channel: int = 0
+    signal: InspectionSignal = "channel"
+    start: float = 0.0
+    end: float | None = None
+    bar_start: float | None = None
+    bar_end: float | None = None
+    view: InspectionView = "both"
+    grid: GridMode = "bars"
+    max_freq: float = 12000.0
+    dpi: int = 160
+    width_px: int = DEFAULT_WIDTH_PX
+    height_px: int | None = None
+
+    def to_namespace(self) -> argparse.Namespace:
+        values = {field.name: getattr(self, field.name) for field in fields(self)}
+        return argparse.Namespace(**values)
 
 
 def load_plotting_backend() -> None:
@@ -303,25 +338,32 @@ def stereo_metrics(y: np.ndarray, sr: int, start_s: float) -> tuple[np.ndarray, 
     corr = []
     width_db = []
     for i in range(0, max(1, len(y) - frame + 1), hop):
-        l = left[i : i + frame]
-        r = right[i : i + frame]
-        if len(l) < 2:
+        left_frame = left[i : i + frame]
+        right_frame = right[i : i + frame]
+        if len(left_frame) < 2:
             continue
-        denom = np.sqrt(np.sum(l * l) * np.sum(r * r)) + 1e-9
-        c = float(np.sum(l * r) / denom)
-        mid = (l + r) * 0.5
-        side = (l - r) * 0.5
-        w = 20.0 * np.log10((np.sqrt(np.mean(side * side)) + 1e-9) / (np.sqrt(np.mean(mid * mid)) + 1e-9))
-        times.append(start_s + (i + len(l) * 0.5) / sr)
+        denom = (
+            np.sqrt(np.sum(left_frame * left_frame) * np.sum(right_frame * right_frame)) + 1e-9
+        )
+        c = float(np.sum(left_frame * right_frame) / denom)
+        mid = (left_frame + right_frame) * 0.5
+        side = (left_frame - right_frame) * 0.5
+        w = 20.0 * np.log10(
+            (np.sqrt(np.mean(side * side)) + 1e-9)
+            / (np.sqrt(np.mean(mid * mid)) + 1e-9)
+        )
+        times.append(start_s + (i + len(left_frame) * 0.5) / sr)
         corr.append(np.clip(c, -1.0, 1.0))
         width_db.append(np.clip(w, -60.0, 12.0))
     return np.asarray(times), np.asarray(corr), np.asarray(width_db)
 
 
-def save(fig: plt.Figure, out: Path, dpi: int) -> None:
+def save(fig: plt.Figure, out: Path, dpi: int, *, announce: bool) -> Path:
     fig.savefig(out, dpi=dpi, facecolor=fig.get_facecolor(), bbox_inches="tight", pad_inches=0.035)
     plt.close(fig)
-    print(out)
+    if announce:
+        print(out)
+    return out
 
 
 def title_for(path: Path, start_s: float, end_s: float, args: argparse.Namespace) -> str:
@@ -415,7 +457,9 @@ def render_compare(
     sr: int,
     start_s: float,
     end_s: float,
-) -> int:
+    *,
+    announce: bool,
+) -> Path:
     if args.view not in {"wave", "spectrum", "spectrogram"}:
         raise SystemExit("--compare supports --view wave, spectrum, or spectrogram")
     if args.view == "spectrogram" and args.compare_layout == "overlay":
@@ -465,8 +509,7 @@ def render_compare(
             axes[0].set_xlabel("seconds")
             set_panel_title(axes[0], 1, f"Waveform overlay - {signal_label}")
         finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid)
-        save(fig, out, args.dpi)
-        return 0
+        return save(fig, out, args.dpi, announce=announce)
 
     if args.view == "spectrum":
         freqs_a, db_a = spectrum_db(x_a, sr, args.max_freq)
@@ -517,8 +560,7 @@ def render_compare(
             format_frequency_axis(axes[0])
             axes[0].legend(facecolor=PANEL, edgecolor="#2b353a", labelcolor=FG, fontsize=LEGEND_SIZE, loc="upper right")
             set_panel_title(axes[0], 1, f"Spectrum overlay - {signal_label}")
-        save(fig, out, args.dpi)
-        return 0
+        return save(fig, out, args.dpi, announce=announce)
 
     freqs_a, times_a, spec_a = spectrogram_db(x_a, sr, args.max_freq)
     freqs_b, times_b, spec_b = spectrogram_db(x_b, sr, args.max_freq)
@@ -553,11 +595,10 @@ def render_compare(
         set_panel_title(axes[0], 1, f"Spectrogram diff - {args.compare_label_b} minus {args.compare_label_a}")
         axes[0].set_xlabel("seconds")
     finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid)
-    save(fig, out, args.dpi)
-    return 0
+    return save(fig, out, args.dpi, announce=announce)
 
 
-def run(args: argparse.Namespace) -> int:
+def render_from_args(args: argparse.Namespace, *, announce: bool = False) -> Path:
     load_plotting_backend()
     path = Path(args.audio)
     y, sr = read_audio(path)
@@ -578,7 +619,17 @@ def run(args: argparse.Namespace) -> int:
         raise SystemExit("selected comparison window is empty")
 
     if compare_path is not None and y_compare is not None:
-        return render_compare(args, path, compare_path, y, y_compare, sr, start_s, end_s)
+        return render_compare(
+            args,
+            path,
+            compare_path,
+            y,
+            y_compare,
+            sr,
+            start_s,
+            end_s,
+            announce=announce,
+        )
 
     x, signal_label = analysis_signal(y, args.signal, args.channel)
     out = Path(args.out) if args.out else path.with_suffix(f".{args.view}.png")
@@ -647,7 +698,31 @@ def run(args: argparse.Namespace) -> int:
             add_time_grid(ax, start_s, end_s, args.bpm, args.grid)
             ax.set_xlim(start_s, end_s)
             format_time_axis(ax, start_s, end_s)
-    save(fig, out, args.dpi)
+    return save(fig, out, args.dpi, announce=announce)
+
+
+def render_audio_inspection(
+    audio: str | Path | AudioInspectionRequest,
+    **overrides: Any,
+) -> Path:
+    """Render an audio inspection plot and return the written PNG path.
+
+    Pass either an ``AudioInspectionRequest`` or the audio path plus keyword
+    options matching the request fields, for example:
+
+    ``render_audio_inspection("mix.wav", view="all", out="tmp/mix-inspect.png")``.
+    """
+    if isinstance(audio, AudioInspectionRequest):
+        if overrides:
+            raise TypeError("overrides are not accepted when passing AudioInspectionRequest")
+        request = audio
+    else:
+        request = AudioInspectionRequest(audio=audio, **overrides)
+    return render_from_args(request.to_namespace(), announce=False)
+
+
+def run(args: argparse.Namespace) -> int:
+    render_from_args(args, announce=True)
     return 0
 
 

@@ -80,6 +80,71 @@ def normalize_lufs(
     return normalized.astype(np.float32, copy=False)
 
 
+def true_peak_amp(audio: np.ndarray, *, oversample: int = 4) -> np.ndarray:
+    """Per-frame peak magnitude across channels, estimated by polyphase upsampling."""
+    y = np.asarray(audio, dtype=np.float32)
+    n = y.shape[0]
+    up = signal.resample_poly(y, oversample, 1, axis=0)[: n * oversample]
+    return np.abs(up).max(axis=1).reshape(n, oversample).max(axis=1)
+
+
+def limit_peak(
+    audio: np.ndarray,
+    *,
+    sample_rate: int = DEFAULT_SAMPLE_RATE,
+    ceiling_dbfs: float = -1.0,
+    hold_ms: float = 1.0,
+    release_ms: float = 10.0,
+    true_peak: bool = True,
+) -> np.ndarray:
+    """Smoothed brickwall limiter to a peak ceiling, true-peak aware by default.
+
+    Holds the reduction for ``hold_ms`` then releases over ``release_ms`` so transients are
+    caught without audible pumping. Unlike ``normalize_peak`` (one global gain), this rides
+    the gain only where the signal exceeds the ceiling, preserving body and dynamics.
+    """
+    from scipy.ndimage import minimum_filter1d, uniform_filter1d
+
+    y = np.asarray(audio, dtype=np.float32)
+    ceiling = db_to_gain(ceiling_dbfs)
+    amp = true_peak_amp(y) if true_peak else np.max(np.abs(y), axis=1)
+    desired = np.minimum(1.0, ceiling / (amp + 1e-12))
+    g = minimum_filter1d(desired, size=2 * max(1, int(sample_rate * hold_ms / 1000.0)) + 1)
+    g = uniform_filter1d(g, size=2 * max(1, int(sample_rate * release_ms / 1000.0)) + 1)
+    g = np.minimum(g, desired)
+    limited = np.clip(y * g[:, None], -ceiling, ceiling).astype(np.float32)
+    if true_peak:
+        # Gain modulation can create new inter-sample peaks. Measure the actual
+        # output and apply a final gain correction against the same 4x estimator.
+        output_peak = float(np.max(true_peak_amp(limited)))
+        if output_peak > ceiling:
+            limited *= ceiling / output_peak
+    return limited
+
+
+def master(
+    audio: np.ndarray,
+    *,
+    sample_rate: int = DEFAULT_SAMPLE_RATE,
+    target_lufs: float,
+    ceiling_dbtp: float = -1.0,
+    true_peak: bool = True,
+) -> np.ndarray:
+    """Normalize to ``target_lufs`` (stereo BS.1770), then true-peak-aware brickwall limit.
+
+    ``target_lufs`` stays a caller decision. Limiting can leave the output below
+    that target; the peak ceiling uses a 4x polyphase estimate. Silence and audio
+    below the loudness meter's gate retain their input level.
+    """
+    loudness = integrated_lufs(audio, sample_rate=sample_rate)
+    if loudness == -math.inf:
+        return np.asarray(audio, dtype=np.float32).copy()
+    if not math.isfinite(loudness):
+        raise ValueError("audio loudness must be finite or below the meter's gate")
+    y = gain_db(audio, target_lufs - loudness)
+    return limit_peak(y, sample_rate=sample_rate, ceiling_dbfs=ceiling_dbtp, true_peak=true_peak)
+
+
 def butter_filter(
     audio: np.ndarray,
     *,
