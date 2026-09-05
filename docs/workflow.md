@@ -10,12 +10,11 @@ command sequence is required; the tools used depend on the question being asked.
 track thesis → candidate or reference study → listening note → revision
 ```
 
-So far, exactly one track's production is open here as a worked example:
-[Lux in Umbra](../music/T5-lux-in-umbra/). Treat it as a starting point, not a
-template set in stone. Setloom is early, and club music is where it begins on
-purpose: of all the music worth making, electronic production is the most
-programmatic, which makes it the natural first proving ground for an agent-driven
-studio. The best practices are still being found, one track at a time.
+The worked examples cover two different tasks:
+[Lux in Umbra](../music/T5-lux-in-umbra/) assembles a club track from editable
+source; [T7](../music/T7-piano-solos/) reconstructs piano performances from audio.
+Each owns its musical choices. The shared harness supplies technical tools,
+and the listening loop remains the same.
 
 ## The producer pass
 

@@ -43,6 +43,8 @@ only listen and type.
 - Inspect audio from the command line: waveform, spectrum, spectrogram, stereo
   field, and A/B comparisons.
 - Recover note candidates from reference audio (macOS).
+- Reconstruct solo and four-hands piano performances with the
+  [T7 source harness](music/T7-piano-solos/), preserving captured timing and pedal.
 - Drive SuperCollider and Logic Pro as local production surfaces when a track
   calls for them.
 
@@ -64,8 +66,9 @@ uv run --group transcription setloom transcribe reference.wav --out tmp/notes.mi
 uv run setloom anatomize local/corpus/audio --layers
 ```
 
-Transcription is macOS-only; the local Basic Pitch asset is
-`models/basic-pitch/icassp_2022/nmp.mlpackage`.
+The default Basic Pitch engine uses macOS CoreML; its local asset is
+`models/basic-pitch/icassp_2022/nmp.mlpackage`. Optional Kong and fusion engines,
+dependency groups, and their limits are described in [docs/tooling.md](docs/tooling.md).
 
 Per-track code imports the primitives directly. `setloom.midi`, `setloom.audio`,
 and `setloom.conductor` carry the MIDI, DSP-hygiene, and music-theory math that
@@ -134,6 +137,7 @@ AGENTS.md                  Operating instructions for coding agents.
 docs/                      Short project, workflow, and tooling notes.
 music/tracks/              Per-track specs, source, and listening notes.
 music/T5-lux-in-umbra/     Full production harness for "Lux in Umbra."
+music/T7-piano-solos/      Solo and four-hands piano reconstruction source.
 src/setloom/               CLI plus MIDI, audio, theory, inspection,
                            scaffold, schema, and anatomy primitives.
 scripts/                   Opt-in local genAI experiments.
