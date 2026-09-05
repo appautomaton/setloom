@@ -16,10 +16,12 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 from collections import defaultdict
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, fields, replace
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 import librosa
 import mido
@@ -102,19 +104,100 @@ class TranscriptionResult:
     notes: tuple[TranscribedNote, ...]
 
 
+def _immutable_real_array(value: np.ndarray, *, name: str) -> np.ndarray:
+    """Return a detached, genuinely read-only real-valued array."""
+    array = np.asarray(value)
+    if not np.issubdtype(array.dtype, np.number) or np.iscomplexobj(array):
+        raise TypeError(f"{name} must be a real-valued numeric array")
+    if not np.all(np.isfinite(array)):
+        raise ValueError(f"{name} must contain only finite values")
+
+    # A read-only view of a mutable array is not immutable: the caller could still
+    # mutate its base (or re-enable writes on an owning array). Backing this detached
+    # copy with immutable bytes makes both routes fail.
+    contiguous = np.ascontiguousarray(array)
+    return np.frombuffer(contiguous.tobytes(), dtype=contiguous.dtype).reshape(array.shape)
+
+
+@dataclass(frozen=True, slots=True)
+class BasicPitchActivations:
+    """Validated raw Basic Pitch tensors on their exact model-frame time grid."""
+
+    note: np.ndarray
+    onset: np.ndarray
+    contour: np.ndarray
+    frame_times: np.ndarray
+
+    def __post_init__(self) -> None:
+        note = _immutable_real_array(self.note, name="note")
+        onset = _immutable_real_array(self.onset, name="onset")
+        contour = _immutable_real_array(self.contour, name="contour")
+        frame_times = _immutable_real_array(self.frame_times, name="frame_times")
+
+        if note.ndim != 2 or note.shape[1] != MAX_FREQ_IDX + 1:
+            raise ValueError(f"note must have shape (T, 88), got {note.shape}")
+        if onset.ndim != 2 or onset.shape[1] != MAX_FREQ_IDX + 1:
+            raise ValueError(f"onset must have shape (T, 88), got {onset.shape}")
+        if contour.ndim != 2 or contour.shape[1] != N_FREQ_BINS_CONTOURS:
+            raise ValueError(f"contour must have shape (T, 264), got {contour.shape}")
+        if frame_times.ndim != 1:
+            raise ValueError(f"frame_times must have shape (T,), got {frame_times.shape}")
+
+        time_lengths = {note.shape[0], onset.shape[0], contour.shape[0], frame_times.shape[0]}
+        if len(time_lengths) != 1:
+            raise ValueError("note, onset, contour, and frame_times must share one time dimension")
+        for name, array in (("note", note), ("onset", onset), ("contour", contour)):
+            if np.any((array < 0.0) | (array > 1.0)):
+                raise ValueError(f"{name} values must be within [0, 1]")
+
+        object.__setattr__(self, "note", note)
+        object.__setattr__(self, "onset", onset)
+        object.__setattr__(self, "contour", contour)
+        object.__setattr__(self, "frame_times", frame_times)
+
+    @property
+    def frame_times_s(self) -> np.ndarray:
+        """Alias spelling out that model-frame timestamps are in seconds."""
+        return self.frame_times
+
+
 class BasicPitchModel:
     """Small runner for the bundled Basic Pitch model asset."""
 
-    def __init__(self, model_path: str | Path) -> None:
+    def __init__(
+        self,
+        model_path: str | Path,
+        *,
+        temp_root: str | Path | None = None,
+    ) -> None:
+        """Load the CoreML model with an optional caller-owned scratch root.
+
+        ``temp_root`` is never deleted by this class.  Callers that need a
+        bounded scratch lifecycle (for example, an analysis run's system-temp
+        directory) can supply one and remain responsible for cleaning it up.
+        Omitting it preserves the historical ``tmp/transcription`` behavior.
+        """
+
         self.path = Path(model_path)
         if not self.path.exists():
             raise FileNotFoundError(
                 f"Basic Pitch model not found: {self.path}. "
                 "Place the model under models/basic-pitch/icassp_2022/ or pass --model-path."
             )
-        model_tmp = Path("tmp/transcription").resolve()
-        model_tmp.mkdir(parents=True, exist_ok=True)
-        os.environ.setdefault("TMPDIR", str(model_tmp))
+        self.temp_root = (
+            Path("tmp/transcription").resolve()
+            if temp_root is None
+            else Path(temp_root).resolve()
+        )
+        if self.temp_root.exists() and not self.temp_root.is_dir():
+            raise NotADirectoryError(
+                f"Basic Pitch temp root is not a directory: {self.temp_root}"
+            )
+        self.temp_root.mkdir(parents=True, exist_ok=True)
+        self._caller_controlled_temp_root = temp_root is not None
+
+        if not self._caller_controlled_temp_root:
+            os.environ.setdefault("TMPDIR", str(self.temp_root))
         try:
             import coremltools as ct
         except ImportError as exc:
@@ -123,15 +206,46 @@ class BasicPitchModel:
                 "Run with the transcription dependency group enabled."
             ) from exc
 
-        self._model = ct.models.MLModel(str(self.path), compute_units=ct.ComputeUnit.CPU_ONLY)
+        if self._caller_controlled_temp_root:
+            with _temporary_temp_root(self.temp_root):
+                self._model = ct.models.MLModel(
+                    str(self.path), compute_units=ct.ComputeUnit.CPU_ONLY
+                )
+        else:
+            self._model = ct.models.MLModel(
+                str(self.path), compute_units=ct.ComputeUnit.CPU_ONLY
+            )
 
     def predict(self, audio_window: np.ndarray) -> dict[str, np.ndarray]:
-        result = self._model.predict({"input_2": audio_window.astype(np.float32)})
+        inputs = {"input_2": audio_window.astype(np.float32)}
+        if self._caller_controlled_temp_root:
+            with _temporary_temp_root(self.temp_root):
+                result = self._model.predict(inputs)
+        else:
+            result = self._model.predict(inputs)
         return {
             "note": result["Identity_1"],
             "onset": result["Identity_2"],
             "contour": result["Identity"],
         }
+
+
+@contextmanager
+def _temporary_temp_root(root: Path) -> Iterator[None]:
+    """Temporarily bind Python and native temp lookups to ``root``."""
+
+    previous_environment = os.environ.get("TMPDIR")
+    previous_tempdir = tempfile.tempdir
+    os.environ["TMPDIR"] = str(root)
+    tempfile.tempdir = str(root)
+    try:
+        yield
+    finally:
+        tempfile.tempdir = previous_tempdir
+        if previous_environment is None:
+            os.environ.pop("TMPDIR", None)
+        else:
+            os.environ["TMPDIR"] = previous_environment
 
 
 def default_model_path(model_root: str | Path = DEFAULT_MODEL_ROOT) -> Path:
@@ -244,6 +358,36 @@ def _frame_times(n_frames: int) -> np.ndarray:
         ANNOTATION_FRAMES - (AUDIO_N_SAMPLES / FFT_HOP)
     )
     return original_times - ((window_offset + MAGIC_ALIGNMENT_OFFSET) * window_numbers)
+
+
+def predict_activations(
+    audio: str | Path,
+    *,
+    model: BasicPitchModel | None = None,
+    model_path: str | Path | None = None,
+    model_root: str | Path = DEFAULT_MODEL_ROOT,
+) -> BasicPitchActivations:
+    """Run Basic Pitch once and return immutable raw tensors with model timestamps.
+
+    Passing a pre-loaded ``model`` avoids repeated CoreML loads across bounded
+    analysis windows. Tests and callers may also supply a compatible model runner.
+    """
+    audio_path = Path(audio)
+    if not audio_path.is_file():
+        raise FileNotFoundError(f"audio file not found: {audio_path}")
+    if model is None:
+        resolved_model_path = (
+            Path(model_path) if model_path is not None else default_model_path(model_root)
+        )
+        model = BasicPitchModel(resolved_model_path)
+
+    model_output = _run_model(audio_path, model)
+    return BasicPitchActivations(
+        note=model_output["note"],
+        onset=model_output["onset"],
+        contour=model_output["contour"],
+        frame_times=_frame_times(model_output["note"].shape[0]),
+    )
 
 
 def _midi_pitch_to_contour_bin(pitch_midi: int) -> float:
@@ -556,18 +700,28 @@ def write_note_events_json(
     return events_path
 
 
-def transcribe_audio(audio: str | Path | TranscriptionRequest, **overrides: Any) -> TranscriptionResult:
-    """Transcribe an audio file into MIDI and optional note-event JSON."""
+def transcribe_audio(
+    audio: str | Path | TranscriptionRequest,
+    *,
+    model: "BasicPitchModel | None" = None,
+    **overrides: Any,
+) -> TranscriptionResult:
+    """Transcribe an audio file into MIDI and optional note-event JSON.
+
+    Pass a pre-loaded ``model`` to reuse one CoreML load across several calls (the
+    per-stem pass does this); when ``None`` the model is loaded from the request paths.
+    """
     request = _request_from_audio(audio, **overrides)
     audio_path = Path(request.audio)
     if not audio_path.is_file():
         raise FileNotFoundError(f"audio file not found: {audio_path}")
-    model_path = (
-        Path(request.model_path)
-        if request.model_path is not None
-        else default_model_path(request.model_root)
-    )
-    model = BasicPitchModel(model_path)
+    if model is None:
+        model_path = (
+            Path(request.model_path)
+            if request.model_path is not None
+            else default_model_path(request.model_root)
+        )
+        model = BasicPitchModel(model_path)
     model_output = _run_model(audio_path, model)
     notes = _decode_notes(model_output, request)
     midi_path = write_transcription_midi(

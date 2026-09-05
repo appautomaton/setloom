@@ -16,3 +16,22 @@ Basic Pitch
   credited to Spotify AB. Setloom as a whole is licensed under AGPL-3.0-only;
   this notice satisfies the Apache-2.0 attribution requirement for the
   derived portions.
+
+BS-RoFormer
+  Copyright (c) 2023 Phil Wang (lucidrains)
+  Licensed under the MIT License: https://opensource.org/license/mit
+  Source: https://github.com/lucidrains/BS-RoFormer
+
+  The MLX BS-RoFormer in src/setloom/anatomy/roformer/model.py is a native
+  reimplementation following the architecture and module layout of lucidrains'
+  PyTorch BS-RoFormer. Architecture design is credited to Phil Wang.
+
+mlx-audio-separator
+  Copyright (c) 2024-2026 ssmall256
+  Licensed under the MIT License: https://opensource.org/license/mit
+  Source: https://github.com/ssmall256/mlx-audio-separator
+
+  The torch->MLX weight key-mapping in
+  src/setloom/anatomy/roformer/weights.py and the MLX porting approach in
+  model.py reference ssmall256's mlx-audio-separator. Setloom's implementation
+  is independent and does not depend on that package at runtime.

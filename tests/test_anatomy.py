@@ -301,7 +301,7 @@ class TestPipelineRun:
 
         class FakeLayerLens:
             @staticmethod
-            def layer_pass(audio_path, track, grid, out_dir, layer_stems_dir, models_dir):
+            def layer_pass(audio_path, track, out_dir, layer_stems_dir, models_dir):
                 return ["layers:analyzed"]
 
         original_import = __import__

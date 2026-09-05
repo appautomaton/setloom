@@ -24,12 +24,25 @@ def _cmd_anatomize(args: argparse.Namespace) -> int:
     if not collect_audio(target):
         print(f"anatomize failed: no audio files under {target}", file=sys.stderr)
         return 1
+    overrides = None
+    if args.transcriber:
+        from setloom.anatomy.transcribe import parse_transcriber_flag
+
+        try:
+            overrides = parse_transcriber_flag(args.transcriber)
+        except ValueError as exc:
+            print(f"anatomize failed: {exc}", file=sys.stderr)
+            return 1
     statuses = run_anatomy(
         target,
         out_dir=Path(args.out),
-        layers=args.layers,
+        layers=args.layers or args.transcribe,  # transcribe needs the kept stems on disk
         layer_stems_dir=Path(args.layer_stems_dir),
         models_dir=Path(args.models_dir),
+        transcribe=args.transcribe,
+        transcribe_overrides=overrides,
+        emit_events=args.transcribe_events,
+        bp_model_root=Path(args.bp_model_root),
     )
     for track, status in statuses.items():
         print(f"{track}: {', '.join(status)}")
@@ -86,38 +99,79 @@ def _cmd_transcribe(args: argparse.Namespace) -> int:
     if rerun is not None:
         return rerun
 
-    from setloom.transcription import TranscriptionRequest, transcribe_audio
-
     try:
-        result = transcribe_audio(
-            TranscriptionRequest(
-                audio=args.audio,
-                out_midi=args.out,
-                out_events=args.events,
-                model_path=args.model_path,
-                model_root=args.model_root,
-                onset_threshold=args.onset_threshold,
-                frame_threshold=args.frame_threshold,
-                minimum_note_length_ms=args.min_note_ms,
-                minimum_frequency=args.min_frequency,
-                maximum_frequency=args.max_frequency,
-                midi_tempo=args.bpm,
-                channel=args.channel,
-                melodia=not args.no_melodia,
-                infer_onsets=not args.no_infer_onsets,
-                energy_tol=args.energy_tol,
-                include_pitch_bends=not args.no_pitch_bends,
-                multiple_pitch_bends=args.multiple_pitch_bends,
-            )
-        )
+        notes, midi_path, events_path = _transcribe_with_engine(args)
     except Exception as exc:
         print(f"transcribe failed: {exc}", file=sys.stderr)
         return 1
-    print(f"midi: {result.midi_path}")
-    if result.events_path is not None:
-        print(f"events: {result.events_path}")
-    print(f"notes: {len(result.notes)}")
+    print(f"midi: {midi_path}")
+    if events_path is not None:
+        print(f"events: {events_path}")
+    print(f"notes: {len(notes)}")
     return 0
+
+
+def _transcribe_with_engine(args: argparse.Namespace):
+    """Run the selected engine and return ``(notes, midi_path, events_path)``."""
+    if args.engine == "basic-pitch":
+        result = _run_basic_pitch(args)
+        return result.notes, result.midi_path, result.events_path
+
+    from setloom.transcription import write_note_events_json, write_transcription_midi
+    from setloom.transcription.kong import transcribe_kong
+
+    kong_kwargs = {"checkpoint_path": args.kong_checkpoint} if args.kong_checkpoint else {}
+    kong_notes = transcribe_kong(args.audio, **kong_kwargs)
+    if args.engine == "kong":
+        notes = kong_notes
+    else:  # fusion: Kong timing reconciled with Basic Pitch's pitches
+        from tempfile import TemporaryDirectory
+
+        from setloom.transcription import TranscriptionRequest, transcribe_audio
+        from setloom.transcription.fusion import fuse_recall_first
+
+        scratch_root = Path("tmp/transcription")
+        scratch_root.mkdir(parents=True, exist_ok=True)
+        with TemporaryDirectory(prefix="fusion-", dir=scratch_root) as scratch:
+            bp = transcribe_audio(
+                TranscriptionRequest(
+                    audio=args.audio,
+                    out_midi=Path(scratch) / "basic-pitch.mid",
+                    model_path=args.model_path,
+                    model_root=args.model_root,
+                )
+            )
+        notes = fuse_recall_first(kong_notes, bp.notes)
+
+    midi_path = write_transcription_midi(notes, args.out, bpm=args.bpm, channel=args.channel)
+    events_path = write_note_events_json(notes, args.events) if args.events else None
+    return notes, midi_path, events_path
+
+
+def _run_basic_pitch(args: argparse.Namespace):
+    from setloom.transcription import TranscriptionRequest, transcribe_audio
+
+    return transcribe_audio(
+        TranscriptionRequest(
+            audio=args.audio,
+            out_midi=args.out,
+            out_events=args.events,
+            model_path=args.model_path,
+            model_root=args.model_root,
+            onset_threshold=args.onset_threshold,
+            frame_threshold=args.frame_threshold,
+            minimum_note_length_ms=args.min_note_ms,
+            minimum_frequency=args.min_frequency,
+            maximum_frequency=args.max_frequency,
+            midi_tempo=args.bpm,
+            channel=args.channel,
+            melodia=not args.no_melodia,
+            infer_onsets=not args.no_infer_onsets,
+            energy_tol=args.energy_tol,
+            include_pitch_bends=not args.no_pitch_bends,
+            multiple_pitch_bends=args.multiple_pitch_bends,
+        )
+    )
 
 
 def _rerun_with_transcription_tmpdir() -> int | None:
@@ -190,6 +244,28 @@ def build_parser() -> argparse.ArgumentParser:
         default="models/roformer",
         help="53-stem model cache root (default models/roformer)",
     )
+    p_anatomize.add_argument(
+        "--transcribe",
+        action="store_true",
+        help="transcribe kept stems to per-stem + combined MIDI (implies --layers)",
+    )
+    p_anatomize.add_argument(
+        "--transcriber",
+        dest="transcriber",
+        help="per-stem route overrides, e.g. bass=poly,marimba=poly,percussion=drum",
+    )
+    p_anatomize.add_argument(
+        "--transcribe-events",
+        dest="transcribe_events",
+        action="store_true",
+        help="also write per-stem note-events JSON",
+    )
+    p_anatomize.add_argument(
+        "--bp-model-root",
+        dest="bp_model_root",
+        default="models/basic-pitch/icassp_2022",
+        help="Basic Pitch model asset root (default models/basic-pitch/icassp_2022)",
+    )
     p_anatomize.set_defaults(func=_cmd_anatomize)
 
     p_inspect = sub.add_parser(
@@ -219,6 +295,17 @@ def build_parser() -> argparse.ArgumentParser:
     p_transcribe.add_argument("audio", help="input audio file")
     p_transcribe.add_argument("--out", required=True, help="output MIDI path")
     p_transcribe.add_argument("--events", help="optional output note-events JSON path")
+    p_transcribe.add_argument(
+        "--engine",
+        choices=("basic-pitch", "kong", "fusion"),
+        default="basic-pitch",
+        help="basic-pitch (default, CoreML poly) | kong (piano, needs --group kong) | "
+        "fusion (Kong timing + Basic Pitch pitch, needs --group kong --group transcription)",
+    )
+    p_transcribe.add_argument(
+        "--kong-checkpoint",
+        help="Kong checkpoint path (default models/piano-transcription/...pth)",
+    )
     p_transcribe.add_argument(
         "--model-path",
         help="explicit Basic Pitch model path",

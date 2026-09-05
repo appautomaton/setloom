@@ -17,7 +17,7 @@ The harness is a small, unopinionated toolkit plus opt-in diagnostics. It never 
 - `setloom new <id>` — scaffold a new track directory with a minimal spec, runnable `assemble.py`, and listening-notes template.
 - `setloom play <audio>` — play an audio file for the listening gate (macOS `afplay`).
 - `setloom inspect <audio>` — render waveform, spectrum, spectrogram, and stereo inspection plots; supports A/B comparison.
-- `setloom transcribe <audio> --out <midi>` — recover note events from audio with Setloom's local macOS Basic Pitch path.
+- `setloom transcribe <audio> --out <midi>` — recover note events from audio. `--engine` picks the backend: `basic-pitch` (default, CoreML polyphonic), `kong` (ByteDance piano specialist, needs `--group kong`), or `fusion` (Kong timing reconciled with Basic Pitch's pitch via recall-first; needs `--group kong --group transcription`).
 - `setloom anatomize [path] --layers` — 53-stem reference lens and technical dossiers.
 - Importable primitives for per-track code: `setloom.midi` (MIDI read/write, tick/bar math, `NoteEvent`), `setloom.audio` (DSP hygiene: loudness, mono-safety, clip, filters, envelopes), `setloom.conductor` (music-theory math: key/scale parsing, chord-tone and scale-degree helpers).
 - `scripts/generate_candidate.py`, `scripts/magenta_smoke.py` — local genai experiments into `local/candidates/genai/`; they require explicit track-specific prompts.
@@ -83,11 +83,11 @@ The corpus is evidence for study, not a lawbook. Your track must say something d
 ## ML Environment
 
 - Models join the one `uv` env via dependency groups (`anatomy`, `genai`); never per-model virtualenvs. `.references/` clones are read-only.
-- Weights live in gitignored `models/`; never commit audio, MIDI, weights, or proprietary samples. Never override `HF_HOME` — it holds the user's Hugging Face login.
+- Weights live in gitignored `models/`; never commit audio, weights, or proprietary samples. MIDI is committable as track input; machine-local MIDI under `local/` and `tmp/` stays out. Never override `HF_HOME`; it holds the user's Hugging Face login.
 - GPU use is allowed when it materially improves analysis or generation, but serialize heavy ML jobs — separation, generation, transcription, and GPU rendering — one at a time.
 - Stage disposable ML/render scratch in project-local `./tmp/`, then clean it up after use; retain only named candidate artifacts in `local/candidates/`. Gitignored directories are not dumping grounds: keep `local/` organized under its named subdirs (`corpus/`, `candidates/`, `releases/`) and `./tmp/` for scratch. Never create ad-hoc top-level scratch dirs or hide scratch in system temp when project-local scratch is appropriate.
 - Keep unified-memory headroom during heavy jobs and avoid workflows likely to approach the 80-90 GB danger zone on this machine.
-- Committed configs pin stock PyPI `torch`; machine-tuned wheels stay local behind capability checks.
+- The project runs exactly one `torch` version, currently **2.12.0** (pinned `torch>=2.12.0` in the `anatomy` and `kong` groups; MPS on Apple Silicon). Never downgrade or fork torch for a dependency: if a third-party model needs an older torch, install only its non-torch deps and port its inference code to our torch. Committed configs pin stock PyPI `torch`; machine-tuned wheels stay local behind capability checks.
 - Genai candidates land in `local/candidates/genai/` and never enter the corpus summary.
 
 ## Agent Workflow

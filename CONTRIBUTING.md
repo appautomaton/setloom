@@ -30,7 +30,7 @@ worth reading even if you work by hand. Run everything through the repo-local
 `uv` environment:
 
 ```bash
-uv run --group dev pytest          # behavior tests (add --group transcription or anatomy for ML paths)
+uv run --group dev --group anatomy --group transcription pytest  # full behavior suite on Apple Silicon
 uv run --group dev ruff check src  # lint
 ```
 

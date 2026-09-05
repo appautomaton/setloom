@@ -188,9 +188,17 @@ def run(
     layers: bool = False,
     layer_stems_dir: Path = Path("local/corpus/stems53"),
     models_dir: Path = Path("models/roformer"),
+    transcribe: bool = False,
+    transcribe_overrides: dict[str, str] | None = None,
+    emit_events: bool = False,
+    bp_model_root: Path = Path("models/basic-pitch/icassp_2022"),
     summary: bool = True,
 ) -> dict:
-    """Run the pipeline over a file or directory. Returns a per-track status map."""
+    """Run the pipeline over a file or directory. Returns a per-track status map.
+
+    ``transcribe`` turns the kept layer stems into per-stem + combined MIDI; it reads
+    the stems on disk, so it requires (and the CLI implies) ``layers``.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
     statuses: dict[str, list[str]] = {}
     rows = []
@@ -208,12 +216,20 @@ def run(
             status.append("quick:analyzed")
 
         if layers:
-            # Lazy import: the layer lens is torch-heavy and opt-in.
+            # Lazy import: the layer lens pulls the MLX separation backend.
             from setloom.anatomy import layers as layer_lens
 
-            grid_l = Grid(quick["bpm_estimate"], quick["first_beat_s"], quick["bars_estimated"])
-            status += layer_lens.layer_pass(
-                audio, track, grid_l, out_dir, layer_stems_dir, models_dir
+            status += layer_lens.layer_pass(audio, track, out_dir, layer_stems_dir, models_dir)
+
+        if transcribe:
+            # Lazy import: transcription pulls Basic Pitch (CoreML) and torchfcpe.
+            from setloom.anatomy import transcribe as tx
+
+            grid_t = Grid(quick["bpm_estimate"], quick["first_beat_s"], quick["bars_estimated"])
+            status += tx.transcribe_pass(
+                audio, track, Path(layer_stems_dir) / track, grid_t, out_dir,
+                cli_overrides=transcribe_overrides, emit_events=emit_events,
+                bp_model_root=bp_model_root,
             )
 
         _write_yaml_if_changed(quick_path, quick)
