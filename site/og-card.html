@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
+<!-- Source for og-card.png. Render at exactly 1200x630 and screenshot; do not hand-edit the PNG. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=1200">
+<title>Setloom social card</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=zodiak@401,900&amp;f[]=author@400,500&amp;display=swap">
+<style>
+  :root {
+    --vat: #0b0e13; --ink: #efe9dc; --ink-soft: #c2bbac; --muted: #8f8b7d;
+    --indigo: #3c5f9e; --madder: #b24a34; --weld: #c9a227; --iron: #8a8f98;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    background: repeating-linear-gradient(90deg, rgba(239,233,220,.035) 0 1px, transparent 1px 11px), var(--vat);
+    color: var(--ink);
+    font-family: "Author", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card { position: relative; width: 1200px; height: 630px; padding: 62px 76px 54px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .mark {
+    position: relative; display: inline-block; align-self: flex-start; isolation: isolate;
+    font-family: "Zodiak", Didot, serif; font-weight: 900; font-size: 228px;
+    line-height: .88; letter-spacing: -.035em; padding-right: .05em;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(11,14,19,.17) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(0deg,
+        var(--ink) 0 23px, var(--weld) 23px 24.5px,
+        var(--ink) 24.5px 47px, var(--madder) 47px 48.5px,
+        var(--ink) 48.5px 68px, var(--indigo) 68px 69.5px,
+        var(--ink) 69.5px 92px);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .mark svg { position: absolute; inset: -6% -11% -2% -11%; width: auto; height: 108%; overflow: visible; }
+  .mark path { fill: none; stroke-linecap: round; }
+  .mark .under { z-index: -1; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .mark .over {
+    z-index: 1;
+    -webkit-mask-image: repeating-linear-gradient(90deg, #000 0 4%, transparent 4% 14%), linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: repeating-linear-gradient(90deg, #000 0 4%, transparent 4% 14%), linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+  }
+  .line { margin-top: 34px; max-width: 33ch; font-family: "Zodiak", Didot, serif; font-weight: 400; font-style: italic; font-size: 37px; line-height: 1.24; color: var(--ink-soft); }
+  .foot { margin-top: 44px; display: flex; justify-content: space-between; font-size: 19px; color: var(--muted); }
+  .foot b { color: var(--ink-soft); font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="mark"><svg class="under" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <path stroke="#3c5f9e" stroke-width="6" d="M-40 66 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0"/>
+    <path stroke="#b24a34" stroke-width="5" d="M-40 132 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0"/>
+    <path stroke="#c9a227" stroke-width="3.5" d="M-40 198 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0"/>
+    <path stroke="#8a8f98" stroke-width="4" d="M-40 256 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0"/>
+  </svg>Setloom<svg class="over" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+    <path stroke="#3c5f9e" stroke-width="6" d="M-40 66 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0"/>
+    <path stroke="#b24a34" stroke-width="5" d="M-40 132 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0"/>
+    <path stroke="#c9a227" stroke-width="3.5" d="M-40 198 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0"/>
+    <path stroke="#8a8f98" stroke-width="4" d="M-40 256 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0 c 50 34 100 34 150 0 c 50 -34 100 -34 150 0"/>
+  </svg></span>
+  <p class="line">An open-source AI producer for club tracks and DJ sets. You direct in plain language and judge by ear.</p>
+  <div class="foot"><span><b>appautomaton.com/setloom</b></span><span>github.com/appautomaton/setloom</span></div>
+</div>
+</body>
+</html>
