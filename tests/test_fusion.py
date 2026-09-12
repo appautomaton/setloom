@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Hermetic tests for the fusion engine and `transcribe --engine` routing.
 
-No torch / CoreML / weights / network: the recall-first logic is exercised on synthetic
+No torch / MLX / weights / network: the recall-first logic is exercised on synthetic
 note-lists, and the CLI routing is tested with Kong + Basic Pitch monkeypatched. Importing
-the transcription package is safe (torch loads only inside KongModel, CoreML only inside
-BasicPitchModel).
+the transcription package is safe: Kong loads torch lazily, and the native Basic Pitch
+model loads the MLX runtime lazily when instantiated.
 """
 
 from pathlib import Path

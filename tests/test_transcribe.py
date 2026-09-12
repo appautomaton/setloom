@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Hermetic tests for the per-stem transcription pass.
 
-No model weights, no network, no torch/CoreML: pure routing/override/assembler logic
+No model weights, no network, no torch/CoreML/MLX: pure routing/override/assembler logic
 plus a pass run with the three transcribers monkeypatched. Importing basic_pitch for
-``TranscribedNote`` is safe (CoreML loads only inside ``BasicPitchModel``).
+``TranscribedNote`` is safe (MLX loads only inside ``BasicPitchModel``).
 """
 
 from pathlib import Path
@@ -182,7 +182,7 @@ def _build_layer_dir(tmp_path, stems=("synth", "bass", "kick")):
 def _patch_dispatchers(monkeypatch):
     from setloom.transcription import basic_pitch as bp
 
-    # Routing/cache tests must not load local CoreML weights or require that group.
+    # Routing/cache tests must not load local MLX weights or require that group.
     monkeypatch.setattr(bp, "BasicPitchModel", lambda *_a, **_k: object())
 
     def fake(route, is_drum, notes):
@@ -342,6 +342,197 @@ def test_poly_loads_basic_pitch_model_once(tmp_path, monkeypatch) -> None:
 
     # synth + keys are poly; skip the drum stem so only the poly path runs
     tx.transcribe_pass(audio, "T", layer_dir, GRID, out_dir, cli_overrides={"kick": "skip"})
-    assert loads["n"] == 1                          # CoreML model loaded exactly once
+    assert loads["n"] == 1                          # MLX model loaded exactly once
     assert len(seen) == 2 and all(m is not None for m in seen)
     assert len({id(m) for m in seen}) == 1          # the same instance reused
+
+
+@pytest.mark.parametrize("change", ["legacy_cache", "asset_content"])
+def test_transcribe_cache_invalidates_backend_and_model_content(tmp_path, monkeypatch, change):
+    layer_dir = _build_layer_dir(tmp_path, stems=("synth",))
+    out_dir = tmp_path / "dossiers"
+    audio = tmp_path / "T.mp3"
+    audio.touch()
+    model_root = tmp_path / "models" / "basic-pitch" / "icassp_2022"
+    model_root.mkdir(parents=True)
+    weights = model_root / "model.safetensors"
+    weights.write_bytes(b"first")
+    _patch_dispatchers(monkeypatch)
+    options = {"bp_model_root": model_root}
+    tx.transcribe_pass(audio, "T", layer_dir, GRID, out_dir, **options)
+    dossier = out_dir / "T.transcribe.yml"
+    data = yaml.safe_load(dossier.read_text())
+    assert data["cache_inputs"]["bp_backend"] == "basic-pitch-mlx-fp32-v1"
+    if change == "legacy_cache":
+        data["cache_inputs"]["version"] = 1
+        data["cache_inputs"].pop("bp_backend")
+        data["cache_inputs"].pop("bp_assets")
+        dossier.write_text(yaml.safe_dump(data))
+    else:
+        weights.write_bytes(b"other")  # same path and size still invalidates
+    assert tx.transcribe_pass(audio, "T", layer_dir, GRID, out_dir, **options) == [
+        "transcribe:analyzed"
+    ]
+
+
+def test_transcribe_drum_only_cache_needs_no_model_assets(tmp_path, monkeypatch):
+    layer_dir = _build_layer_dir(tmp_path, stems=("kick",))
+    out_dir = tmp_path / "dossiers"
+    audio = tmp_path / "T.mp3"
+    audio.touch()
+    _patch_dispatchers(monkeypatch)
+    from setloom.transcription import basic_pitch as bp
+
+    def forbidden_model(*args, **kwargs):
+        pytest.fail("Drum-only pass attempted to load Basic Pitch")
+
+    monkeypatch.setattr(bp, "BasicPitchModel", forbidden_model)
+    options = {"bp_model_root": tmp_path / "missing-model"}
+    tx.transcribe_pass(audio, "T", layer_dir, GRID, out_dir, **options)
+    assert tx.transcribe_pass(audio, "T", layer_dir, GRID, out_dir, **options) == [
+        "transcribe:cached"
+    ]
+    dossier = yaml.safe_load((out_dir / "T.transcribe.yml").read_text())
+    assert dossier["cache_inputs"]["bp_assets"] is None
+
+
+def test_pipeline_sets_fp32_policy_before_layer_backend(tmp_path, monkeypatch):
+    import sys
+    from types import ModuleType
+
+    from setloom.anatomy import pipeline
+    from setloom.transcription import basic_pitch_mlx
+
+    sequence = []
+    monkeypatch.setattr(basic_pitch_mlx, "_configure_fp32_precision",
+                        lambda: sequence.append("precision"))
+    fake_layers = ModuleType("setloom.anatomy.layers")
+
+    def fake_layer_pass(*args):
+        sequence.append("layers")
+        return []
+
+    fake_layers.layer_pass = fake_layer_pass
+    monkeypatch.setitem(sys.modules, fake_layers.__name__, fake_layers)
+    import setloom.anatomy
+
+    monkeypatch.setattr(setloom.anatomy, "layers", fake_layers, raising=False)
+    monkeypatch.setattr(pipeline, "collect_audio", lambda path: [tmp_path / "T.wav"])
+    monkeypatch.setattr(pipeline, "fullmix_pass", lambda path: {
+        "bpm_estimate": 120, "first_beat_s": 0, "bars_estimated": 4,
+    })
+    monkeypatch.setattr(pipeline.co, "quick_row", lambda *args: {})
+
+    def fake_transcribe_pass(*args, **kwargs):
+        sequence.append("transcribe")
+        return []
+
+    monkeypatch.setattr(tx, "transcribe_pass", fake_transcribe_pass)
+    pipeline.run(tmp_path, out_dir=tmp_path / "dossiers", layers=True,
+                 transcribe=True, summary=False)
+    assert sequence == ["precision", "layers", "transcribe"]
+
+
+# --- native MLX CLI routing (no accelerator imports) -----------------------
+
+
+@pytest.mark.parametrize("engine", ["basic-pitch", "basic-pitch-mlx", "kong", "fusion"])
+def test_cli_transcribe_runs_without_process_restart(monkeypatch, capsys, engine):
+    import subprocess
+
+    from setloom import cli
+
+    def forbidden_restart(*args, **kwargs):
+        pytest.fail("Transcription attempted an obsolete process restart")
+
+    monkeypatch.setattr(subprocess, "run", forbidden_restart)
+    monkeypatch.setattr(cli, "_transcribe_with_engine", lambda args: ((), Path(args.out), None))
+    args = cli.build_parser().parse_args([
+        "transcribe", "input.wav", "--out", "output.mid", "--engine", engine,
+    ])
+    assert cli._cmd_transcribe(args) == 0
+    assert capsys.readouterr().out == "midi: output.mid\nnotes: 0\n"
+
+
+@pytest.mark.parametrize("engine", [None, "basic-pitch-mlx"])
+@pytest.mark.parametrize("model_path", [None, "models/custom-mlx"])
+def test_cli_default_and_alias_preserve_decoder_options(monkeypatch, engine, model_path):
+    import setloom.transcription as transcription
+    from setloom.cli import _transcribe_with_engine, build_parser
+    from setloom.transcription import TranscriptionResult
+
+    seen = []
+
+    def fake_transcribe(request):
+        seen.append(request)
+        return TranscriptionResult(Path(request.out_midi), Path(request.out_events), ())
+
+    monkeypatch.setattr(transcription, "transcribe_audio", fake_transcribe)
+    argv = [
+        "transcribe", "input.wav", "--out", "output.mid", "--events", "events.json",
+        "--onset-threshold", "0.4", "--frame-threshold", "0.2",
+        "--min-note-ms", "80", "--min-frequency", "50", "--max-frequency", "2000",
+        "--bpm", "130", "--channel", "2", "--no-melodia", "--no-infer-onsets",
+        "--energy-tol", "7", "--no-pitch-bends", "--multiple-pitch-bends",
+    ]
+    if engine is not None:
+        argv.extend(["--engine", engine])
+    if model_path is not None:
+        argv.extend(["--model-path", model_path])
+    args = build_parser().parse_args(argv)
+    assert args.engine == (engine or "basic-pitch")
+    assert _transcribe_with_engine(args) == ((), Path("output.mid"), Path("events.json"))
+    request = seen[0]
+    assert request.model_path == model_path
+    assert request.model_root == "models/basic-pitch-mlx/icassp_2022"
+    assert (request.onset_threshold, request.frame_threshold) == (0.4, 0.2)
+    assert request.minimum_note_length_ms == 80
+    assert (request.minimum_frequency, request.maximum_frequency) == (50, 2000)
+    assert (request.midi_tempo, request.channel, request.energy_tol) == (130, 2, 7)
+    assert not request.melodia and not request.infer_onsets and not request.include_pitch_bends
+    assert request.multiple_pitch_bends
+
+
+@pytest.mark.parametrize("engine", ["basic-pitch", "basic-pitch-mlx"])
+def test_cli_native_decoder_never_imports_coreml(tmp_path, monkeypatch, engine):
+    import builtins
+
+    from setloom.cli import _transcribe_with_engine, build_parser
+    from setloom.transcription import basic_pitch as bp
+
+    original_import = builtins.__import__
+
+    def guarded_import(name, *args, **kwargs):
+        if name == "coremltools" or name.startswith("coremltools."):
+            pytest.fail(f"Native transcription imported {name}")
+        return original_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", guarded_import)
+    audio = tmp_path / "input.wav"
+    audio.touch()
+    window = np.zeros((1, bp.AUDIO_N_SAMPLES, 1), dtype=np.float32)
+    monkeypatch.setattr(bp, "_read_audio_windows", lambda path: ([window], 22050))
+    predictions, model_paths = [], []
+
+    class FakeMLXModel:
+        def __init__(self, model_path):
+            model_paths.append(model_path)
+
+        def predict(self, audio_window):
+            predictions.append(audio_window)
+            return {
+                name: np.zeros((1, 172, bins), dtype=np.float32)
+                for name, bins in (("note", 88), ("onset", 88), ("contour", 264))
+            }
+
+    monkeypatch.setattr(bp, "BasicPitchModel", FakeMLXModel)
+    midi, events = tmp_path / "output.mid", tmp_path / "events.json"
+    args = build_parser().parse_args([
+        "transcribe", str(audio), "--engine", engine, "--out", str(midi),
+        "--events", str(events),
+    ])
+    assert _transcribe_with_engine(args) == ((), midi, events)
+    assert model_paths == [Path("models/basic-pitch-mlx/icassp_2022")]
+    assert len(predictions) == 1 and predictions[0] is window
+    assert len(mido.MidiFile(midi).tracks) == 1
+    assert events.read_text() == "[]\n"

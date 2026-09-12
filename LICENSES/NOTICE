@@ -7,15 +7,17 @@ Basic Pitch
   Copyright 2022 Spotify AB
   Licensed under the Apache License, Version 2.0:
   https://www.apache.org/licenses/LICENSE-2.0
+  Full license text: LICENSES/Apache-2.0.txt
   Source: https://github.com/spotify/basic-pitch
 
   The note-decoding and pitch-bend algorithms in
   src/setloom/transcription/basic_pitch.py are derived from Basic Pitch's
   note_creation.py and inference.py, reimplemented on Setloom's stack
-  (mido rather than pretty_midi). Algorithm design and constants are
-  credited to Spotify AB. Setloom as a whole is licensed under AGPL-3.0-only;
-  this notice satisfies the Apache-2.0 attribution requirement for the
-  derived portions.
+  (mido rather than pretty_midi). The native MLX model in
+  src/setloom/transcription/basic_pitch_mlx.py reimplements Basic Pitch's
+  ICASSP 2022 architecture. scripts/convert_basic_pitch_mlx.py maps the
+  upstream ONNX model's FP32 tensors into MLX layouts and safetensors assets.
+  Setloom as a whole is licensed under AGPL-3.0-only.
 
 BS-RoFormer
   Copyright (c) 2023 Phil Wang (lucidrains)
@@ -35,3 +37,18 @@ mlx-audio-separator
   src/setloom/anatomy/roformer/weights.py and the MLX porting approach in
   model.py reference ssmall256's mlx-audio-separator. Setloom's implementation
   is independent and does not depend on that package at runtime.
+
+Machine-local runtime asset sources (binaries are not distributed here)
+
+High-resolution piano transcription checkpoint
+  Source: https://zenodo.org/record/4034264
+  Project: https://github.com/bytedance/piano_transcription
+  MAESTRO-trained checkpoint used by the retained T7 reconstruction.
+  Local file: models/piano-transcription/note_F1=0.9677_pedal_F1=0.8658.pth
+
+Salamander Grand Piano V3
+  Original samples by Alexander Holm; FreePats soundfont distribution.
+  License: Creative Commons Attribution 3.0
+  https://creativecommons.org/licenses/by/3.0/
+  Local file: models/soundfonts/SalamanderGrandPiano-V3.sf2
+  Used by the retained T7 reconstruction; samples remain machine-local.

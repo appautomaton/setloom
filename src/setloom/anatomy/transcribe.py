@@ -16,12 +16,13 @@ and optional per-stem note-events JSON. Routing has defaults and is overridable 
 track (a ``<audio>.transcribe.yml`` sidecar) and per run (a CLI override string),
 resolved ``defaults <- sidecar <- CLI``.
 
-Heavy backends (Basic Pitch/CoreML, torchfcpe/torch, librosa) import lazily, so the
+Heavy backends (Basic Pitch/MLX, torchfcpe/torch, librosa) import lazily, so the
 module is cheap to import on non-transcription paths.
 """
 
 from __future__ import annotations
 
+import hashlib
 import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -32,7 +33,8 @@ from pydantic import BaseModel, ConfigDict, model_validator
 from setloom.anatomy.pipeline import HOP, SR, Grid, _write_yaml_if_changed, write_bass_midi
 from setloom.midi import DRUM_CHANNEL, PPQ, SIXTEENTH_TICKS, NoteEvent
 
-DEFAULT_BP_MODEL_ROOT = Path("models/basic-pitch/icassp_2022")
+DEFAULT_BP_MODEL_ROOT = Path("models/basic-pitch-mlx/icassp_2022")
+BP_CACHE_BACKEND = "basic-pitch-mlx-fp32-v1"
 
 HP_CUTOFF_HZ = 120.0   # the synth stem duplicates the bassline; strip it before f0
 FCPE_VOICED_MIN = 0.4  # min voiced fraction of a 16th step to count as a note
@@ -224,7 +226,7 @@ def transcribe_poly(
     """Polyphonic transcription via Basic Pitch; absolute time at ``grid.bpm`` with bends.
 
     ``model`` is an optional pre-loaded ``BasicPitchModel`` reused across stems so the
-    CoreML model loads once per pass rather than once per stem.
+    MLX model loads once per pass rather than once per stem.
     """
     from setloom.transcription import basic_pitch as bp
 
@@ -447,9 +449,8 @@ def transcribe_pass(
 ) -> list[str]:
     """Route + transcribe each kept stem; write per-stem + combined MIDI + dossier.
 
-    Reuse cached outputs only while stem file metadata, routing, timing, model
-    root, and requested output formats match. Replacing model files in place
-    requires removing the dossier to force inference again.
+    Reuse cached outputs only while stem file metadata, routing, timing, backend,
+    model content, and requested output formats match.
     """
     import yaml
 
@@ -471,13 +472,19 @@ def transcribe_pass(
         stat = wav.stat()
         stem_files[stem] = [str(wav.resolve()), stat.st_size, stat.st_mtime_ns]
     cache_inputs = {
-        "version": 1,
+        "version": 2,
         "stems": stem_files,
         "routes": routes,
         "sidecar": sidecar,
         "cli_overrides": cli_overrides or {},
         "grid": [grid.bpm, grid.t0, grid.n_bars],
         "bp_model_root": str(Path(bp_model_root).resolve()),
+        "bp_backend": BP_CACHE_BACKEND,
+        "bp_assets": {
+            name: hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+            for name in ("config.json", "model.safetensors", "manifest.json")
+            for path in (Path(bp_model_root) / name,)
+        } if ROUTE_POLY in routes.values() else None,
         "emit_events": emit_events,
     }
     outputs = [combined]
@@ -495,7 +502,7 @@ def transcribe_pass(
                 and all(path.is_file() for path in outputs)):
             return ["transcribe:cached"]
 
-    # Load the Basic Pitch CoreML model once and reuse it across every poly stem.
+    # Load the Basic Pitch MLX model once and reuse it across every poly stem.
     bp_model = None
     if any(routes[s] == ROUTE_POLY for s in kept):
         from setloom.transcription import basic_pitch as bp

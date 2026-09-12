@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Track spec loader tests for scaffold and legacy track source."""
+"""Track spec loader tests for retained track source."""
 
 from pathlib import Path
 

@@ -15,13 +15,10 @@ write Setloom-friendly MIDI/JSON artifacts.
 from __future__ import annotations
 
 import json
-import os
-import tempfile
 from collections import defaultdict
-from contextlib import contextmanager
 from dataclasses import asdict, dataclass, fields, replace
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import librosa
 import mido
@@ -29,6 +26,7 @@ import numpy as np
 from scipy import signal
 
 from setloom.midi import PPQ
+from setloom.transcription.basic_pitch_mlx import MLXBasicPitchModel as BasicPitchModel
 
 FFT_HOP = 256
 AUDIO_SAMPLE_RATE = 22_050
@@ -44,8 +42,8 @@ MIDI_OFFSET = 21
 MAX_FREQ_IDX = 87
 DEFAULT_ENERGY_TOLERANCE = 11
 MAGIC_ALIGNMENT_OFFSET = 0.0018
-DEFAULT_MODEL_ROOT = Path("models/basic-pitch/icassp_2022")
-MODEL_ASSET_NAME = "nmp.mlpackage"
+DEFAULT_MODEL_ROOT = Path("models/basic-pitch-mlx/icassp_2022")
+
 
 # Contour / pitch-bend constants (ported from Basic Pitch's note_creation.py).
 CONTOURS_BINS_PER_SEMITONE = 3
@@ -161,95 +159,9 @@ class BasicPitchActivations:
         return self.frame_times
 
 
-class BasicPitchModel:
-    """Small runner for the bundled Basic Pitch model asset."""
-
-    def __init__(
-        self,
-        model_path: str | Path,
-        *,
-        temp_root: str | Path | None = None,
-    ) -> None:
-        """Load the CoreML model with an optional caller-owned scratch root.
-
-        ``temp_root`` is never deleted by this class.  Callers that need a
-        bounded scratch lifecycle (for example, an analysis run's system-temp
-        directory) can supply one and remain responsible for cleaning it up.
-        Omitting it preserves the historical ``tmp/transcription`` behavior.
-        """
-
-        self.path = Path(model_path)
-        if not self.path.exists():
-            raise FileNotFoundError(
-                f"Basic Pitch model not found: {self.path}. "
-                "Place the model under models/basic-pitch/icassp_2022/ or pass --model-path."
-            )
-        self.temp_root = (
-            Path("tmp/transcription").resolve()
-            if temp_root is None
-            else Path(temp_root).resolve()
-        )
-        if self.temp_root.exists() and not self.temp_root.is_dir():
-            raise NotADirectoryError(
-                f"Basic Pitch temp root is not a directory: {self.temp_root}"
-            )
-        self.temp_root.mkdir(parents=True, exist_ok=True)
-        self._caller_controlled_temp_root = temp_root is not None
-
-        if not self._caller_controlled_temp_root:
-            os.environ.setdefault("TMPDIR", str(self.temp_root))
-        try:
-            import coremltools as ct
-        except ImportError as exc:
-            raise RuntimeError(
-                "coremltools is required for the current Setloom Basic Pitch implementation. "
-                "Run with the transcription dependency group enabled."
-            ) from exc
-
-        if self._caller_controlled_temp_root:
-            with _temporary_temp_root(self.temp_root):
-                self._model = ct.models.MLModel(
-                    str(self.path), compute_units=ct.ComputeUnit.CPU_ONLY
-                )
-        else:
-            self._model = ct.models.MLModel(
-                str(self.path), compute_units=ct.ComputeUnit.CPU_ONLY
-            )
-
-    def predict(self, audio_window: np.ndarray) -> dict[str, np.ndarray]:
-        inputs = {"input_2": audio_window.astype(np.float32)}
-        if self._caller_controlled_temp_root:
-            with _temporary_temp_root(self.temp_root):
-                result = self._model.predict(inputs)
-        else:
-            result = self._model.predict(inputs)
-        return {
-            "note": result["Identity_1"],
-            "onset": result["Identity_2"],
-            "contour": result["Identity"],
-        }
-
-
-@contextmanager
-def _temporary_temp_root(root: Path) -> Iterator[None]:
-    """Temporarily bind Python and native temp lookups to ``root``."""
-
-    previous_environment = os.environ.get("TMPDIR")
-    previous_tempdir = tempfile.tempdir
-    os.environ["TMPDIR"] = str(root)
-    tempfile.tempdir = str(root)
-    try:
-        yield
-    finally:
-        tempfile.tempdir = previous_tempdir
-        if previous_environment is None:
-            os.environ.pop("TMPDIR", None)
-        else:
-            os.environ["TMPDIR"] = previous_environment
-
-
 def default_model_path(model_root: str | Path = DEFAULT_MODEL_ROOT) -> Path:
-    return Path(model_root) / MODEL_ASSET_NAME
+    """Return the directory containing converted safetensors, config, and manifest."""
+    return Path(model_root)
 
 
 def _request_from_audio(
@@ -369,8 +281,9 @@ def predict_activations(
 ) -> BasicPitchActivations:
     """Run Basic Pitch once and return immutable raw tensors with model timestamps.
 
-    Passing a pre-loaded ``model`` avoids repeated CoreML loads across bounded
-    analysis windows. Tests and callers may also supply a compatible model runner.
+    Passing a pre-loaded ``model`` reuses native MLX weights across bounded
+    analysis windows. Tests and callers may also supply a compatible model runner;
+    a supplied runner is never reloaded or reconfigured.
     """
     audio_path = Path(audio)
     if not audio_path.is_file():
@@ -708,8 +621,9 @@ def transcribe_audio(
 ) -> TranscriptionResult:
     """Transcribe an audio file into MIDI and optional note-event JSON.
 
-    Pass a pre-loaded ``model`` to reuse one CoreML load across several calls (the
-    per-stem pass does this); when ``None`` the model is loaded from the request paths.
+    Pass a pre-loaded ``model`` to reuse native MLX weights across several calls
+    (the per-stem pass does this); otherwise the converted model directory is
+    loaded from the request paths. Compatible supplied runners remain supported.
     """
     request = _request_from_audio(audio, **overrides)
     audio_path = Path(request.audio)

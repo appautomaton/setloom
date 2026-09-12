@@ -199,36 +199,6 @@ class TestCorpus:
         assert co.merge_rows([], rows) == rows
 
 
-class TestCli:
-    def test_anatomize_registered(self):
-        from setloom.cli import build_parser
-
-        args = build_parser().parse_args(["anatomize", "somewhere"])
-        assert args.out == "local/corpus/dossiers"
-        assert args.layer_stems_dir == "local/corpus/stems53"
-        assert args.models_dir == "models/roformer"
-        assert callable(args.func)
-
-    def test_anatomize_accepts_layer_scratch_dirs(self):
-        from setloom.cli import build_parser
-
-        args = build_parser().parse_args(
-            [
-                "anatomize",
-                "somewhere",
-                "--layers",
-                "--out",
-                "/tmp/dossiers",
-                "--layer-stems-dir",
-                "/tmp/stems53",
-                "--models-dir",
-                "/tmp/models",
-            ]
-        )
-        assert args.layers is True
-        assert args.out == "/tmp/dossiers"
-        assert args.layer_stems_dir == "/tmp/stems53"
-        assert args.models_dir == "/tmp/models"
 
 def _synthesize_mix(sr=22050, bpm=120.0, n_bars=8):
     """Hermetic 8-bar A-minor techno skeleton: no models, no real audio."""

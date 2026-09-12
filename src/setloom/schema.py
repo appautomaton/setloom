@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Track spec loader for scaffolded and legacy track source.
+"""Track spec loader retained for existing track source.
 
 The spec describes a track (tempo, key, form, palette, intended feel) and where
 to render it; it does NOT encode generator note-plans. Musical composition

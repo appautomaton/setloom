@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Generate an instrumental melodic-techno candidate with ACE-Step 1.5.
+"""Generate a temporary musical audition with ACE-Step 1.5.
 
-A documented local experiment recipe, not a product surface: candidates are
-audition material for the taste owner. Technical diagnostics are optional; the
-listening gate judges.
+A documented local experiment recipe, not a product surface. The agent must
+review and develop the generated material; the human judges the result.
 
 ACE-Step is intentionally not a root project dependency. Its local experiment
 dependency list lives in pyproject.acestep.toml and must be installed explicitly
@@ -31,12 +30,12 @@ ROOT = Path(__file__).resolve().parent.parent
 os.environ.setdefault("ACESTEP_CHECKPOINTS_DIR", str(ROOT / "models" / "acestep"))
 os.environ.setdefault("HF_HUB_CACHE", str(ROOT / "models" / "hf"))
 
-CANDIDATES = ROOT / "local" / "candidates" / "genai"
+AUDITIONS = ROOT / "tmp" / "genai" / "auditions"
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--name", default="acestep-candidate-01", help="output stem name")
+    parser.add_argument("--name", default="acestep-audition-01", help="output stem name")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--duration", type=float, default=360.0, help="seconds (club length)")
     parser.add_argument("--bpm", type=int, required=True, help="track-specific BPM")
@@ -125,17 +124,17 @@ def main() -> int:
         seeds=[args.seed],
     )
 
-    CANDIDATES.mkdir(parents=True, exist_ok=True)
-    result = generate_music(dit, llm, params, config, save_dir=str(CANDIDATES))
+    AUDITIONS.mkdir(parents=True, exist_ok=True)
+    result = generate_music(dit, llm, params, config, save_dir=str(AUDITIONS))
     if not result.success:
         print(f"generation failed: {result.error}", file=sys.stderr)
         return 1
 
-    out = CANDIDATES / f"{args.name}.wav"
+    out = AUDITIONS / f"{args.name}.wav"
     src = Path(result.audios[0]["path"])
     if src != out:
         shutil.move(src, out)
-    print(f"candidate: {out}")
+    print(f"temporary audition: {out}")
     print(f"seed: {result.audios[0]['params'].get('seed')}")
     print("next: write a listening note before deciding what to inspect")
     print("reminder: technical diagnostics are optional; the listening gate judges")
