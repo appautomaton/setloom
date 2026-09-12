@@ -1,0 +1,251 @@
+{
+  "status": "Reusable independently defined subtractive/unison patch; no sampled source or spectral trajectories.",
+  "sample_rate": 44100,
+  "oscillator": {
+    "pulse_mix": 0.25,
+    "pulse_width": 0.36,
+    "max_harmonics": 48,
+    "detune_cents": [
+      -15,
+      -5,
+      6,
+      16
+    ],
+    "phase_cycles": [
+      0.03,
+      0.22,
+      0.49,
+      0.77
+    ],
+    "pan": [
+      -1,
+      -0.7,
+      0.7,
+      1
+    ],
+    "center_gain": 0.2,
+    "unison_gain": 1
+  },
+  "parts": {
+    "body": {
+      "gain_db": -3,
+      "root_gain_db": -6,
+      "octave_gain_db": 0,
+      "pan_scale": 0.75,
+      "filter_depth_scale": 0.8
+    },
+    "upper": {
+      "gain_db": 0,
+      "root_gain_db": 0,
+      "octave_gain_db": -99,
+      "pan_scale": 1,
+      "filter_depth_scale": 1
+    }
+  },
+  "amplitude": {
+    "attack_ms": 9,
+    "decay_ms": 140,
+    "sustain": 0.68,
+    "release_ms": 110
+  },
+  "filter": {
+    "base_hz": 1050,
+    "peak_hz": 4700,
+    "q": 0.85,
+    "highpass_hz": 115,
+    "saturation_drive": 1.15,
+    "presence_hz": 2600,
+    "presence_db": 3
+  },
+  "performance": {
+    "attack_ms": 4,
+    "filter_decay_ms": 75,
+    "depth": {
+      "W": 0.5,
+      "M": 0.75,
+      "S": 1
+    },
+    "upper_accent_db": {
+      "W": 1,
+      "M": 2,
+      "S": 3
+    },
+    "upper_decay_ms": 75,
+    "body_accent_db": 3,
+    "body_decay_ms": 80
+  },
+  "stereo": {
+    "delay_ms": [
+      9,
+      14
+    ],
+    "depth_ms": [
+      1.4,
+      1.8
+    ],
+    "rate_hz": [
+      0.6,
+      0.85
+    ],
+    "wet": 0.32
+  },
+  "audition": {
+    "edge_fade_ms": 8,
+    "gap_seconds": 0.6,
+    "standalone_lufs": -14,
+    "mono_below_hz": 100
+  },
+  "bass": {
+    "harmonic_db": [
+      0,
+      2,
+      -8
+    ],
+    "gain_db": -19.5,
+    "drive": 1.15,
+    "lowpass_hz": 550,
+    "glide_ms": 30,
+    "pickup_ms": 380,
+    "release_ms": 120,
+    "movement_hz": 1,
+    "movement_db": 2.5,
+    "beat_depth_db": 2.4,
+    "eighth_depth_db": 0.7
+  },
+  "hat": {
+    "seed": 8264,
+    "gain_db": -20.5,
+    "highpass_hz": 6500,
+    "lowpass_hz": 14000,
+    "metal_hz": [
+      7400,
+      9880,
+      12520,
+      14710
+    ],
+    "attack_ms": 20,
+    "decay_ms": 25
+  },
+  "snare": {
+    "seed": 9713,
+    "gain_db": -22,
+    "highpass_hz": 1500,
+    "attack_ms": 3,
+    "decay_ms": 45,
+    "tail_ms": 150,
+    "body_hz": 190,
+    "body_db": -18,
+    "noise_drive": 1.25,
+    "noise_makeup": 1.5
+  },
+  "kick": {
+    "gain_db": 0,
+    "floor_hz": 40,
+    "fast_hz": 145,
+    "fast_seconds": 0.035,
+    "slow_hz": 35,
+    "slow_seconds": 0.15,
+    "rise_ms": 25,
+    "decay_ms": 250,
+    "length_ms": 540,
+    "second_db": -12,
+    "body_hz": 78,
+    "body_db": -10,
+    "drive": 1.1,
+    "click_db": -20,
+    "click_decay_seconds": 0.008,
+    "mid_gain_db": 2,
+    "mid_highpass_hz": 350,
+    "mid_lowpass_hz": 1800,
+    "mid_decay_seconds": 0.02
+  },
+  "texture": {
+    "gain_db": -29,
+    "harmonic_gain": [
+      0,
+      0.04,
+      0.65,
+      0.45,
+      0.4,
+      0.65
+    ],
+    "detune_cents": 3,
+    "highpass_hz": 90,
+    "kick_duck_db": 3.5
+  },
+  "wash": {
+    "seed": 44128,
+    "highpass_hz": 400,
+    "lowpass_hz": 14000,
+    "common": 0.23,
+    "side": 0.97,
+    "mid_lowpass_hz": 2400,
+    "high_color_hz": [
+      5500,
+      11500
+    ],
+    "high_mix": 0.42
+  },
+  "bright_percussion": {
+    "seed": 64011,
+    "gain_db": -11,
+    "highpass_hz": 2000,
+    "lowpass_hz": 12000,
+    "duration_ms": 300,
+    "decay_ms": 105,
+    "metal_hz": [
+      3370,
+      5150,
+      7390,
+      9810
+    ]
+  },
+  "ending_fx": {
+    "gain_db": -18.7,
+    "first_decay_db_s": 6,
+    "later_decay_db_s": 4.7,
+    "secondary_ratio": 2.4045454545454548,
+    "secondary_db": -9,
+    "secondary_extra_decay_db_s": 4,
+    "final_fade_seconds": 3.3,
+    "phase_spread_rad": 1.1,
+    "secondary_phase_spread_rad": 1.7,
+    "noise_seed": 33851,
+    "noise_band_hz": [
+      1500,
+      8500
+    ],
+    "noise_relative_db": -14,
+    "noise_extra_decay_db_s": 3
+  },
+  "pulse_voice": {
+    "harmonics": [
+      [
+        1,
+        0
+      ],
+      [
+        3,
+        -13
+      ],
+      [
+        5,
+        -24
+      ]
+    ],
+    "tuning_cents": -12,
+    "stereo_detune_cents": [
+      -3,
+      3
+    ],
+    "attack_ms": 5,
+    "release_ms": 120,
+    "initial_gain_db": -13,
+    "delay_ms": 300,
+    "delay_wet": 0.16,
+    "delay_feedback": 0.2,
+    "delay_echoes": 8,
+    "bus_gain_db": -2.9850854458334553,
+    "controller_interpretation": "CC11 linear interpolation, amplitude=value/127; pitchwheel sample-held, bend sensitivity from MIDI RPN0,0"
+  }
+}

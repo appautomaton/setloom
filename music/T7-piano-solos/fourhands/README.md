@@ -1,52 +1,31 @@
-# T7 four-hands
+# T7 — four hands
 
-End-to-end piano-**duet** reconstruction. Raw four-hands audio in, our piano out. Sibling to the
-solo `../reconstruct.py`.
+Completed duet-reconstruction source. The harness infers upper PRIMO and lower
+SECONDO strata from a shared recording, shapes their dynamics and re-performs
+on the Salamander grand while preserving captured ensemble timing.
 
-A four-hands recording is two players merged into one audio stream. This harness estimates two
-player strata, shapes their dynamics, and re-performs on
-the Salamander grand, while **preserving the real ensemble timing** (the two players' actual
-asynchrony) -- which is the four-hands feel.
+## Performance
 
-## Pipeline
-
-| Stage | Does | Tool |
-|-------|------|------|
-| 1. transcribe | audio -> flat MIDI (notes + pedal) | Kong (ByteDance MAESTRO), mps->cpu |
-| 2. stratify | flat MIDI -> PRIMO (upper) + SECONDO (lower) | adaptive register seam + voice continuity |
-| 3. ensemble | per-player dynamic shaping + small independent jitter; onsets preserved | local, numpy |
-| 4. render | mechanical + humanized + panned aid | fluidsynth + Salamander, `setloom.audio` master |
-
-**Two-stratum recovery** (not literal four-hand staves) and **dynamics-not-timing** humanization
-are the load-bearing choices, from a Grok + Codex consult: on dense, constantly-crossing duet
-textures full per-hand labels are under-determined, and the real ensemble timing is already
-human, so the human touch goes into dynamics. The split is cell-sticky near the seam (voice
-continuity) so an interlocking figure stays with one player.
+Kong supplies notes and pedal. An adaptive register seam with voice continuity
+assigns two musical strata; it does not recover four literal hand staves.
+Dynamic shaping includes per-player velocity variation. Note onsets retain the
+players' timing, and a stable assignment near the seam keeps interlocking figures
+together.
 
 ## Run
 
-```
+```sh
 uv run --group kong python music/T7-piano-solos/fourhands/reconstruct.py PATH/TO/duet.mp3
 ```
 
-Outputs in `music/T7-piano-solos/fourhands/out/<slug>/` (gitignored):
-`notes.raw.mid`, `primo.mid`, `secondo.mid`,
-`humanized.mid`, and three renders -- `*.mechanical.piano.wav` (the strict split reference),
-`*.humanized.piano.wav`, `*.humanized-panned.piano.wav` (a diagnostic placing
-SECONDO left / PRIMO right). A/B the mechanical and humanized renders at the listening gate.
-As in the solo harness, delete the cached raw MIDI when changing the source or checkpoint;
-`fluidsynth` and the shared model assets are required.
+The gitignored `tmp/t7-piano-fourhands/<slug>/` contains `notes.raw.mid`, `primo.mid`, `secondo.mid`,
+`humanized.mid`, and three renders: mechanical, humanized and humanized-panned.
+The panned diagnostic places SECONDO left and PRIMO right. Remove the raw MIDI
+cache when changing the source or checkpoint.
 
-Flags: `--lufs` (default -16), `--k-macro` (build amount, default 1.4), `--noise` (per-player
-jitter sigma), `--blip-ms` (default 20), `--seed`, `--out`.
+Options: `--lufs` (default -16), `--k-macro` (1.4), `--noise` (velocity jitter),
+`--blip-ms` (20), `--seed` and `--out`.
 
-## Source notes
-
-The output is our own rendering and does not redistribute the source recording. Reconstruct
-works you have the right to use; clear the composition's status as appropriate for your release.
-
-## Seams with setloom
-
-`setloom.audio` owns the loudness master (stereo BS.1770 + true-peak limiter). Kong is called
-directly (pedal-aware); `mido` directly (free-timing duet playing is not a 4/4 grid). Weights
-and the soundfont live in the gitignored `models/`, shared with the solo harness.
+Kong is called directly to retain pedal; `mido` preserves free-timing events.
+Fluidsynth and the shared checkpoint/soundfont are required. See
+[runtime assets](../README.md#runtime-assets) for the required paths.

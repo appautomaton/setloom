@@ -1,0 +1,31 @@
+{
+  "artist": "App Automaton",
+  "title": "Anti Gravitational Wave",
+  "performance": "performance.mid",
+  "sample_rate": 44100,
+  "gain_db": {
+    "A_from_existing_bus": 6.154685497651446,
+    "B_from_dry_engine": 13.16301220466853,
+    "common_pair": -2.629400781035164,
+    "piano_mix_bus": 2.5
+  },
+  "B_engine_gain": 0.3,
+  "instrument": {
+    "soundfont": "models/soundfonts/SalamanderGrandPiano-V3.sf2",
+    "bank": 0,
+    "program": 0,
+    "credit": "Salamander Grand Piano: Alexander Holm, Yamaha C5 samples; FreePats SF2 conversion by Roberto, v3+20200602.",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "readme": "models/soundfonts/SalamanderGrandPiano-V3.readme.txt"
+  },
+  "frames": 9923999,
+  "mastering": {
+    "target_lufs": -8.5,
+    "input_gain_db": 5.5,
+    "ceiling_dbtp": -1.0,
+    "lookahead_ms": 3.0,
+    "release_ms": 60.0,
+    "tolerance_lu": 0.3
+  }
+}

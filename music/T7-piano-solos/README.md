@@ -1,83 +1,48 @@
-# T7 — piano-solos
+# T7 — piano solos
 
-End-to-end solo-piano reconstruction. Raw piano audio in, our piano out.
+Completed piano-reconstruction work. This retained harness transcribes notes and
+sustain pedal, removes brief transcription artifacts and performs the captured
+timing on a sampled grand. Engraved notation is outside this implementation.
 
-You give it a solo-piano recording; it transcribes the performance, tidies the note and
-pedal data, and plays it back on a sampled grand. The result keeps the original
-performance's expressive timing and pedal. This is an audio-to-audio harness, **not** a
-notation tool: there is no sheet music, and none is needed to hear it.
+## Performance
 
-Status: working local audio reconstruction example. Each new recording still needs a
-listening gate. Engraved sheet music remains out of scope.
+| Stage | Behavior |
+| --- | --- |
+| Transcribe | Kong on MPS→CPU; retain notes, free timing and CC64 sustain |
+| Clean | Remove sub-30 ms note blips and debounce sub-60 ms pedal flutter; no grid quantization |
+| Render | Fluidsynth + Salamander; faithful and expressive room treatments |
+| Master | `setloom.audio.master` for loudness and true-peak limiting |
 
-## Pipeline
-
-| Stage | Does | Tool |
-|-------|------|------|
-| 1. transcribe | audio -> raw MIDI with notes + sustain pedal | Kong (ByteDance MAESTRO), GPU mps->cpu |
-| 2. clean | drop sub-30ms note blips; debounce sub-60ms pedal flutter | local, `mido` |
-| 3. render | cleaned MIDI -> grand piano (faithful + expressive) | `fluidsynth` + Salamander, `pedalboard` room |
-| 4. master | LUFS-normalize (stereo BS.1770) + true-peak limit | `setloom.audio.master` |
-
-Two renders per piece: `*.faithful.piano.wav` (fluidsynth's own room) and
-`*.expressive.piano.wav` (effects off, then a tasteful room + gentle top tame). The
-two are audition options for the listening gate.
-
-## The two lessons baked in
-
-1. **Render the raw MIDI, never a notation export.** Kong captures the sustain pedal (CC64)
-   and the rubato; the music21 note-only path silently drops both, which sounds dry and
-   wrong. This harness goes audio -> MIDI -> audio and never touches notation.
-2. **Clean, don't quantize.** The transcription is already clean (a handful of note blips,
-   some pedal flutter). We remove only those. We never snap timing to a grid, because the
-   grid is what kills the human feel.
+The MIDI retains timing and pedal that a note-only notation export would omit.
+`mido` handles the free-timing events directly; the bar-grid `setloom.midi` helper
+is not used. Kong is called directly because the transcription CLI exports
+notes without its sustain-pedal data.
 
 ## Run
 
-From the repo root, in the shared uv env with the `kong` group. The `fluidsynth`
-executable must be on `PATH`, and the checkpoint and soundfont below must exist:
+Use the shared environment with the `kong` group and `fluidsynth` on `PATH`:
 
-```
+```sh
 uv run --group kong python music/T7-piano-solos/reconstruct.py PATH/TO/piano.mp3
 ```
 
-Outputs land in `music/T7-piano-solos/out/<slug>/` (gitignored): `notes.raw.mid`,
-`notes.clean.mid`, and the two renders. Transcription reuses an existing raw MIDI;
-delete it when changing the source recording or checkpoint. Audition with
-`uv run setloom play music/T7-piano-solos/out/<slug>/<slug>.expressive.piano.wav`.
+Retained raw and cleaned MIDI lives under `performances/<slug>/`. New outputs
+and scratch MIDI go to `tmp/t7-piano-solos/<slug>/`; the renderer seeds its raw
+MIDI cache from the retained performance when available. Clearing scratch does not discard the retained performance; deliberately revise
+the retained MIDI when changing that musical source. Options include
+`--lufs` (default -16), `--min-note-ms` (30) and `--min-pedal-ms` (60).
 
-Local release packages, artwork, and upload notes live under
-`local/releases/T7-piano-solos/`; this source directory carries the reconstruction recipe.
+Published masters, artwork and upload records are retained locally under `published/`.
+They are exports, not a second production source. No piano performance was
+regenerated during this directory cleanup.
+The [four-hands variant](fourhands/README.md) uses the same model and soundfont.
 
-Flags: `--lufs` (loudness target, default -16: dynamics-first for solo piano), `--min-note-ms`
-(blip floor, default 30), `--min-pedal-ms` (pedal-flutter floor, default 60).
+## Runtime assets
 
-## Seams with setloom
+- Checkpoint: `models/piano-transcription/note_F1=0.9677_pedal_F1=0.8658.pth`
+- Soundfont: `models/soundfonts/SalamanderGrandPiano-V3.sf2`
 
-- `setloom.audio` owns the loudness master (the harness's actual job: technical hygiene).
-- Kong is called **directly**, not via `setloom transcribe`, because that path is pedal-blind.
-- `mido` is used **directly**, not `setloom.midi`, because the latter is 4/4 PPQ-480 bar-grid
-  only and cannot represent free-timing piano with pedal.
-
-Heavy ML stays in the one shared uv env via the `kong` group; weights and the soundfont stay
-in the gitignored `models/`. The folder's code is self-contained; its dependencies are not
-vendored, by project policy.
-
-## Assets and provenance
-
-- Kong checkpoint: `models/piano-transcription/note_F1=0.9677_pedal_F1=0.8658.pth` —
-  ByteDance high-resolution piano transcription, MAESTRO v3, https://zenodo.org/record/4034264
-- Soundfont: `models/soundfonts/SalamanderGrandPiano-V3.sf2` — FreePats Salamander Grand
-  Piano V3 (Yamaha C5), CC-BY 3.0, original by Alexander Holm.
-
-Target compositions (public-domain repertoire) are study material; source recordings are
-local only and never committed.
-
-## Known limits
-
-- Kong's pedal is binary on/off (no half-pedaling), and pedal estimation is the weakest link
-  on dense, heavily-pedaled passages.
-- The Salamander grand is one fixed timbre and room; it will not match the original
-  recording's instrument.
-- Expression beyond what Kong captured (melody voicing, phrase arcs) is not yet applied; it
-  is the natural next lever if a piece sounds too even.
+Source recordings and model/sample binaries remain local. Kong's pedal estimate
+is binary, with no half-pedaling, and can be unreliable in dense passages. The fixed piano timbre
+and room approximate the source instrument; additional melodic voicing and
+phrase shaping are not implemented by this solo renderer.

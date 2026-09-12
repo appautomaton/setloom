@@ -23,7 +23,7 @@ dist/
 build/
 
 # Machine-local material: corpus audio (copyrighted, never committed),
-# separation caches, analysis dossiers, candidates, release packages.
+# retained reconstructions, candidates and release packages.
 /local/
 
 # Disposable scratch experiments. Never committed.
@@ -42,5 +42,16 @@ build/
 *.flac
 *.mp3
 
+# Raster working/export images stay local; retained artwork uses compact WebP.
+*.[pP][nN][gG]
+*.[jJ][pP][gG]
+*.[jJ][pP][eE][gG]
+
 # MIDI is small, regenerable source material — committable as track input.
 # Machine-local MIDI (candidates, scratch) is already covered by /local/ above.
+
+# Local publication exports; editable production source stays alongside them.
+/music/**/published/
+
+# Session handoffs are local continuity, not repository guidance.
+/.agents/mails/

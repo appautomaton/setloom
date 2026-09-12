@@ -1,0 +1,16 @@
+Create one complete square cover for an independent melodic-techno single. Design the image and bespoke typography together. Refined contemporary music artwork, understated and distinctive.
+
+The performer is App Automaton. The track is Pulsus Noctis (Pulse of the Night). Setloom is the production tool; "Setloom Remix" is a secondary edition credit.
+
+Fresh visual concept: a close, ambiguous analog photograph of dark water at night, where a narrow silver reflection is stretched into several irregular horizontal traces by motion. A tactile, grainy image with deep midnight ultramarine, soft silver and black, no horizon, no literal landscape scene. The reflection is cropped and off-center, more like a found photographic fragment than a computer-generated effect. Quiet depth, rhythm, tension and breathing space. Matte photographic texture, rich blacks. No luminous ring, no vortex, no eclipse, no glitter or stars, no flames, no metallic-gold palette.
+
+Typography: a custom contemporary grotesk wordmark with a low, wide stance, rounded outer curves, crisp squared inner counters, subtle distinctive cuts and confident tight spacing. Treat it as purposeful record-cover lettering, not a default UI font. Matte warm-white ink. The title should have personality without ornament or glowing effects. Use deliberate LOWERCASE for the title:
+"pulsus"
+"noctis"
+on two large lines, with comfortable breathing room, integrated asymmetrically into the upper part of the artwork. The letters are still straightforward and readable, never scrambled, overlapping illegibly or substituted with symbols. The expressive lower-case wordmark is the primary focus alongside the photographic fragment.
+
+Exact artist text: "APP AUTOMATON", clearly readable but secondary.
+Exact edition text: "SETLOOM REMIX", smaller.
+Place these secondary credits with a simple disciplined alignment near the bottom, comfortably within the safe margins. Use a clean compatible font with restrained tracking. They must remain legible in a thumbnail.
+
+Only the specified title, artist and edition text. No catalogue codes, no branding badges, no technical captions, no decorative lines, no ornaments, no mockup. Avoid fantasy, luxury-fashion perfume, festival EDM graphics, stretched horror-poster type, stock waveform illustrations or generic gradient art. The result should feel intimate, nocturnal and culturally current. One coherent finished cover with all typography rendered by the image model. Square, full bleed.

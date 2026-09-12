@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: square electronic music album cover artwork, no typography.
+Primary request: a sophisticated, emotionally charged abstract physical wave surface lifting upward against gravity. A single monumental thin rippling membrane rises and curls from a low suspended wave into an elegant airborne crest, as if sound itself has become sculptural material. The impossible upward motion must read clearly.
+Scene/backdrop: quiet deep dark atmospheric studio void, subtle spatial depth and a soft trace of shadow beneath the floating form.
+Style/medium: exquisite sculptural fine-art photograph / physically convincing high-end material rendering, tactile and cinematic, worthy of a contemporary electronic music sleeve.
+Composition/framing: perfectly square image; compelling asymmetric wave sculpture occupying the central 65 percent of the canvas, with graceful horizontal reach and an upward sweep; clean generous negative space across the upper 15 percent and lower 15 percent for typography to be added later. Strong silhouette that remains readable as a small album thumbnail.
+Materials/textures: richly detailed thin mineral-metallic skin with silky ridges, fine interference ripples and luminous edge reflections; subtle imperfections so the object feels physical, not a generic software mesh.
+Lighting/mood: dramatic directional grazing light reveals ripples and the lifted crest, luminous highlights against deep shadow, restrained and emotive, tension becoming weightlessness.
+Constraints: text-free image only. No words, letters, numbers, typography, logos, watermarks, borders, UI, piano, musical instruments, planets, astronauts, stars, literal space clip-art, charts, grids or waveform diagrams. Do not include album packaging or a mockup. Make a fresh original artwork.

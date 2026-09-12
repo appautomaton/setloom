@@ -1,0 +1,240 @@
+{
+  "sample_rate": 44100,
+  "frames": 8530368,
+  "parts": {
+    "1": {
+      "gain_db": 1.057671374974041,
+      "pan": 0,
+      "instrument": "piano",
+      "soundfont": "soundfonts/SalamanderGrandPiano-V3.sf2",
+      "engine_gain": 0.7,
+      "highpass": 100,
+      "lowpass": 9500,
+      "reverb": 0.12,
+      "room": 0.5,
+      "duck": 0.07
+    },
+    "4": {
+      "gain_db": -0.7028244194861558,
+      "pan": 0,
+      "instrument": "piano",
+      "soundfont": "soundfonts/SalamanderGrandPiano-V3.sf2",
+      "engine_gain": 0.7,
+      "highpass": 120,
+      "lowpass": 9500,
+      "reverb": 0.12,
+      "room": 0.5,
+      "duck": 0.07
+    },
+    "2": {
+      "gain_db": -4.799526804143394,
+      "pan": 0,
+      "instrument": "bass",
+      "harmonics": [
+        0.7,
+        1.0,
+        0.04,
+        0.18,
+        0.13,
+        0.15
+      ],
+      "attack": 0.006,
+      "release": 0.035,
+      "drive": 0.3,
+      "lowpass": 1500,
+      "duck": 0,
+      "level_curve": [
+        [
+          0,
+          -15
+        ],
+        [
+          9.7,
+          -15
+        ],
+        [
+          10.7,
+          -70
+        ],
+        [
+          15.65,
+          -70
+        ],
+        [
+          15.9,
+          0
+        ],
+        [
+          63.5,
+          0
+        ],
+        [
+          71.5,
+          -3
+        ],
+        [
+          79.5,
+          -7
+        ],
+        [
+          87.3,
+          -14
+        ],
+        [
+          94.9,
+          -14
+        ],
+        [
+          95.3,
+          0
+        ]
+      ],
+      "pulse": {
+        "origin_seconds": 0.03783156237701646,
+        "floor": 0.06,
+        "rise_seconds": 0.115,
+        "curve": 1.4
+      }
+    },
+    "3": {
+      "gain_db": -27.39196838379327,
+      "pan": -0.1,
+      "instrument": "modal",
+      "modes": [
+        [
+          1,
+          1,
+          0.14
+        ],
+        [
+          3.97,
+          0.4,
+          0.07
+        ],
+        [
+          9.9,
+          0.1,
+          0.035
+        ]
+      ],
+      "release": 0.12,
+      "highpass": 170,
+      "reverb": 0.1,
+      "delay_seconds": 0.371901,
+      "delay_gain": 0.15
+    },
+    "5": {
+      "gain_db": -2.5074314580363164,
+      "pan": 0,
+      "instrument": "kick",
+      "fundamental": 44,
+      "sweep_hz": 135,
+      "sweep_seconds": 0.017,
+      "decay": 0.145,
+      "release": 0.07,
+      "drive": 1.4,
+      "velocity_power": 2.4
+    },
+    "6": {
+      "gain_db": -7.728229657550841,
+      "pan": 0.08,
+      "instrument": "tom",
+      "fundamental": 84,
+      "sweep_hz": 68,
+      "sweep_seconds": 0.018,
+      "decay": 0.095,
+      "release": 0.06,
+      "drive": 1.05,
+      "highpass": 40,
+      "root_note": 45
+    },
+    "7": {
+      "gain_db": -11.306176947208971,
+      "pan": -0.12,
+      "instrument": "sample",
+      "sample": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Drums & Percussion/Electronic Drums/Roland TR-909 Unprocessed Kit/Rim - TR-909 Unprocessed.aif",
+      "tail_fade_seconds": null
+    },
+    "8": {
+      "gain_db": -13.942393652551576,
+      "pan": 0.16,
+      "instrument": "sample",
+      "sample": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Drums & Percussion/Electronic Drums/Modern TR-727/Conga Muted - TR-727 Processed.aif",
+      "tail_fade_seconds": null
+    },
+    "9": {
+      "gain_db": -8.250355284451622,
+      "pan": 0.12,
+      "instrument": "sample",
+      "sample": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Drums & Percussion/Electronic Drums/Roland TR-909 Unprocessed Kit/Hi-Hat 1 - TR-909 Unprocessed.aif",
+      "tail_fade_seconds": [
+        0.035,
+        0.065
+      ]
+    },
+    "10": {
+      "gain_db": -12.974012512715474,
+      "pan": -0.22,
+      "instrument": "sample",
+      "sample": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Drums & Percussion/Percussion/Shaker Caxixi_consolidated.caf",
+      "tail_fade_seconds": null,
+      "crop_seconds": [
+        0.207,
+        0.45
+      ]
+    },
+    "11": {
+      "gain_db": -14.879687515667557,
+      "pan": 0,
+      "instrument": "sample",
+      "sample": "/Users/ac/Music/Logic Pro Library.bundle/Samples/Drums & Percussion/Electronic Drums/Roland TR-909 Unprocessed Kit/Snare 1 - TR-909 Unprocessed.aif",
+      "tail_fade_seconds": [
+        0.1,
+        0.21
+      ]
+    },
+    "12": {
+      "gain_db": 11.746028289144911,
+      "pan": -0.22,
+      "instrument": "violin",
+      "sfz": "vsco2-ce/SViolinVib-Quiet.sfz",
+      "attack": 0.17,
+      "release": 0.3,
+      "highpass": 180,
+      "lowpass": 8500,
+      "reverb": 0.22,
+      "room": 0.65
+    },
+    "13": {
+      "gain_db": 16.25692444323839,
+      "pan": 0.22,
+      "instrument": "violin",
+      "sfz": "vsco2-ce/SViolinVib-Quiet.sfz",
+      "attack": 0.17,
+      "release": 0.3,
+      "highpass": 180,
+      "lowpass": 8500,
+      "reverb": 0.22,
+      "room": 0.65
+    },
+    "14": {
+      "gain_db": -19.86102964521518,
+      "pan": 0,
+      "instrument": "pluck",
+      "attack": 0.002,
+      "release": 0.02,
+      "cutoff_floor": 100,
+      "cutoff_peak": 9000,
+      "filter_decay": 0.025,
+      "highpass": 32
+    }
+  },
+  "mastering": {
+    "target_lufs": -9.0,
+    "input_gain_db": 8.0,
+    "ceiling_dbtp": -0.6,
+    "lookahead_ms": 3.0,
+    "release_ms": 60.0,
+    "tolerance_lu": 0.3
+  }
+}

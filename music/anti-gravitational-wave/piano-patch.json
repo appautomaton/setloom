@@ -1,0 +1,11 @@
+{
+  "soundfont": "models/soundfonts/SalamanderGrandPiano-V3.sf2",
+  "fluidsynth": "/opt/homebrew/bin/fluidsynth",
+  "engine_gain": 0.3,
+  "bus_gain_db": 18.0,
+  "highpass_hz": 160,
+  "lowpass_hz": 5200,
+  "license": "CC BY 3.0; models/soundfonts/SalamanderGrandPiano-V3.readme.txt",
+  "credit": "Salamander Grand Piano: Alexander Holm, Yamaha C5 samples; FreePats SF2 conversion by Roberto, v3+20200602.",
+  "space": "Dry. FluidSynth reverb and chorus disabled; no added room or delay."
+}
