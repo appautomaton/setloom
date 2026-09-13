@@ -3,7 +3,7 @@
 
 One self-contained pipeline, no notation, no quantization, expressive timing preserved:
 
-  1. transcribe   Kong (ByteDance MAESTRO) -> raw MIDI with pedal (CC64).  GPU mps->cpu.
+  1. transcribe   Kong -> raw MIDI with pedal (CC64).  GPU mps->cpu.
   2. clean        drop sub-30ms note blips; debounce sub-60ms pedal flutter. Keeps rubato,
                   dynamics, and the pedal contour intact.
   3. render       cleaned MIDI -> Salamander grand (fluidsynth):
@@ -195,9 +195,12 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     slug = slugify(src.stem)
-    out = HERE / "out" / slug
+    out = REPO / "tmp/t7-piano-solos" / slug
     out.mkdir(parents=True, exist_ok=True)
     raw_mid, clean_mid = out / "notes.raw.mid", out / "notes.clean.mid"
+    retained_raw = HERE / "performances" / slug / "notes.raw.mid"
+    if not raw_mid.exists() and retained_raw.exists():
+        raw_mid.write_bytes(retained_raw.read_bytes())
     faithful = out / f"{slug}.faithful.piano.wav"
     expressive = out / f"{slug}.expressive.piano.wav"
     scratch = [out / "_fa.wav", out / "_ex.dry.wav", out / "_ex.wet.wav"]

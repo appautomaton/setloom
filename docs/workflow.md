@@ -2,89 +2,65 @@
 
 # Workflow
 
-A Setloom track is made in a loop, not a pipeline. The human sets a direction,
-the agent makes a move, the human listens, and the direction sharpens. No fixed
-command sequence is required; the tools used depend on the question being asked.
+Work from the intended musical effect and the actual performance. The agent
+owns production details and judgment; the human directs the work and judges
+the result. Tools support that exchange:
 
 ```text
-track thesis → candidate or reference study → listening note → revision
+musical intent → temporary audition → listening feedback → revision or promotion
 ```
 
-The worked examples cover two different tasks:
-[Lux in Umbra](../music/T5-lux-in-umbra/) assembles a club track from editable
-source; [T7](../music/T7-piano-solos/) reconstructs piano performances from audio.
-Each owns its musical choices. The shared harness supplies technical tools,
-and the listening loop remains the same.
+## Working stages
 
-## The producer pass
+| Location | Purpose |
+| --- | --- |
+| `music/` | Editable productions the user has chosen to retain or promote there. |
+| `tmp/<track>/` | New source, MIDI, analysis, separated estimates, experiments, working renders and auditions, including named versions. |
+| `local/reconstructions/` | User-approved reconstruction baselines: editable notes/MIDI, patches, retained performances and supporting references for later reinterpretation. |
+| `local/candidates/` | Candidates the user considers good enough to retain for the longer term. |
+| `local/releases/` | Release assets within the commissioned release scope. |
+| `local/corpus/` | Original recordings and reference assets the user has chosen to retain. New separated estimates stay in `tmp`. |
 
-Before a serious render, the musical move is made explicit:
+Once a production is retained under `music/`, that directory is its sole editable
+source of truth. Keep the score, instruments and necessary artwork source there;
+remove matching local candidates, source clones and obsolete derived caches after
+checking dependencies. Unique publication assets can live beside the production
+under `published/`, ignored by Git. They are historical exports, not another SOT.
 
-```text
-groove spine → motif cell → energy arc → palette → what to cut
-```
+Promotion is a quality and scope decision informed by the brief, listening
+feedback, and existing authorization. Supplied originals keep their existing
+location; new derivatives begin in `tmp`. A filename, technical check or relative
+improvement does not authorize promotion. Use the user's acceptance and scope
+already given without imposing a fixed approval phrase or repeated confirmation.
+Approval of a part applies to that part; retention does not authorize publication.
 
-This pass is short, but it decides everything downstream. Naming the spine, the
-motif, the arc, the palette (and what to leave out) is what separates a track
-with a point of view from a pile of loops. Often the strongest choice is *less*:
-no hat bed, no clap, no inherited bus. Silence is an arrangement decision.
+An approved reconstruction's retained notes and performance become the baseline
+for further work. Keep reference analysis distinct from that accepted source;
+rerunning a transcription must not silently replace it. Develop new
+interpretations in `tmp/<track>/` until the user chooses to retain them.
 
-## Reference study
+Keep directory placement, renderer defaults, links, and current state consistent.
+When moving a version, preserve its identity; an old reviewed file must not
+silently acquire different audio. Temporary material can remain necessary for
+active feedback or rebuilds. Clean it up when those dependencies are resolved.
 
-References exist to study abstract moves and sharpen review vocabulary, never to
-imitate a named artist. When a reference is worth studying, listening comes
-first: timestamped notes in your own words. Measurement comes later, and only
-when a specific reference raises a concrete technical question. A spectrogram can
-show you where the energy sits; it can't tell you whether the track is any good.
+## Listening and continuity
 
-## The human's role
+Deliver audio the user can judge without operating a DAW or inspecting MIDI.
+Resolve mismatches demonstrable with available evidence internally; do not make
+the human confirm missing content, incorrect timing or other already-visible
+defects. Updates should convey consequential findings or changes of direction,
+not require approval of internal passes. Honor playback preferences and identify
+the artifact under discussion. Keep a concise current record: artifact, stage,
+scoped listening verdict, and next musical
+question. Distinguish user reports from agent observations. A later clarification
+governs current state; retain earlier feedback with the artifact it described.
+Technical reports must not reset that verdict.
 
-The human is the taste owner, and that is the only role the human has to play.
+Feedback normally steers the commissioned work. Answer questions, incorporate
+corrections and continue independent work. Pause when the user explicitly asks,
+or when a missing decision or authorization blocks the dependent action.
 
-You do not need to click through a DAW, browse folders, operate a plug-in, or
-know what every studio term means. You need to listen, decide, and say what you
-think in plain words. The listening gate is no-click by design: the agent
-prepares and plays the audio; you only listen and type.
-
-A listening note is just honest reaction, structured enough to act on:
-
-```yaml
-take: take-003
-decision: revise
-notes:
-  groove: "Kick works. Bass is too busy in the first 32 bars."
-  melody: "Motif is good, but the break is too sentimental."
-  energy: "Drop needs more lift without becoming too EDM."
-requests:
-  - "Simplify the bass before the first break."
-  - "Make the arp darker and less bright."
-  - "Shorten the break by 16 bars."
-```
-
-Every candidate lands in one of three states:
-
-- **keep:** this can move forward.
-- **revise:** useful material, needs changes.
-- **reject:** set it aside.
-
-## What gets kept
-
-Setloom keeps editable source, not opaque bounces. A track in progress is its
-recipe:
-
-```text
-spec + source/MIDI + stems + render code + listening notes
-```
-
-Reference audio, samples, and model weights stay out of version control. Renders
-and scratch analysis are disposable. Anything that matters can be regenerated
-from the spec, the seed, and the code that made it.
-
-## Diagnostics and listening
-
-Setloom can measure a lot: loudness, spectra, stereo width, even a 53-stem
-breakdown of a reference. Those measurements are navigation aids: they help you
-ask a sharper listening question. They are never the verdict.
-
-The verdict is a person listening. Both the measurement and the ear have a job;
-only one of them decides.
+Preserve editable notes, controls, patches, source, and credits needed to reproduce
+useful work. Keep track-specific preferences and failure details with that track.
+Shared guidance should retain reusable distinctions, not a history of each attempt.

@@ -1,53 +1,27 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 """Keyboard-first CLI for Setloom.
 
-Commands: ``new`` (scaffold a track), ``play`` (audition audio), ``inspect``
+Commands: ``play`` (audition audio), ``inspect``
 (waveform/spectrum/spectrogram plots), ``transcribe`` (audio-to-MIDI notes),
-and ``anatomize`` (opt-in diagnostics). Musical composition lives in per-track
+and ``separate`` (reference estimates). Musical composition lives in per-track
 code, not in this harness.
 """
 
 import argparse
-import os
-import re
 import sys
 from pathlib import Path
 
 
-def _cmd_anatomize(args: argparse.Namespace) -> int:
-    from setloom.anatomy.pipeline import collect_audio, run as run_anatomy
+def _cmd_separate(args: argparse.Namespace) -> int:
+    try:
+        from setloom.anatomy.layers import write_separated_estimates
 
-    target = Path(args.path)
-    if not target.exists():
-        print(f"anatomize failed: {target} does not exist", file=sys.stderr)
+        paths = write_separated_estimates(Path(args.audio), Path(args.out), Path(args.model_root))
+    except Exception as exc:
+        print(f"separate failed: {exc}", file=sys.stderr)
         return 1
-    if not collect_audio(target):
-        print(f"anatomize failed: no audio files under {target}", file=sys.stderr)
-        return 1
-    overrides = None
-    if args.transcriber:
-        from setloom.anatomy.transcribe import parse_transcriber_flag
-
-        try:
-            overrides = parse_transcriber_flag(args.transcriber)
-        except ValueError as exc:
-            print(f"anatomize failed: {exc}", file=sys.stderr)
-            return 1
-    statuses = run_anatomy(
-        target,
-        out_dir=Path(args.out),
-        layers=args.layers or args.transcribe,  # transcribe needs the kept stems on disk
-        layer_stems_dir=Path(args.layer_stems_dir),
-        models_dir=Path(args.models_dir),
-        transcribe=args.transcribe,
-        transcribe_overrides=overrides,
-        emit_events=args.transcribe_events,
-        bp_model_root=Path(args.bp_model_root),
-    )
-    for track, status in statuses.items():
-        print(f"{track}: {', '.join(status)}")
-    print(f"dossiers: {args.out}")
-    print("reminder: dossiers are technical evidence; musical judgment stays with the listening gate")
+    print(f"estimates: {len(paths)}")
+    print(f"output: {args.out}")
     return 0
 
 
@@ -55,26 +29,6 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     from setloom.inspection import run as run_inspection
 
     return run_inspection(args)
-
-
-def _cmd_new(args: argparse.Namespace) -> int:
-    from setloom.scaffold import create_track
-
-    title = args.title or args.id.lower()
-    try:
-        track_dir = create_track(
-            args.id, title, bpm=args.bpm, key=args.key, root="."
-        )
-    except FileExistsError as exc:
-        print(f"new failed: {exc}", file=sys.stderr)
-        return 1
-    print(f"created {track_dir}")
-    print(f"  spec:             {track_dir / 'spec.yml'}")
-    print(f"  assemble:         {track_dir / 'assemble.py'}")
-    print(f"  listening notes:  {track_dir / 'listening-notes.yml'}")
-    print("edit the spec, then run the assembler from the repo root:")
-    print(f"  uv run --no-sync python {track_dir / 'assemble.py'}")
-    return 0
 
 
 def _cmd_play(args: argparse.Namespace) -> int:
@@ -90,15 +44,10 @@ def _cmd_play(args: argparse.Namespace) -> int:
         print("play failed: afplay not found (macOS built-in)", file=sys.stderr)
         return 1
     print(f"playing: {audio}")
-    subprocess.run([player, str(audio)])
-    return 0
+    return subprocess.run([player, str(audio)]).returncode
 
 
 def _cmd_transcribe(args: argparse.Namespace) -> int:
-    rerun = _rerun_with_transcription_tmpdir()
-    if rerun is not None:
-        return rerun
-
     try:
         notes, midi_path, events_path = _transcribe_with_engine(args)
     except Exception as exc:
@@ -113,7 +62,7 @@ def _cmd_transcribe(args: argparse.Namespace) -> int:
 
 def _transcribe_with_engine(args: argparse.Namespace):
     """Run the selected engine and return ``(notes, midi_path, events_path)``."""
-    if args.engine == "basic-pitch":
+    if args.engine in ("basic-pitch", "basic-pitch-mlx"):
         result = _run_basic_pitch(args)
         return result.notes, result.midi_path, result.events_path
 
@@ -170,103 +119,19 @@ def _run_basic_pitch(args: argparse.Namespace):
             energy_tol=args.energy_tol,
             include_pitch_bends=not args.no_pitch_bends,
             multiple_pitch_bends=args.multiple_pitch_bends,
-        )
-    )
-
-
-def _rerun_with_transcription_tmpdir() -> int | None:
-    """Start transcription CLI runs with project-local temp space."""
-    target = str((Path("tmp") / "transcription").resolve())
-    if os.environ.get("SETLOOM_TRANSCRIPTION_TMPDIR_READY") == "1":
-        return None
-    if os.environ.get("TMPDIR") == target:
-        return None
-    import subprocess
-
-    Path(target).mkdir(parents=True, exist_ok=True)
-    env = os.environ.copy()
-    env["TMPDIR"] = target
-    env["SETLOOM_TRANSCRIPTION_TMPDIR_READY"] = "1"
-    completed = subprocess.run(
-        [sys.executable, "-m", "setloom.cli", *sys.argv[1:]],
-        env=env,
-        text=True,
-        capture_output=True,
-    )
-    if completed.stdout:
-        output = (
-            _clean_success_output(completed.stdout)
-            if completed.returncode == 0
-            else completed.stdout
-        )
-        print(output, end="")
-    if completed.returncode != 0 and completed.stderr:
-        print(completed.stderr, end="", file=sys.stderr)
-    return completed.returncode
-
-
-def _clean_success_output(output: str) -> str:
-    return re.sub(
-        r'E5RT encountered an STL exception\. msg = filesystem error: '
-        r'in create_directories: Operation not permitted \["[^"]+"\]\.',
-        "",
-        output,
+        ),
     )
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="setloom", description="Setloom track and set harness")
+    parser = argparse.ArgumentParser(prog="setloom", description="Setloom audio and MIDI tools")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p_anatomize = sub.add_parser(
-        "anatomize", help="dissect local reference audio into anatomy dossiers"
-    )
-    p_anatomize.add_argument(
-        "path", nargs="?", default="local/corpus/audio", help="audio file or directory (default local/corpus/audio/)"
-    )
-    p_anatomize.add_argument(
-        "--out", default="local/corpus/dossiers", help="dossier output root (default local/corpus/dossiers)"
-    )
-    p_anatomize.add_argument(
-        "--layers",
-        action="store_true",
-        help="run the 53-stem layer lens (downloads ~1.3 GB weights on first use)",
-    )
-    p_anatomize.add_argument(
-        "--layer-stems-dir",
-        dest="layer_stems_dir",
-        default="local/corpus/stems53",
-        help="53-stem layer cache root (default local/corpus/stems53)",
-    )
-    p_anatomize.add_argument(
-        "--models-dir",
-        dest="models_dir",
-        default="models/roformer",
-        help="53-stem model cache root (default models/roformer)",
-    )
-    p_anatomize.add_argument(
-        "--transcribe",
-        action="store_true",
-        help="transcribe kept stems to per-stem + combined MIDI (implies --layers)",
-    )
-    p_anatomize.add_argument(
-        "--transcriber",
-        dest="transcriber",
-        help="per-stem route overrides, e.g. bass=poly,marimba=poly,percussion=drum",
-    )
-    p_anatomize.add_argument(
-        "--transcribe-events",
-        dest="transcribe_events",
-        action="store_true",
-        help="also write per-stem note-events JSON",
-    )
-    p_anatomize.add_argument(
-        "--bp-model-root",
-        dest="bp_model_root",
-        default="models/basic-pitch/icassp_2022",
-        help="Basic Pitch model asset root (default models/basic-pitch/icassp_2022)",
-    )
-    p_anatomize.set_defaults(func=_cmd_anatomize)
+    p_separate = sub.add_parser("separate", help="write all separated estimates as float WAVs")
+    p_separate.add_argument("audio", help="input audio file")
+    p_separate.add_argument("--out", required=True, help="output directory for separated estimates")
+    p_separate.add_argument("--model-root", default="models/roformer", help="local model directory")
+    p_separate.set_defaults(func=_cmd_separate)
 
     p_inspect = sub.add_parser(
         "inspect",
@@ -276,13 +141,6 @@ def build_parser() -> argparse.ArgumentParser:
 
     configure_inspection_parser(p_inspect)
     p_inspect.set_defaults(func=_cmd_inspect)
-
-    p_new = sub.add_parser("new", help="scaffold a new track directory")
-    p_new.add_argument("id", help="track id, e.g. T06")
-    p_new.add_argument("--title", help="track title (defaults to id lowercased)")
-    p_new.add_argument("--bpm", type=float, default=128.0, help="tempo (default 128)")
-    p_new.add_argument("--key", default="A minor", help="key, e.g. 'D minor' (default 'A minor')")
-    p_new.set_defaults(func=_cmd_new)
 
     p_play = sub.add_parser("play", help="play an audio file for the listening gate")
     p_play.add_argument("audio", help="path to the audio file")
@@ -297,9 +155,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_transcribe.add_argument("--events", help="optional output note-events JSON path")
     p_transcribe.add_argument(
         "--engine",
-        choices=("basic-pitch", "kong", "fusion"),
+        choices=("basic-pitch", "basic-pitch-mlx", "kong", "fusion"),
         default="basic-pitch",
-        help="basic-pitch (default, CoreML poly) | kong (piano, needs --group kong) | "
+        help="basic-pitch (default, MLX GPU FP32, needs --group transcription) | "
+        "basic-pitch-mlx (alias for basic-pitch) | "
+        "kong (piano, needs --group kong) | "
         "fusion (Kong timing + Basic Pitch pitch, needs --group kong --group transcription)",
     )
     p_transcribe.add_argument(
@@ -308,12 +168,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_transcribe.add_argument(
         "--model-path",
-        help="explicit Basic Pitch model path",
+        help="explicit Basic Pitch MLX model directory",
     )
     p_transcribe.add_argument(
         "--model-root",
-        default="models/basic-pitch/icassp_2022",
-        help="model asset root (default models/basic-pitch/icassp_2022)",
+        default="models/basic-pitch-mlx/icassp_2022",
+        help="MLX model asset root (default models/basic-pitch-mlx/icassp_2022)",
     )
     p_transcribe.add_argument("--bpm", type=float, default=120.0, help="MIDI tempo")
     p_transcribe.add_argument("--channel", type=int, default=0, help="MIDI channel")

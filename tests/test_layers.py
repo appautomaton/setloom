@@ -22,6 +22,26 @@ from setloom.anatomy import layers as ll  # noqa: E402
 from setloom.anatomy.roformer import separate as separation  # noqa: E402
 from setloom.anatomy.roformer import weights as rfw  # noqa: E402
 
+
+def test_separate_cli_preserves_quiet_estimates_and_float_headroom(tmp_path, monkeypatch):
+    import soundfile as sf
+    from setloom.cli import main
+
+    source = tmp_path / "original.wav"
+    sf.write(source, np.zeros((100000, 2)), 44100)
+    estimates = {"synth": np.full((2, 100000), 1.25, dtype=np.float32),
+                 "quiet": np.full((2, 100000), 1e-30, dtype=np.float32),
+                 "silent": np.zeros((2, 100000), dtype=np.float32)}
+    monkeypatch.setattr(ll, "_extract_stems", lambda audio, models: estimates)
+    out = tmp_path / "estimates"
+    assert main(["separate", str(source), "--out", str(out)]) == 0
+    assert sorted(p.name for p in out.iterdir()) == ["quiet.wav", "silent.wav", "synth.wav"]
+    for name, expected in estimates.items():
+        actual, sr = sf.read(out / f"{name}.wav", dtype="float32", always_2d=True)
+        assert sr == 44100
+        assert sf.info(out / f"{name}.wav").subtype == "FLOAT"
+        np.testing.assert_array_equal(actual, expected.T)
+
 TINY = dict(
     dim=32,
     depth=1,

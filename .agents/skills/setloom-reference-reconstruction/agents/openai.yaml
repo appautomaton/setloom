@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setloom Reference Reconstruction"
+  short_description: "Recover editable parts through direct musical analysis"
+  default_prompt: "Use $setloom-reference-reconstruction to recover or revise this reference as editable musical parts and prepare a listening result."

@@ -25,7 +25,7 @@ HOP = 512
 AUDIO_SUFFIXES = {".mp3", ".wav", ".flac", ".aiff", ".aif", ".m4a"}
 START_BPM = 124.0
 
-DEFAULT_OUT = Path("local/corpus/dossiers")
+DEFAULT_OUT = Path("tmp/anatomy/analysis")
 
 
 @dataclass
@@ -186,12 +186,12 @@ def run(
     target: Path,
     out_dir: Path = DEFAULT_OUT,
     layers: bool = False,
-    layer_stems_dir: Path = Path("local/corpus/stems53"),
+    layer_stems_dir: Path = Path("tmp/anatomy/reference-stems"),
     models_dir: Path = Path("models/roformer"),
     transcribe: bool = False,
     transcribe_overrides: dict[str, str] | None = None,
     emit_events: bool = False,
-    bp_model_root: Path = Path("models/basic-pitch/icassp_2022"),
+    bp_model_root: Path = Path("models/basic-pitch-mlx/icassp_2022"),
     summary: bool = True,
 ) -> dict:
     """Run the pipeline over a file or directory. Returns a per-track status map.
@@ -199,6 +199,11 @@ def run(
     ``transcribe`` turns the kept layer stems into per-stem + combined MIDI; it reads
     the stems on disk, so it requires (and the CLI implies) ``layers``.
     """
+    if transcribe:
+        # The layer lens may initialize MLX before the Basic Pitch model is loaded.
+        from setloom.transcription.basic_pitch_mlx import _configure_fp32_precision
+
+        _configure_fp32_precision()
     out_dir.mkdir(parents=True, exist_ok=True)
     statuses: dict[str, list[str]] = {}
     rows = []
@@ -222,7 +227,7 @@ def run(
             status += layer_lens.layer_pass(audio, track, out_dir, layer_stems_dir, models_dir)
 
         if transcribe:
-            # Lazy import: transcription pulls Basic Pitch (CoreML) and torchfcpe.
+            # Lazy import: transcription pulls Basic Pitch (MLX) and torchfcpe.
             from setloom.anatomy import transcribe as tx
 
             grid_t = Grid(quick["bpm_estimate"], quick["first_beat_s"], quick["bars_estimated"])

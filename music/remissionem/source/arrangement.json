@@ -1,0 +1,79 @@
+{
+  "title": "Remissionem (Setloom Remix)",
+  "duration_seconds": 242.6354648526077,
+  "source_recording": "local/corpus/audio/techno/Forgiveness.mp3",
+  "audio_tracks": [],
+  "parts": [
+    {
+      "name": "Kick",
+      "instrument": "kick",
+      "channel": 9
+    },
+    {
+      "name": "Bass weight",
+      "instrument": "sub",
+      "channel": 0
+    },
+    {
+      "name": "Bass pulse body",
+      "instrument": "pulse",
+      "channel": 1
+    },
+    {
+      "name": "Bass resonant motion",
+      "instrument": "formant",
+      "channel": 4
+    },
+    {
+      "name": "Veil chimes",
+      "instrument": "chimes",
+      "channel": 2
+    },
+    {
+      "name": "High percussion",
+      "instrument": "hat",
+      "channel": 9
+    },
+    {
+      "name": "Snare",
+      "instrument": "snare",
+      "channel": 9
+    },
+    {
+      "name": "Percussion",
+      "instrument": "percussion",
+      "channel": 9
+    },
+    {
+      "name": "Transition downshifts",
+      "instrument": "downshift",
+      "channel": 5
+    },
+    {
+      "name": "Risers and release",
+      "instrument": "riser",
+      "channel": 6
+    },
+    {
+      "name": "Saw arpeggio",
+      "instrument": "arp",
+      "channel": 3
+    },
+    {
+      "name": "Grand piano",
+      "instrument": "piano",
+      "channel": 8
+    },
+    {
+      "name": "Pulse chord stabs",
+      "instrument": "stab",
+      "channel": 7
+    },
+    {
+      "name": "Prism pluck",
+      "instrument": "prism",
+      "channel": 10
+    }
+  ],
+  "solo_track": "Veil chimes"
+}

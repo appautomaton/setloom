@@ -11,16 +11,18 @@ is you, welcome. Code, documentation, and good questions are all appreciated.
 A few principles shape everything here, and they are worth knowing before you
 start.
 
-- **The human is the taste owner.** Tools and agents propose; a person listens
-  and decides. Keep the listening gate intact: never let a script or a model
-  become the final word on whether music is good.
+- **Agents own production quality; humans judge the result.** Bring musical
+  taste and creative judgment. A rejected result needs substantive revision;
+  scripts and measurements do not override the listener's verdict.
 - **Reproducible over opaque.** Prefer source you can re-run to artifacts you
   cannot. Specs, MIDI, render code, and notes travel with the work; large or
   copyrighted binaries do not.
-- **Open and keyboard-first.** Favor open-source, scriptable tools over manual
-  clicking. Python is the control plane.
-- **References are study, not law.** Treat reference tracks as review vocabulary
-  and abstract moves to learn from, never as templates or genre rules.
+- **Tools serve understood operations.** Favor open, scriptable tools for
+  repeatable work and use authorized UI control where needed. Musical analysis,
+  voice grouping and sound design still require patient hands-on work.
+- **Follow the musical brief.** Study the actual recording or performance.
+  Faithful reconstruction, reinterpretation and composition need different
+  decisions; previous-track recipes and reports do not settle them.
 
 ## Getting oriented
 
@@ -38,8 +40,8 @@ uv run --group dev ruff check src  # lint
 
 - Clear, high-signal English in docs and prompts.
 - Behavior covered by a test, or a note on why it cannot be.
-- No proprietary samples, unlicensed sample packs, model weights, or copyrighted
-  audio, anywhere in the tree.
+- Keep audio, proprietary samples and model weights out of Git. New working
+  material belongs in `tmp/`; retained assets follow [working stages](docs/workflow.md#working-stages).
 - Changes scoped to what you set out to do, with the workspace left clean for the
   next person.
 

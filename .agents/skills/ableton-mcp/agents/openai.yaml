@@ -1,0 +1,12 @@
+interface:
+  display_name: "Ableton MCP"
+  short_description: "Control Ableton via Setloom-local MCP"
+  default_prompt: "Use $ableton-mcp to inspect my Ableton Live Set and carry out the requested edits within the authorized scope."
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "ableton"
+      description: "Setloom project-local Ableton MCP server launched from local/mcp/run-ableton-mcp.sh"
+      transport: "stdio"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Ableton Production"
+  short_description: "Arrangement and production decisions in Ableton Live"
+  default_prompt: "Use $ableton-production to produce or revise this music in Ableton Live within my brief."
+policy:
+  allow_implicit_invocation: true

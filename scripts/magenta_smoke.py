@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # SPDX-License-Identifier: AGPL-3.0-only
-"""Magenta RT 2 smoke proof: a short MLX-generated clip from the unified env.
+"""Generate an optional Magenta RT 2 MLX test clip in the shared environment.
 
-Proves the jam pillar runs in setloom's one environment — not the realtime jam
-workflow (live audio routing and MIDI steering are a future change).
+Requires the optional ``magenta-rt[mlx]`` package in the repo's
+existing uv environment, providing ``MagentaRT2Mlxfn`` and the ``mrt`` command.
+It is not included in the default dependency groups. Upstream setup:
+https://github.com/magenta/magenta-realtime
 
-Run from the repo root (requires the genai dependency group):
+Run from the repo root after setup:
 
     uv run --no-sync python scripts/magenta_smoke.py --prompt TEXT [--duration 16]
 
@@ -18,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 import time
 from pathlib import Path
 
@@ -25,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 os.environ.setdefault("MAGENTA_HOME", str(ROOT / "models" / "magenta"))
 os.environ.setdefault("HF_HUB_CACHE", str(ROOT / "models" / "hf"))
 
-OUT_DIR = ROOT / "local" / "candidates" / "genai"
+OUT_DIR = ROOT / "tmp" / "genai" / "auditions"
 
 
 def _ensure_model(size: str = "mrt2_base") -> None:
@@ -55,7 +58,11 @@ def main() -> int:
 
     from scipy.io import wavfile
 
-    from magenta_rt import MagentaRT2Mlxfn
+    try:
+        from magenta_rt import MagentaRT2Mlxfn
+    except ImportError as exc:
+        print(f"Magenta RT 2 MLX runtime is unavailable: {exc}. See this script's setup notes.", file=sys.stderr)
+        return 1
 
     _ensure_model()
 
@@ -72,7 +79,6 @@ def main() -> int:
     out = OUT_DIR / f"{args.name}.wav"
     wavfile.write(str(out), wav.sample_rate, wav.samples)
     print(f"smoke output: {out}")
-    print("reminder: a smoke clip, not a club track; the listening gate judges all audio")
     return 0
 
 

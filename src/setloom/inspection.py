@@ -22,6 +22,7 @@ blue means A has more energy.
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from dataclasses import dataclass, fields
 from pathlib import Path
@@ -30,6 +31,8 @@ from typing import Any, Literal
 import numpy as np
 import soundfile as sf
 from scipy import signal
+
+from setloom.rhythm import FrequencyBand, analyze_rhythm, grid_positions
 
 BG = "#05070a"
 PANEL = "#0b0f14"
@@ -53,9 +56,9 @@ TICK_SIZE = 17
 LEGEND_SIZE = 15
 
 CompareLayout = Literal["overlay", "stack", "side", "diff"]
-GridMode = Literal["off", "beats", "bars"]
+GridMode = Literal["off", "beats", "bars", "subdivisions"]
 InspectionSignal = Literal["channel", "left", "right", "mid", "side", "mono"]
-InspectionView = Literal["both", "wave", "spectrogram", "spectrum", "stereo", "all"]
+InspectionView = Literal["both", "wave", "spectrogram", "spectrum", "stereo", "all", "rhythm"]
 
 
 @dataclass(frozen=True)
@@ -68,7 +71,7 @@ class AudioInspectionRequest:
     compare_label_a: str = "A"
     compare_label_b: str = "B"
     compare_layout: CompareLayout = "overlay"
-    bpm: float = 123.0
+    bpm: float | None = None
     channel: int = 0
     signal: InspectionSignal = "channel"
     start: float = 0.0
@@ -77,7 +80,18 @@ class AudioInspectionRequest:
     bar_end: float | None = None
     view: InspectionView = "both"
     grid: GridMode = "bars"
+    grid_origin: float = 0.0
+    subdivisions: int = 4
+    band: tuple[FrequencyBand, ...] | None = None
+    envelope_ms: float = 8.0
+    envelope_hop_ms: float = 2.0
+    peak_distance_ms: float = 30.0
+    report: str | Path | None = None
+    min_freq: float = 20.0
     max_freq: float = 12000.0
+    fft_size: int = 2048
+    hop_size: int = 512
+    pitch_labels: bool = False
     dpi: int = 160
     width_px: int = DEFAULT_WIDTH_PX
     height_px: int | None = None
@@ -113,9 +127,17 @@ def load_plotting_backend() -> None:
     )
 
 
+def parse_band(value: str) -> FrequencyBand:
+    try:
+        name, low, high = value.split(":")
+        return FrequencyBand(name, float(low), float(high))
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError("band must be NAME:LOW_HZ:HIGH_HZ") from exc
+
+
 def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     parser.add_argument("audio")
-    parser.add_argument("--out")
+    parser.add_argument("--out", help="output image path (default: tmp/inspection/)")
     parser.add_argument("--compare", help="second audio file for A/B visual comparison")
     parser.add_argument("--compare-label-a", default="A")
     parser.add_argument("--compare-label-b", default="B")
@@ -125,7 +147,7 @@ def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
         default="overlay",
         help="comparison layout; heatmap overlay is disallowed for spectrograms; use side, stack, or diff",
     )
-    parser.add_argument("--bpm", type=float, default=123.0)
+    parser.add_argument("--bpm", type=float, help="known tempo for grid/bar coordinates; no tempo is assumed")
     parser.add_argument("--channel", type=int, default=0, help="real file channel index used when --signal channel")
     parser.add_argument(
         "--signal",
@@ -135,16 +157,27 @@ def configure_parser(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     )
     parser.add_argument("--start", type=float, default=0.0, help="window start in seconds")
     parser.add_argument("--end", type=float, help="window end in seconds")
-    parser.add_argument("--bar-start", type=float, help="window start in bars; overrides --start")
-    parser.add_argument("--bar-end", type=float, help="window end in bars; overrides --end")
+    parser.add_argument("--bar-start", type=float, help="window start in zero-based 4/4 bars from grid-origin; requires bpm, overrides start")
+    parser.add_argument("--bar-end", type=float, help="window end in zero-based 4/4 bars from grid-origin; requires bpm, overrides end")
     parser.add_argument(
         "--view",
-        choices=["both", "wave", "spectrogram", "spectrum", "stereo", "all"],
+        choices=["both", "wave", "spectrogram", "spectrum", "stereo", "all", "rhythm"],
         default="both",
         help="plot type",
     )
-    parser.add_argument("--grid", choices=["off", "beats", "bars"], default="bars")
+    parser.add_argument("--grid", choices=["off", "beats", "bars", "subdivisions"], default="bars")
+    parser.add_argument("--grid-origin", type=float, default=0.0, help="absolute seconds of beat zero (default 0); does not move the audio")
+    parser.add_argument("--subdivisions", type=int, default=4, help="divisions per quarter-note beat for subdivision grid/rhythm samples (default 4)")
+    parser.add_argument("--band", action="append", type=parse_band, help="rhythm band NAME:LOW_HZ:HIGH_HZ; repeat to replace default observation bands")
+    parser.add_argument("--envelope-ms", type=float, default=8.0, help="rhythm RMS window in ms (default 8)")
+    parser.add_argument("--envelope-hop-ms", type=float, default=2.0, help="rhythm envelope sampling step in ms (default 2)")
+    parser.add_argument("--peak-distance-ms", type=float, default=30.0, help="minimum spacing of rhythm envelope maxima in ms (default 30); not note decoding")
+    parser.add_argument("--report", help="optional rhythm evidence JSON, including source timing and analysis settings")
+    parser.add_argument("--min-freq", type=float, default=20.0)
     parser.add_argument("--max-freq", type=float, default=12000.0)
+    parser.add_argument("--fft-size", type=int, default=2048, help="spectrogram window in samples; longer windows resolve pitch more finely but smear attacks")
+    parser.add_argument("--hop-size", type=int, default=512, help="spectrogram step in samples; a smaller step does not improve the window's time resolution")
+    parser.add_argument("--pitch-labels", action="store_true", help="label spectrogram frequencies as equal-tempered notes (A4=440 Hz); harmonics are not necessarily played notes")
     parser.add_argument("--dpi", type=int, default=160)
     parser.add_argument("--width-px", type=int, default=DEFAULT_WIDTH_PX, help="target output width in pixels")
     parser.add_argument("--height-px", type=int, help="target output height in pixels; defaults by view")
@@ -157,15 +190,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def window_seconds(args: argparse.Namespace, duration_s: float) -> tuple[float, float]:
-    bar_s = 4.0 * 60.0 / args.bpm
+    if args.bpm is not None and (not np.isfinite(args.bpm) or args.bpm <= 0):
+        raise SystemExit("--bpm must be finite and positive")
+    if not np.isfinite(args.grid_origin):
+        raise SystemExit("--grid-origin must be finite")
+    if not isinstance(args.subdivisions, int) or args.subdivisions < 1:
+        raise SystemExit("--subdivisions must be a positive integer")
+    if (args.bar_start is not None or args.bar_end is not None) and args.bpm is None:
+        raise SystemExit("bar windows require an explicit --bpm")
     start = args.start
     end = duration_s if args.end is None else args.end
     if args.bar_start is not None:
-        start = args.bar_start * bar_s
+        start = args.grid_origin + args.bar_start * 4.0 * 60.0 / args.bpm
     if args.bar_end is not None:
-        end = args.bar_end * bar_s
+        end = args.grid_origin + args.bar_end * 4.0 * 60.0 / args.bpm
+    if not np.isfinite(start) or not np.isfinite(end):
+        raise SystemExit("window bounds must be finite")
     start = max(0.0, min(float(start), duration_s))
-    end = max(start + 1.0 / 44100.0, min(float(end), duration_s))
+    end = max(0.0, min(float(end), duration_s))
+    if end <= start:
+        raise SystemExit("selected window is empty; end must be after start")
     return start, end
 
 
@@ -188,14 +232,19 @@ def apply_style(ax: plt.Axes) -> None:
     ax.yaxis.label.set_size(LABEL_SIZE)
 
 
-def add_time_grid(ax: plt.Axes, start_s: float, end_s: float, bpm: float, mode: str) -> None:
-    if mode == "off":
+def add_time_grid(
+    ax: plt.Axes, start_s: float, end_s: float, bpm: float | None, mode: str,
+    origin: float = 0, subdivisions: int = 4,
+) -> None:
+    if mode == "off" or bpm is None:
         return
-    beat_s = 60.0 / bpm
-    step = beat_s if mode == "beats" else beat_s * 4.0
-    first = np.ceil(start_s / step) * step
-    for t in np.arange(first, end_s + step * 0.5, step):
-        ax.axvline(t, color=GRID, lw=0.45 if mode == "beats" else 0.75, alpha=0.24 if mode == "beats" else 0.42)
+    _, positions = grid_positions(
+        start_s, end_s, bpm / 4 if mode == "bars" else bpm, origin=origin,
+        subdivisions=subdivisions if mode == "subdivisions" else 1,
+    )
+    for t in positions:
+        ax.axvline(t, color=GRID, lw=0.75 if mode == "bars" else 0.45,
+                   alpha=0.42 if mode == "bars" else 0.24)
 
 
 def make_figure(rows: int, width_px: int, height_px: int | None, dpi: int) -> tuple[plt.Figure, list[plt.Axes]]:
@@ -208,7 +257,7 @@ def make_figure(rows: int, width_px: int, height_px: int | None, dpi: int) -> tu
         constrained_layout=False,
     )
     top = {1: 0.78, 2: 0.86, 3: 0.88, 4: 0.91}[rows]
-    gs = fig.add_gridspec(rows, 1, hspace=0.34, top=top, bottom=0.08, left=0.085, right=0.992)
+    gs = fig.add_gridspec(rows, 1, hspace=0.34, top=top, bottom=0.08, left=0.085, right=0.92)
     axes = [fig.add_subplot(gs[i]) for i in range(rows)]
     for ax in axes:
         apply_style(ax)
@@ -231,7 +280,7 @@ def make_grid(
         constrained_layout=False,
     )
     top = 0.78 if rows == 1 else 0.89
-    gs = fig.add_gridspec(rows, cols, hspace=0.30, wspace=0.15, top=top, bottom=0.09, left=0.085, right=0.992)
+    gs = fig.add_gridspec(rows, cols, hspace=0.30, wspace=0.32, top=top, bottom=0.09, left=0.085, right=0.92)
     axes = [fig.add_subplot(gs[r, c]) for r in range(rows) for c in range(cols)]
     for ax in axes:
         apply_style(ax)
@@ -246,17 +295,34 @@ def plot_wave(ax: plt.Axes, x: np.ndarray, sr: int, start_s: float, channel_labe
     ax.set_ylabel(channel_label)
 
 
-def spectrogram_db(x: np.ndarray, sr: int, max_freq: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def spectrogram_db(
+    x: np.ndarray, sr: int, max_freq: float, *, min_freq: float = 20.0,
+    fft_size: int = 2048, hop_size: int = 512,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """One-sided, window-normalized bin amplitude in dBFS (not PSD or LUFS)."""
+    if fft_size < 4 or not 1 <= hop_size <= fft_size:
+        raise ValueError("require fft-size >= 4 and 1 <= hop-size <= fft-size")
+    nperseg = min(fft_size, len(x))
+    if nperseg < 4:
+        raise ValueError("spectrogram needs at least four audio samples")
     freqs, times, spec = signal.spectrogram(
         x,
         fs=sr,
         window="hann",
-        nperseg=2048,
-        noverlap=1536,
+        nperseg=nperseg,
+        noverlap=nperseg - min(hop_size, nperseg),
+        detrend=False,
+        scaling="spectrum",
         mode="magnitude",
     )
-    keep = (freqs >= 20) & (freqs <= max_freq)
-    return freqs[keep], times, 20 * np.log10(spec[keep] + 1e-8)
+    spec *= 2.0
+    spec[0] *= 0.5
+    if nperseg % 2 == 0:
+        spec[-1] *= 0.5
+    keep = (freqs >= min_freq) & (freqs <= max_freq)
+    if np.count_nonzero(keep) < 2:
+        raise ValueError("frequency range needs at least two FFT bins; widen it or increase fft-size")
+    return freqs[keep], times, 20 * np.log10(np.maximum(spec[keep], 1e-8))
 
 
 def draw_spectrogram(
@@ -268,50 +334,92 @@ def draw_spectrogram(
     vmin: float,
     vmax: float,
     cmap: str = CMAP,
+    *,
+    pitch_labels: bool = False,
+    time_step_s: float | None = None,
+    difference: bool = False,
 ) -> None:
     ax._setloom_axis_kind = "time"
-    ax.imshow(
+    # Explicit bin edges preserve frequency and frame-center geometry even for
+    # one-frame closeups. imshow's endpoint extent shifts the first/last bins.
+    dt = times[1] - times[0] if len(times) > 1 else time_step_s
+    if dt is None or dt <= 0:
+        raise ValueError("one-frame spectrogram needs a positive time step")
+    df = freqs[1] - freqs[0]
+    time_edges = np.r_[times - dt / 2, times[-1] + dt / 2] + start_s
+    freq_edges = np.r_[freqs - df / 2, freqs[-1] + df / 2]
+    mesh = ax.pcolormesh(
+        time_edges,
+        freq_edges,
         spec_db,
-        aspect="auto",
-        origin="lower",
-        extent=[times[0] + start_s, times[-1] + start_s, freqs[0], freqs[-1]],
+        shading="flat",
         vmin=vmin,
         vmax=vmax,
         cmap=cmap,
+        rasterized=True,
     )
     ax.set_yscale("log")
-    ax.yaxis.set_major_locator(ticker.LogLocator(base=10.0, numticks=5))
+    ax.set_ylim(max(freq_edges[0], 1e-6), freq_edges[-1])
+    if pitch_labels:
+        lo, hi = 69 + 12 * np.log2(np.array([freqs[0], freqs[-1]]) / 440.0)
+        step = 1 if hi - lo <= 16 else 3 if hi - lo <= 48 else 12
+        pitches = np.arange(int(np.ceil(lo / step)) * step, int(np.floor(hi)) + 1, step)
+        names = ("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B")
+        ax.set_yticks(440 * 2.0 ** ((pitches - 69) / 12))
+        ax.set_yticklabels([f"{names[p % 12]}{p // 12 - 1}" for p in pitches])
+    else:
+        ax.yaxis.set_major_locator(ticker.LogLocator(base=10.0, numticks=5))
     ax.yaxis.set_minor_locator(ticker.NullLocator())
-    ax.set_ylabel("Hz")
+    ax.set_ylabel("pitch reference (A4=440 Hz)" if pitch_labels else "Hz")
+    # Keep time axes aligned with waveform panels; a regular colorbar steals
+    # width only from the spectrogram and visually misaligns simultaneous events.
+    color_axis = ax.inset_axes([1.012, 0, 0.02, 1])
+    bar = ax.figure.colorbar(mesh, cax=color_axis)
+    bar.set_label("difference (dB)" if difference else "bin amplitude (dBFS)", color=FG)
+    bar.ax.tick_params(colors=MUTED)
 
 
-def plot_spectrogram(ax: plt.Axes, x: np.ndarray, sr: int, start_s: float, max_freq: float) -> None:
-    freqs, times, spec_db = spectrogram_db(x, sr, max_freq)
+def plot_spectrogram(
+    ax: plt.Axes, x: np.ndarray, sr: int, start_s: float, max_freq: float,
+    *, min_freq: float = 20.0, fft_size: int = 2048, hop_size: int = 512,
+    pitch_labels: bool = False,
+) -> None:
+    freqs, times, spec_db = spectrogram_db(
+        x, sr, max_freq, min_freq=min_freq, fft_size=fft_size, hop_size=hop_size,
+    )
     lo, hi = np.quantile(spec_db, [0.05, 0.997])
-    draw_spectrogram(ax, freqs, times, spec_db, start_s, lo, hi)
+    draw_spectrogram(
+        ax, freqs, times, spec_db, start_s, lo, max(hi, lo + 1.0),
+        pitch_labels=pitch_labels, time_step_s=min(hop_size, len(x)) / sr,
+    )
 
 
-def spectrum_db(x: np.ndarray, sr: int, max_freq: float) -> tuple[np.ndarray, np.ndarray]:
+def spectrum_db(
+    x: np.ndarray, sr: int, max_freq: float, *, min_freq: float = 20.0,
+) -> tuple[np.ndarray, np.ndarray]:
     if len(x) < 2:
         return np.asarray([]), np.asarray([])
-    window = np.hanning(len(x)).astype(np.float32)
-    mag = np.abs(np.fft.rfft(x * window))
+    window = signal.windows.hann(len(x), sym=False)
+    mag = 2.0 * np.abs(np.fft.rfft(x * window)) / window.sum()
+    mag[0] *= 0.5
+    if len(x) % 2 == 0:
+        mag[-1] *= 0.5
     freqs = np.fft.rfftfreq(len(x), d=1.0 / sr)
-    keep = (freqs >= 20) & (freqs <= max_freq)
-    return freqs[keep], 20 * np.log10(mag[keep] + 1e-8)
+    keep = (freqs >= min_freq) & (freqs <= max_freq)
+    return freqs[keep], 20 * np.log10(np.maximum(mag[keep], 1e-8))
 
 
 def format_frequency_axis(ax: plt.Axes) -> None:
     ax.set_xscale("log")
     ax.xaxis.set_major_locator(ticker.LogLocator(base=10.0, numticks=5))
     ax.xaxis.set_minor_locator(ticker.NullLocator())
-    ax.set_ylabel("dB")
+    ax.set_ylabel("bin amplitude (dBFS)")
     ax.set_xlabel("Hz")
 
 
-def plot_spectrum(ax: plt.Axes, x: np.ndarray, sr: int, max_freq: float) -> None:
+def plot_spectrum(ax: plt.Axes, x: np.ndarray, sr: int, max_freq: float, *, min_freq: float = 20.0) -> None:
     ax._setloom_axis_kind = "frequency"
-    freqs, db = spectrum_db(x, sr, max_freq)
+    freqs, db = spectrum_db(x, sr, max_freq, min_freq=min_freq)
     if len(freqs) == 0:
         return
     ax.plot(freqs, db, color=LINE, lw=0.9)
@@ -323,7 +431,11 @@ def set_panel_title(ax: plt.Axes, index: int, text: str) -> None:
 
 
 def set_figure_title(fig: plt.Figure, title: str) -> None:
-    fig.suptitle(title, x=0.085, y=0.985, ha="left", fontsize=TITLE_SIZE, color=FG)
+    name, separator, detail = title.partition(" | ")
+    lines = [name, detail] if separator else [name]
+    available_points = fig.get_figwidth() * 72 * 0.85
+    font_size = min(TITLE_SIZE, available_points / (0.54 * max(map(len, lines))))
+    fig.suptitle("\n".join(lines), x=0.085, y=0.985, ha="left", fontsize=font_size, color=FG)
 
 
 def stereo_metrics(y: np.ndarray, sr: int, start_s: float) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
@@ -359,6 +471,7 @@ def stereo_metrics(y: np.ndarray, sr: int, start_s: float) -> tuple[np.ndarray, 
 
 
 def save(fig: plt.Figure, out: Path, dpi: int, *, announce: bool) -> Path:
+    out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, dpi=dpi, facecolor=fig.get_facecolor(), bbox_inches="tight", pad_inches=0.035)
     plt.close(fig)
     if announce:
@@ -370,8 +483,8 @@ def title_for(path: Path, start_s: float, end_s: float, args: argparse.Namespace
     signal_label = "stereo L/R + corr + side/mid" if args.view == "stereo" else signal_title(args.signal, args.channel)
     if args.bar_start is not None or args.bar_end is not None:
         bar_s = 4.0 * 60.0 / args.bpm
-        bar_start = start_s / bar_s
-        bar_end = end_s / bar_s
+        bar_start = (start_s - args.grid_origin) / bar_s
+        bar_end = (end_s - args.grid_origin) / bar_s
         return f"{path.name} | bars {bar_start:.1f}-{bar_end:.1f} | {args.view} | {signal_label}"
     return f"{path.name} | {start_s:.2f}-{end_s:.2f}s | {args.view} | {signal_label}"
 
@@ -382,8 +495,18 @@ def format_time_axis(ax: plt.Axes, start_s: float, end_s: float) -> None:
     ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=nbins))
 
 
-def read_audio(path: Path) -> tuple[np.ndarray, int]:
-    return sf.read(path, dtype="float32", always_2d=True)
+def read_audio(path: Path, *, start_s: float = 0.0, end_s: float | None = None) -> tuple[np.ndarray, int]:
+    """Read only the requested frames, with no full-track allocation for a closeup."""
+    sr = sf.info(path).samplerate
+    return sf.read(
+        path, start=round(start_s * sr), stop=None if end_s is None else round(end_s * sr),
+        dtype="float32", always_2d=True,
+    )
+
+
+def inspection_output_path(audio: Path, kind: str, explicit: str | Path | None) -> Path:
+    """Keep generated inspection images out of the source recording's directory."""
+    return Path(explicit) if explicit else Path("tmp/inspection") / f"{audio.stem}.{kind}.png"
 
 
 def channel_data(y: np.ndarray, channel: int) -> np.ndarray:
@@ -414,10 +537,13 @@ def signal_title(mode: str, channel: int) -> str:
     return f"signal {mode}"
 
 
-def finalize_time_axes(fig: plt.Figure, start_s: float, end_s: float, bpm: float, grid: str) -> None:
+def finalize_time_axes(
+    fig: plt.Figure, start_s: float, end_s: float, bpm: float | None, grid: str,
+    origin: float = 0, subdivisions: int = 4,
+) -> None:
     for ax in fig.axes:
         if getattr(ax, "_setloom_axis_kind", None) == "time":
-            add_time_grid(ax, start_s, end_s, bpm, grid)
+            add_time_grid(ax, start_s, end_s, bpm, grid, origin, subdivisions)
             ax.set_xlim(start_s, end_s)
             format_time_axis(ax, start_s, end_s)
 
@@ -425,7 +551,7 @@ def finalize_time_axes(fig: plt.Figure, start_s: float, end_s: float, bpm: float
 def compare_title(path_a: Path, path_b: Path, start_s: float, end_s: float, args: argparse.Namespace) -> str:
     if args.bar_start is not None or args.bar_end is not None:
         bar_s = 4.0 * 60.0 / args.bpm
-        window = f"bars {start_s / bar_s:.1f}-{end_s / bar_s:.1f}"
+        window = f"bars {(start_s - args.grid_origin) / bar_s:.1f}-{(end_s - args.grid_origin) / bar_s:.1f}"
     else:
         window = f"{start_s:.2f}-{end_s:.2f}s"
     layout = args.compare_layout
@@ -470,7 +596,7 @@ def render_compare(
     n = min(len(x_a), len(x_b))
     x_a = x_a[:n]
     x_b = x_b[:n]
-    out = Path(args.out) if args.out else path_a.with_suffix(f".{args.view}-{args.compare_layout}.png")
+    out = inspection_output_path(path_a, f"{args.view}-{args.compare_layout}", args.out)
     title = compare_title(path_a, path_b, start_s, end_s, args)
 
     if args.view == "wave":
@@ -508,12 +634,13 @@ def render_compare(
             axes[0].legend(facecolor=PANEL, edgecolor="#2b353a", labelcolor=FG, fontsize=LEGEND_SIZE, loc="upper right")
             axes[0].set_xlabel("seconds")
             set_panel_title(axes[0], 1, f"Waveform overlay - {signal_label}")
-        finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid)
+        finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid,
+                           args.grid_origin, args.subdivisions)
         return save(fig, out, args.dpi, announce=announce)
 
     if args.view == "spectrum":
-        freqs_a, db_a = spectrum_db(x_a, sr, args.max_freq)
-        freqs_b, db_b = spectrum_db(x_b, sr, args.max_freq)
+        freqs_a, db_a = spectrum_db(x_a, sr, args.max_freq, min_freq=args.min_freq)
+        freqs_b, db_b = spectrum_db(x_b, sr, args.max_freq, min_freq=args.min_freq)
         n = min(len(freqs_a), len(freqs_b), len(db_a), len(db_b))
         freqs = freqs_a[:n]
         db_a = db_a[:n]
@@ -562,8 +689,10 @@ def render_compare(
             set_panel_title(axes[0], 1, f"Spectrum overlay - {signal_label}")
         return save(fig, out, args.dpi, announce=announce)
 
-    freqs_a, times_a, spec_a = spectrogram_db(x_a, sr, args.max_freq)
-    freqs_b, times_b, spec_b = spectrogram_db(x_b, sr, args.max_freq)
+    spec_options = dict(min_freq=args.min_freq, fft_size=args.fft_size, hop_size=args.hop_size)
+    draw_options = dict(pitch_labels=args.pitch_labels, time_step_s=min(args.hop_size, n) / sr)
+    freqs_a, times_a, spec_a = spectrogram_db(x_a, sr, args.max_freq, **spec_options)
+    freqs_b, times_b, spec_b = spectrogram_db(x_b, sr, args.max_freq, **spec_options)
     rows = min(spec_a.shape[0], spec_b.shape[0])
     cols = min(spec_a.shape[1], spec_b.shape[1])
     freqs = freqs_a[:rows]
@@ -571,18 +700,19 @@ def render_compare(
     spec_a = spec_a[:rows, :cols]
     spec_b = spec_b[:rows, :cols]
     lo, hi = np.quantile(np.concatenate([spec_a.ravel(), spec_b.ravel()]), [0.05, 0.997])
+    hi = max(hi, lo + 1.0)
     if args.compare_layout == "side":
         fig, axes = make_grid(1, 2, args.width_px, args.height_px or 980, args.dpi)
         set_figure_title(fig, title)
-        draw_spectrogram(axes[0], freqs, times, spec_a, start_s, lo, hi)
-        draw_spectrogram(axes[1], freqs, times, spec_b, start_s, lo, hi)
+        draw_spectrogram(axes[0], freqs, times, spec_a, start_s, lo, hi, **draw_options)
+        draw_spectrogram(axes[1], freqs, times, spec_b, start_s, lo, hi, **draw_options)
         set_panel_title(axes[0], 1, f"Spectrogram - {args.compare_label_a} {signal_label}")
         set_panel_title(axes[1], 2, f"Spectrogram - {args.compare_label_b} {signal_label}")
     elif args.compare_layout == "stack":
         fig, axes = make_figure(2, args.width_px, args.height_px, args.dpi)
         set_figure_title(fig, title)
-        draw_spectrogram(axes[0], freqs, times, spec_a, start_s, lo, hi)
-        draw_spectrogram(axes[1], freqs, times, spec_b, start_s, lo, hi)
+        draw_spectrogram(axes[0], freqs, times, spec_a, start_s, lo, hi, **draw_options)
+        draw_spectrogram(axes[1], freqs, times, spec_b, start_s, lo, hi, **draw_options)
         axes[1].set_xlabel("seconds")
         set_panel_title(axes[0], 1, f"Spectrogram - {args.compare_label_a} {signal_label}")
         set_panel_title(axes[1], 2, f"Spectrogram - {args.compare_label_b} {signal_label}")
@@ -590,29 +720,115 @@ def render_compare(
         fig, axes = make_figure(1, args.width_px, args.height_px, args.dpi)
         set_figure_title(fig, title)
         spec_diff = spec_b - spec_a
-        lim = float(np.quantile(np.abs(spec_diff), 0.995))
-        draw_spectrogram(axes[0], freqs, times, spec_diff, start_s, -lim, lim, DIFF_CMAP)
+        lim = max(float(np.quantile(np.abs(spec_diff), 0.995)), 1e-6)
+        draw_spectrogram(axes[0], freqs, times, spec_diff, start_s, -lim, lim, DIFF_CMAP, difference=True, **draw_options)
         set_panel_title(axes[0], 1, f"Spectrogram diff - {args.compare_label_b} minus {args.compare_label_a}")
         axes[0].set_xlabel("seconds")
-    finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid)
+    finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid,
+                       args.grid_origin, args.subdivisions)
     return save(fig, out, args.dpi, announce=announce)
+
+
+def render_rhythm(
+    args: argparse.Namespace, paths: list[Path], start_s: float, end_s: float,
+    *, announce: bool,
+) -> Path:
+    if args.signal != "channel" or args.channel != 0:
+        raise SystemExit("rhythm measures mean channel power; --signal/--channel do not apply")
+    if len(paths) > 1 and args.compare_layout not in ("overlay", "stack"):
+        raise SystemExit("rhythm comparison supports --compare-layout overlay or stack")
+    out = inspection_output_path(paths[0], "rhythm", args.out)
+    if args.report and Path(args.report).resolve() in {out.resolve(), *(p.resolve() for p in paths)}:
+        raise SystemExit("--report must differ from the plot and input paths")
+    try:
+        reports = [analyze_rhythm(
+            path, start=start_s, end=end_s, bpm=args.bpm, grid_origin=args.grid_origin,
+            subdivisions=args.subdivisions, bands=args.band, envelope_ms=args.envelope_ms,
+            hop_ms=args.envelope_hop_ms, peak_distance_ms=args.peak_distance_ms,
+        ) for path in paths]
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    labels = [f"{label}: {path.name}" for label, path in zip(
+        (args.compare_label_a, args.compare_label_b), paths,
+    )]
+    band_count = len(reports[0]["bands"])
+    stacked = len(paths) > 1 and args.compare_layout == "stack"
+    rows = band_count * (len(paths) if stacked else 1)
+    fig, axes = make_grid(rows, 1, args.width_px, args.height_px or 500 + 440 * rows, args.dpi)
+    set_figure_title(fig, (
+        f"Rhythm evidence | {start_s:.3f}-{end_s:.3f}s | {args.envelope_ms:g} ms RMS\n"
+        "Mean channel power; dots = envelope maxima, not note onsets; no gain normalization"
+    ))
+    for i, band in enumerate(reports[0]["bands"]):
+        values = []
+        band_axes = []
+        for j, report in enumerate(reports):
+            ax = axes[i * len(paths) + j] if stacked else axes[i]
+            band_axes.append(ax)
+            color = (WAVE, WAVE_R)[j]
+            data = report["bands"][i]
+            env = data["envelope"]
+            values.extend(env["rms_dbfs"])
+            ax.plot(env["seconds"], env["rms_dbfs"], color=color, lw=0.9, label=labels[j])
+            ax.scatter([p["peak_seconds"] for p in data["landmarks"]],
+                       [p["rms_dbfs"] for p in data["landmarks"]], color=color, s=12)
+            ax._setloom_axis_kind = "time"
+            ax.set_ylabel("RMS dBFS")
+            ax.set_title(f"{band['name']} | {band['low_hz']:g}-{band['high_hz']:g} Hz",
+                         fontsize=PANEL_TITLE_SIZE, loc="left", color=FG, pad=10)
+        ceiling = max(-80, max(values, default=-200) + 3)
+        for ax in set(band_axes):
+            ax.set_ylim(ceiling - 100, ceiling)
+            ax.legend(facecolor=PANEL, edgecolor="#2b353a", labelcolor=FG,
+                      fontsize=LEGEND_SIZE, loc="lower right")
+    axes[-1].set_xlabel("absolute file seconds")
+    finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid,
+                       args.grid_origin, args.subdivisions)
+    result = save(fig, out, args.dpi, announce=announce)
+    if args.report:
+        report_path = Path(args.report)
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text(json.dumps({
+            "schema_version": 1, "kind": "rhythm-comparison",
+            "sources": [{"label": label, "evidence": report}
+                        for label, report in zip(labels, reports)],
+        }, indent=2, allow_nan=False) + "\n")
+        if announce:
+            print(report_path)
+    return result
 
 
 def render_from_args(args: argparse.Namespace, *, announce: bool = False) -> Path:
     load_plotting_backend()
     path = Path(args.audio)
-    y, sr = read_audio(path)
+    info = sf.info(path)
+    sr = info.samplerate
     compare_path = Path(args.compare) if args.compare else None
-    y_compare = None
+    paths = [path, compare_path] if compare_path is not None else [path]
+    if args.out and Path(args.out).resolve() in {p.resolve() for p in paths}:
+        raise SystemExit("--out must differ from the input paths")
+    if args.view != "rhythm" and (args.report or args.band):
+        raise SystemExit("--report and --band require --view rhythm")
+    duration_s = info.frames / sr
     if compare_path is not None:
-        y_compare, compare_sr = read_audio(compare_path)
+        compare_info = sf.info(compare_path)
+        compare_sr = compare_info.samplerate
         if compare_sr != sr:
             raise SystemExit(f"sample-rate mismatch: {sr} vs {compare_sr}")
-    duration_s = len(y) / sr if y_compare is None else min(len(y), len(y_compare)) / sr
+        duration_s = min(duration_s, compare_info.frames / sr)
+    if not (np.isfinite(args.min_freq) and np.isfinite(args.max_freq)
+            and 0 < args.min_freq < min(args.max_freq, sr / 2)):
+        raise SystemExit("require 0 < min-freq < max-freq, with min-freq below Nyquist")
+    if args.fft_size < 4 or not 1 <= args.hop_size <= args.fft_size:
+        raise SystemExit("require fft-size >= 4 and 1 <= hop-size <= fft-size")
     start_s, end_s = window_seconds(args, duration_s)
-    y = slice_audio(y, sr, start_s, end_s)
-    if y_compare is not None:
-        y_compare = slice_audio(y_compare, sr, start_s, end_s)
+    start_s, end_s = round(start_s * sr) / sr, round(end_s * sr) / sr
+    if args.view == "rhythm":
+        return render_rhythm(args, paths, start_s, end_s, announce=announce)
+    y, _ = read_audio(path, start_s=start_s, end_s=end_s)
+    y_compare = None
+    if compare_path is not None:
+        y_compare, _ = read_audio(compare_path, start_s=start_s, end_s=end_s)
     if len(y) == 0:
         raise SystemExit("selected window is empty")
     if y_compare is not None and len(y_compare) == 0:
@@ -632,8 +848,12 @@ def render_from_args(args: argparse.Namespace, *, announce: bool = False) -> Pat
         )
 
     x, signal_label = analysis_signal(y, args.signal, args.channel)
-    out = Path(args.out) if args.out else path.with_suffix(f".{args.view}.png")
+    out = inspection_output_path(path, args.view, args.out)
     title = title_for(path, start_s, end_s, args)
+    spec_options = dict(
+        min_freq=args.min_freq, fft_size=args.fft_size, hop_size=args.hop_size,
+        pitch_labels=args.pitch_labels,
+    )
 
     if args.view == "wave":
         fig, axes = make_figure(1, args.width_px, args.height_px, args.dpi)
@@ -644,13 +864,13 @@ def render_from_args(args: argparse.Namespace, *, announce: bool = False) -> Pat
     elif args.view == "spectrogram":
         fig, axes = make_figure(1, args.width_px, args.height_px, args.dpi)
         set_figure_title(fig, title)
-        plot_spectrogram(axes[0], x, sr, start_s, args.max_freq)
+        plot_spectrogram(axes[0], x, sr, start_s, args.max_freq, **spec_options)
         set_panel_title(axes[0], 1, f"Spectrogram - {signal_label}")
         axes[0].set_xlabel("seconds")
     elif args.view == "spectrum":
         fig, axes = make_figure(1, args.width_px, args.height_px, args.dpi)
         set_figure_title(fig, title)
-        plot_spectrum(axes[0], x, sr, args.max_freq)
+        plot_spectrum(axes[0], x, sr, args.max_freq, min_freq=args.min_freq)
         set_panel_title(axes[0], 1, f"Spectrum - {signal_label}")
     elif args.view == "stereo":
         fig, axes = make_figure(3, args.width_px, args.height_px, args.dpi)
@@ -675,11 +895,11 @@ def render_from_args(args: argparse.Namespace, *, announce: bool = False) -> Pat
         fig, axes = make_figure(rows, args.width_px, args.height_px, args.dpi)
         set_figure_title(fig, title)
         plot_wave(axes[0], x, sr, start_s, signal_label)
-        plot_spectrogram(axes[1], x, sr, start_s, args.max_freq)
+        plot_spectrogram(axes[1], x, sr, start_s, args.max_freq, **spec_options)
         set_panel_title(axes[0], 1, f"Waveform - {signal_label}")
         set_panel_title(axes[1], 2, f"Spectrogram - {signal_label}")
         if args.view == "all":
-            plot_spectrum(axes[2], x, sr, args.max_freq)
+            plot_spectrum(axes[2], x, sr, args.max_freq, min_freq=args.min_freq)
             set_panel_title(axes[2], 3, f"Spectrum - {signal_label}")
             times, corr, width_db = stereo_metrics(y, sr, start_s)
             axes[3].plot(times, corr, color=LINE, lw=0.85, label="corr")
@@ -693,11 +913,8 @@ def render_from_args(args: argparse.Namespace, *, announce: bool = False) -> Pat
         else:
             axes[1].set_xlabel("seconds")
 
-    for ax in fig.axes:
-        if getattr(ax, "_setloom_axis_kind", None) == "time":
-            add_time_grid(ax, start_s, end_s, args.bpm, args.grid)
-            ax.set_xlim(start_s, end_s)
-            format_time_axis(ax, start_s, end_s)
+    finalize_time_axes(fig, start_s, end_s, args.bpm, args.grid,
+                       args.grid_origin, args.subdivisions)
     return save(fig, out, args.dpi, announce=announce)
 
 

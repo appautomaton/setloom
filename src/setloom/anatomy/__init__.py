@@ -3,6 +3,6 @@
 
 Import layering contract: `analysis` and `corpus` are pure numpy math and
 stay cheap to import. `layers` owns the active 53-stem reference lens.
-`pipeline` orchestrates and loads audio via librosa/soundfile. This package
-is opt-in: only the `anatomize` CLI command imports it.
+`pipeline` orchestrates and loads audio via librosa/soundfile. Callers opt into
+this package for specific reference-analysis or separation operations.
 """

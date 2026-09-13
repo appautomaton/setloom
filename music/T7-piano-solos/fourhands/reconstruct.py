@@ -6,10 +6,10 @@ stream; this pipeline recovers two coherent player strata, restores the dynamic 
 transcriber flattens, and re-performs on the Salamander grand -- while PRESERVING the real
 ensemble timing (the two players' actual asynchrony), which is the four-hands feel.
 
-  1. transcribe  Kong (ByteDance MAESTRO) -> flat MIDI (notes + pedal). cached. mps->cpu.
+  1. transcribe  Kong -> flat MIDI (notes + pedal). cached. mps->cpu.
   2. stratify    flat MIDI -> PRIMO (upper) + SECONDO (lower) via an adaptive register seam +
-                 voice continuity. Two-stratum recovery, NOT literal 4-hand staves -- per the
-                 Grok+Codex consult, full per-hand labels are under-determined on dense,
+                 voice continuity. Two-stratum recovery, not literal 4-hand staves:
+                 full per-hand labels are under-determined on dense,
                  constantly-crossing duet textures.
   3. ensemble    per-stratum three-band velocity shaping (restore the build + cell contrast) +
                  a small independent per-player jitter. Onsets preserved: the real ensemble
@@ -243,7 +243,7 @@ def render_panned(primo: Path, secondo: Path, out: Path, scratch: Path, lufs: fl
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="End-to-end four-hands piano reconstruction.")
     ap.add_argument("audio", help="raw four-hands piano recording")
-    ap.add_argument("--out", default=None, help="output root (default: <here>/out)")
+    ap.add_argument("--out", default=None, help="output root (default: project tmp/t7-piano-fourhands)")
     ap.add_argument("--lufs", type=float, default=-16.0)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--blip-ms", type=float, default=20.0, help="drop notes shorter than this")
@@ -260,7 +260,7 @@ def main(argv=None) -> int:
         return 1
 
     slug = slugify(src.stem)
-    out = (Path(args.out) if args.out else HERE / "out") / slug
+    out = (Path(args.out) if args.out else REPO / "tmp/t7-piano-fourhands") / slug
     out.mkdir(parents=True, exist_ok=True)
     raw = out / "notes.raw.mid"
 

@@ -2,172 +2,91 @@
 
 # Setloom
 
-Music production has a gatekeeper: the interface. The piano roll, the plug-in
-maze, the mixing-desk vocabulary: decades of craft stacked between you and the
-idea already playing in your head. Setloom removes the gatekeeper.
+Setloom, by AppAutomaton, is an open-source collection of music-production tools
+and agent guidance. The agent is responsible for musical taste, creative
+judgment and production quality. The human gives direction, hears the result
+and decides whether it succeeds. Rejected work needs substantive revision.
 
-You bring taste. The agent brings labor. It writes each track's source, renders
-the audition, and inspects the result; you listen and say what's wrong. You
-never open a DAW, never operate a plug-in, never learn what a sidechain is
-unless you want to. The only skills required are the ones you already have:
-hearing a track, and knowing whether it moves you.
+## Working with music
 
-Setloom, by AppAutomaton, is an open-source, keyboard-first harness for
-producing club tracks and DJ sets. It is built around one division of labor:
-**the human is the taste owner; the agent does everything else.** It is honest
-about where that frontier sits today.
+Start with the intended effect and the actual recording or performance. Inspect
+complete phrases, identify the relevant notes, articulation, modulation and
+sound, then implement and evaluate a musical decision. Continue patiently across
+the commissioned scope. Code makes understood operations repeatable; it does
+not remove this work or turn a successful render into a successful song.
 
-## How it works
+Keep musical decisions and editable performance data with each track. Shared
+code supplies analysis, MIDI, DSP and rendering primitives. There is no required
+sequence of CLI commands and no fixed arrangement template to complete first.
 
-Three roles, one loop.
+## Tools
 
-- **You, the taste owner.** You listen and give direction in plain language:
-  *the bass is too busy before the break; make the arp darker.* You make every
-  musical decision. Nothing is final until you say so.
-- **The agent, the producer.** It turns your direction into concrete source
-  changes: writes the track's own code, renders a fresh audition, plays it back,
-  and reports the tradeoffs. It proposes; it never decides for you.
-- **The harness, the studio.** A small, unopinionated toolkit that scaffolds
-  tracks, renders, inspects audio, and keeps the work reproducible. It owns
-  technical hygiene only. It composes nothing.
+Initialize the repo-local environment with `uv sync --group transcription`.
+Additional dependency groups and model setup are in [Tooling](docs/tooling.md).
 
-The listening gate is no-click: the agent prepares and plays the audio, and you
-only listen and type.
+| Operation | Available path |
+| --- | --- |
+| Inspect a passage | `setloom inspect`: waveform, spectra, rhythm, stereo and aligned comparisons. |
+| Query pitch and onset evidence | Native MLX FP32 Basic Pitch API; `setloom transcribe` exports note candidates. |
+| Separate reference audio | `setloom separate`: all model estimates as float WAVs. Outputs overlap and need musical interpretation. |
+| Edit and perform music | Per-track MIDI, controls and patches using Python, SuperCollider or authorized DAW tools. |
+| Play a requested file | `setloom play`; honor the user's playback preference. |
 
-## What you can do
-
-- Scaffold a new track (spec, runnable assembler, and listening notes) from a
-  single command.
-- Render track harnesses from editable source files.
-- Export and inspect MIDI.
-- Inspect audio from the command line: waveform, spectrum, spectrogram, stereo
-  field, and A/B comparisons.
-- Recover note candidates from reference audio (macOS).
-- Reconstruct solo and four-hands piano performances with the
-  [T7 source harness](music/T7-piano-solos/), preserving captured timing and pedal.
-- Drive SuperCollider and Logic Pro as local production surfaces when a track
-  calls for them.
-
-## Quick start
-
-Setloom runs through one repo-local `uv` environment. No side virtualenvs.
+For example, when a particular passage needs inspection:
 
 ```bash
-# Scaffold a track. assemble.py starts as a skeleton the agent fills with the composition.
-uv run setloom new T06 --title midnight-signal --bpm 124 --key "F# minor"
-uv run --no-sync python music/tracks/T06/assemble.py
-
-# Audition and inspect the render
-uv run setloom play local/candidates/T06/seed-0/demo.wav
-uv run setloom inspect local/candidates/T06/seed-0/demo.wav --view all --out tmp/inspect.png
-
-# Study a reference: recover its notes (macOS) and dissect its anatomy
-uv run --group transcription setloom transcribe reference.wav --out tmp/notes.mid --events tmp/notes.json
-uv run setloom anatomize local/corpus/audio --layers
+uv run --no-sync setloom inspect reference.wav --start 60 --end 68 \
+  --view spectrogram --fft-size 8192 --hop-size 256 --grid off \
+  --out tmp/study/partials.png
 ```
 
-The default Basic Pitch engine uses macOS CoreML; its local asset is
-`models/basic-pitch/icassp_2022/nmp.mlpackage`. Optional Kong and fusion engines,
-dependency groups, and their limits are described in [docs/tooling.md](docs/tooling.md).
+When note candidates will help answer a pitch or timing question:
 
-Per-track code imports the primitives directly. `setloom.midi`, `setloom.audio`,
-and `setloom.conductor` carry the MIDI, DSP-hygiene, and music-theory math that
-each track's `assemble.py` builds on:
-
-```python
-from setloom.midi import DRUM_CHANNEL, NoteEvent, TICKS_PER_BAR
-
-# a four-on-the-floor kick across one bar
-kick = [
-    NoteEvent(DRUM_CHANNEL, 36, 110, beat * (TICKS_PER_BAR // 4), 120)
-    for beat in range(4)
-]
+```bash
+MLX_ENABLE_TF32=0 uv run --no-sync setloom transcribe reference.wav \
+  --out tmp/study/note-proposals.mid --events tmp/study/note-proposals.json
 ```
 
-## The loop
+These operations do not determine which detections are independent voices,
+harmonics, effects, retriggers or continuing modulation. That interpretation
+belongs to the musical work. See [tooling](docs/tooling.md) for units, runtimes
+and limits, and [reconstruction](docs/reconstruction.md) for reference work.
 
-```text
-producer thesis
-  → per-track source edit
-  → render audition
-  → play / inspect waveform + spectrum
-  → human listening note
-  → revise or promote
-```
+## Files and stages
 
-Use project-local `./tmp/` for disposable work. Durable candidates live under
-`local/candidates/`, release assets under `local/releases/`, and production
-source under `music/`.
+| Location | Purpose |
+| --- | --- |
+| `tmp/<track>/` | New source, MIDI, separated estimates, studies, renders and auditions. |
+| `music/` | Editable productions the user has chosen to retain or promote there. |
+| `local/` | Audio and other assets the user considers good enough for longer-term retention. |
+| `local/reconstructions/` | Approved reconstruction notes/MIDI, patches, performances and supporting references. |
+| `models/` | Gitignored model weights. |
+| `src/setloom/` | Reusable audio, MIDI, analysis and runtime code. |
+| `docs/` and project skills | Concise context and guidance for using the tools. |
 
-## Where it stands today
+A file category, completed script or relative improvement does not confer
+retention or publication approval. Supplied originals already in `local/corpus/`
+keep their existing location; new derivatives begin in `tmp`.
+See [working stages](docs/workflow.md#working-stages).
 
-Setloom is not a one-click melodic-techno generator, and it does not pretend to
-be. Composition is not solved.
+## Existing productions
 
-What works today is the loop above: an agent that converts human feedback into
-concrete source changes quickly, researches when it helps, renders and inspects
-reproducibly, and keeps the workspace clean enough that the next pass continues
-without forensics. The leverage is disciplined iteration, not automation that
-replaces judgment. That honesty is the foundation everything else is built on.
+- [Anti Gravitational Wave](music/anti-gravitational-wave/): editable multitrack
+  MIDI, controller data and instrument reinterpretation.
+- [Remissionem](music/remissionem/): retained score, instruments and release source.
+- [Pulsus Noctis](music/pulsus-noctis/): independent MIDI performance, instruments and reference-informed mastering.
+- [T7](music/T7-piano-solos/): completed piano work with captured timing and pedal.
 
-## How the harness thinks
+These are examples, not recipes for the next track. Follow the current brief
+and the user's scoped listening feedback.
 
-The harness owns **technical hygiene only**: mono-safe low end, clip prevention,
-a loudness target, mixable edges. Everything that makes a track *that* track
-(groove, kick pattern, bass profile, energy arc, timbre) lives in the track's
-own spec and source, under the taste owner's direction.
+## License and credits
 
-So the code stays unopinionated. It ships primitives and opt-in diagnostics; it
-assembles nothing on its own. Machine reports and plots are navigation aids,
-never the verdict. The verdict is always a person listening.
+- Code, prompts, schemas and harness logic: AGPL-3.0-only.
+- Documentation: CC BY-SA 4.0 unless marked otherwise.
+- Music outputs belong to you, subject to the third-party samples, models and inputs used.
+- Third-party software attribution: [NOTICE](LICENSES/NOTICE).
 
-## Local audio tools
-
-- **SuperCollider** drives scriptable synth lanes. The Lux in Umbra harness
-  routes `scsynth` through source files such as `source/pluck-synth.json`, with
-  the SynthDef topology in `harness/pluck.py`.
-- **Logic Pro**, when installed, is a local reference surface for timbre checks
-  and audition targets, never the Setloom output path. Full tool policy lives in
-  [docs/tooling.md](docs/tooling.md).
-
-## Repository map
-
-```text
-AGENTS.md                  Operating instructions for coding agents.
-docs/                      Short project, workflow, and tooling notes.
-music/tracks/              Per-track specs, source, and listening notes.
-music/T5-lux-in-umbra/     Full production harness for "Lux in Umbra."
-music/T7-piano-solos/      Solo and four-hands piano reconstruction source.
-src/setloom/               CLI plus MIDI, audio, theory, inspection,
-                           scaffold, schema, and anatomy primitives.
-scripts/                   Opt-in local genAI experiments.
-tests/                     Behavior tests for the reusable toolkit.
-local/                     Gitignored corpus, candidates, and releases.
-models/                    Gitignored model weights.
-tmp/                       Gitignored scratch space.
-```
-
-## What a release carries
-
-Setloom values editable source over opaque bounces. A release is its recipe, not
-just its render:
-
-```text
-spec + source/MIDI + stems + render code + listening notes
-```
-
-Audio, proprietary samples, model weights, and disposable renders stay out of
-version control unless a specific release process says otherwise. Anything
-durable is regenerable from its spec, seed, and recipe.
-
-## License & trademarks
-
-- **Code, prompts, schemas, and harness logic:** AGPL-3.0-only.
-- **Documentation:** CC BY-SA 4.0 unless marked otherwise.
-- **Your music:** outputs belong to you, subject to the third-party samples,
-  models, and inputs you bring.
-- **Third-party:** the audio-to-MIDI decoder is derived from Spotify's Basic
-  Pitch (Apache-2.0); see [NOTICE](LICENSES/NOTICE).
-
-`Setloom` and `AppAutomaton` are project names; see [TRADEMARKS.md](LICENSES/TRADEMARKS.md).
-Canonical license texts live in [LICENSE](LICENSE) and [LICENSES/](LICENSES/).
+See [LICENSE](LICENSE), [CONTRIBUTING.md](CONTRIBUTING.md),
+[license texts](LICENSES/) and [trademarks](LICENSES/TRADEMARKS.md).
+Audio, model weights and proprietary samples remain outside Git.

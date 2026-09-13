@@ -20,6 +20,7 @@ __all__ = [
     "BasicPitchActivations",
     "BasicPitchModel",
     "KongModel",
+    "MLXBasicPitchModel",
     "RECALL_FIRST",
     "TranscribedNote",
     "TranscriptionRequest",
@@ -33,3 +34,11 @@ __all__ = [
     "write_note_events_json",
     "write_transcription_midi",
 ]
+
+
+def __getattr__(name: str):
+    if name == "MLXBasicPitchModel":
+        from setloom.transcription.basic_pitch_mlx import MLXBasicPitchModel
+
+        return MLXBasicPitchModel
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

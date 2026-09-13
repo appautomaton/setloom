@@ -1,11 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-only
-"""53-stem layer-lens pass: separation and keep-manifest.
+"""Native MLX 53-stem reference separation and audio export.
 
-This is the separation half of the layer lens: run the MLX 53-stem RoFormer over a
-track, keep the stems above the energy threshold, and write a manifest. Note
-extraction (turning kept stems into MIDI) lives in :mod:`setloom.anatomy.transcribe`
-(the ``--transcribe`` path), so this module stays torch-free and depends only on the
-MLX backend. Imported lazily (the ``--layers`` path in ``pipeline.run``).
+``write_separated_estimates`` is the direct CLI/Python entry point: it exports
+every model estimate as float32 WAV without musical filtering. ``extract_layers``
+and ``layer_pass`` serve the legacy diagnostic pipeline; their energy cutoff
+does not establish which instruments are present. Note extraction is separate.
 
 Model weights download on demand to a gitignored cache; the upstream checkpoint
 license is unstated, so the weights are for local analysis only, never redistributed,
@@ -19,10 +18,10 @@ import urllib.request
 from pathlib import Path
 
 import numpy as np
-import soundfile as sf
 
 from setloom.anatomy.pipeline import _write_yaml_if_changed
 from setloom.anatomy.roformer import separate as separation
+from setloom.audio import write_audio
 
 MODEL_NAME = "mvsep_mega_bs_roformer_53_stems_v1"
 MODEL_STEM = "bs-roformer-53stem-mlx-bf16"  # flat file stem under models/roformer
@@ -33,9 +32,9 @@ CONFIG_URL = f"{_RELEASE}/mvsep_mega_model_bs_roformer_53_stems.yaml"
 CKPT_URL = f"{_RELEASE}/mvsep_mega_model_bs_roformer_53_stems_v1.ckpt"
 
 DEFAULT_MODELS = Path("models/roformer")
-DEFAULT_LAYER_STEMS = Path("local/corpus/stems53")
+DEFAULT_LAYER_STEMS = Path("tmp/anatomy/reference-stems")
 
-KEEP_RMS_DBFS = -40.0  # calibrated on Magma: keeps real layers, drops orchestral bleed
+KEEP_RMS_DBFS = -40.0  # Legacy diagnostic cutoff, not proof of an instrument's presence or absence.
 ACTIVE_RMS = 1e-3  # 1 s windows above -60 dBFS count as active
 
 
@@ -123,6 +122,25 @@ def _extract_stems(audio_path: Path, models_dir: Path) -> dict[str, np.ndarray]:
     return separation.separate_track(model, config, mix)
 
 
+def write_separated_estimates(
+    audio_path: Path, output_dir: Path, models_dir: Path = DEFAULT_MODELS,
+) -> list[Path]:
+    """Write every model estimate as floating-point audio, without musical filtering."""
+    audio_path, output_dir = Path(audio_path), Path(output_dir)
+    if not audio_path.is_file():
+        raise FileNotFoundError(audio_path)
+    stems = _extract_stems(audio_path, Path(models_dir))
+    paths = [output_dir / f"{name}.wav" for name in stems]
+    if audio_path.resolve() in {path.resolve() for path in paths}:
+        raise ValueError("output would overwrite the source audio")
+    if any(not np.all(np.isfinite(stem)) for stem in stems.values()):
+        raise ValueError("separator produced non-finite audio")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for path, stem in zip(paths, stems.values()):
+        write_audio(path, stem.T, sample_rate=44100, subtype="FLOAT")
+    return paths
+
+
 def extract_layers(audio_path: Path, layer_dir: Path, models_dir: Path = DEFAULT_MODELS) -> dict:
     """Separate, write kept stems + manifest. Cached when manifest exists."""
     manifest_path = layer_dir / "manifest.yml"
@@ -140,7 +158,7 @@ def extract_layers(audio_path: Path, layer_dir: Path, models_dir: Path = DEFAULT
         kept = _keep(rms_db)
         entries.append({"layer": name, "rms_dbfs": rms_db, "active": active, "kept": kept})
         if kept:
-            sf.write(layer_dir / f"{name}.wav", x.T, sr_model)
+            write_audio(layer_dir / f"{name}.wav", x.T, sample_rate=sr_model, subtype="PCM_16")
     manifest = {
         "model": MODEL_NAME,
         "keep_rms_dbfs": KEEP_RMS_DBFS,

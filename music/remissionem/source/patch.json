@@ -1,0 +1,346 @@
+{
+  "sample_rate": 44100,
+  "sub": {
+    "gain": 0.348,
+    "warmth": 0.025,
+    "release_seconds": 0.075
+  },
+  "pulse": {
+    "gain": 0.347,
+    "cutoff_min_hz": 280,
+    "cutoff_max_hz": 3400,
+    "pulse_width": 0.47,
+    "saw_blend": 0.18,
+    "width": 0.16,
+    "detune_cents": 2.2,
+    "drive": 1.3,
+    "release_seconds": 0.09,
+    "brightness_opening": 4.0,
+    "max_harmonic_hz": 6200
+  },
+  "arp": {
+    "gain": 0.3,
+    "attack_seconds": 0.003,
+    "decay_seconds": 0.11,
+    "sustain": 0.3,
+    "release_seconds": 0.1,
+    "cutoff_start_hz": 3900,
+    "cutoff_end_hz": 1050,
+    "filter_decay_seconds": 0.11,
+    "pulse_mix": 0.0,
+    "detune_cents": 3.5,
+    "width": 0.44,
+    "drive": 0.65,
+    "delay_gain": 0.13,
+    "reverb_wet": 0.12,
+    "lowcut_hz": 250,
+    "upper_emphasis": 1.5,
+    "emphasis_center_hz": 700,
+    "low_body_gain": 1.05,
+    "low_body_decay_seconds": 0.09
+  },
+  "kick": {
+    "gain": 0.78,
+    "pitch_start_hz": 175,
+    "pitch_body_hz": 59.5,
+    "pitch_end_hz": 52,
+    "pitch_drop_seconds": 0.038,
+    "hold_seconds": 0.22,
+    "decay_seconds": 0.085,
+    "attack_seconds": 0.009,
+    "drive": 1.45,
+    "click_gain": 0.14,
+    "thump_gain": 0.12
+  },
+  "hat": {
+    "gain": 0.27,
+    "closed_decay_seconds": 0.021,
+    "open_decay_seconds": 0.085,
+    "highpass_hz": 5100,
+    "metal_mix": 0.13,
+    "width": 0.4
+  },
+  "snare": {
+    "gain": 0.21,
+    "decay_seconds": 0.07,
+    "body_gain": 0.24,
+    "width": 0.3
+  },
+  "percussion": {
+    "gain": 0.11,
+    "decay_seconds": 0.043,
+    "width": 0.6
+  },
+  "downshift": {
+    "gain": 0.48,
+    "pitch_decay_seconds": 0.25,
+    "amplitude_decay_seconds": 0.55,
+    "noise_gain": 0.05
+  },
+  "riser": {
+    "gain": 0.11,
+    "width": 0.8
+  },
+  "controller_meanings": {
+    "11": "Linear expression within the named part",
+    "74": "Part-specific brightness, including Prism FM index",
+    "71": "Resonant body center: 170\u2013700 Hz in the bass resonant-motion layer",
+    "80": "Kick-tail choke, linear gain 0\u20131 in the Kick part",
+    "91": "Pulse chord-stab or Prism space-send amount, within the named part"
+  },
+  "formant": {
+    "gain": 0.27,
+    "center_min_hz": 170,
+    "center_max_hz": 700,
+    "bandwidth_hz": 85,
+    "resonance": 4.0,
+    "upper_resonance": 3.0,
+    "drive": 0.9,
+    "width": 0.4,
+    "highpass_hz": 145,
+    "lowpass_hz": 2600,
+    "release_seconds": 0.075
+  },
+  "piano": {
+    "soundfont": "models/soundfonts/SalamanderGrandPiano-V3.sf2",
+    "fluidsynth": "/opt/homebrew/bin/fluidsynth",
+    "engine_gain": 0.3,
+    "bus_gain_db": 16.0,
+    "highpass_hz": 145,
+    "lowpass_hz": 8200,
+    "width": 0.72,
+    "reverb_wet": 0.12,
+    "reverb_room": 0.63,
+    "reverb_damping": 0.58,
+    "predelay_seconds": 0.021,
+    "delay_gain": 0.065,
+    "credit": "Salamander Grand Piano: Alexander Holm, Yamaha C5 samples; FreePats SF2 conversion by Roberto, v3+20200602.",
+    "license": "CC BY 3.0; see piano-sample-credit.txt.",
+    "mix_gain_automation": [
+      {
+        "seconds": 0,
+        "db": 0
+      },
+      {
+        "seconds": 33.95,
+        "db": 0
+      },
+      {
+        "seconds": 34.282,
+        "db": 2.5
+      },
+      {
+        "seconds": 47.75,
+        "db": 2.5
+      },
+      {
+        "seconds": 48.15,
+        "db": 0.5
+      },
+      {
+        "seconds": 60.9,
+        "db": 0.5
+      },
+      {
+        "seconds": 61.71,
+        "db": 0
+      },
+      {
+        "seconds": 116.25,
+        "db": 0
+      },
+      {
+        "seconds": 116.568,
+        "db": 2
+      },
+      {
+        "seconds": 130.05,
+        "db": 2
+      },
+      {
+        "seconds": 130.5,
+        "db": 1
+      },
+      {
+        "seconds": 143.75,
+        "db": 1
+      },
+      {
+        "seconds": 144.1,
+        "db": 0
+      },
+      {
+        "seconds": 198.6,
+        "db": 0
+      },
+      {
+        "seconds": 200.3,
+        "db": 5.5
+      },
+      {
+        "seconds": 210.3,
+        "db": 5.5
+      },
+      {
+        "seconds": 211.5,
+        "db": 6.0
+      },
+      {
+        "seconds": 212.15,
+        "db": 5.0
+      },
+      {
+        "seconds": 213,
+        "db": 0
+      },
+      {
+        "seconds": 242.636,
+        "db": 0
+      }
+    ]
+  },
+  "stab": {
+    "gain": 0.44,
+    "pulse_width": 0.42,
+    "pulse_width_motion": 0.028,
+    "triangle_mix": 0.2,
+    "detune_cents": 3.2,
+    "body_width": 0.38,
+    "attack_seconds": 0.0025,
+    "decay_seconds": 0.095,
+    "sustain": 0.22,
+    "release_seconds": 0.07,
+    "cutoff_closed_hz": 1150,
+    "cutoff_open_hz": 4400,
+    "cutoff_tail_ratio": 0.38,
+    "filter_decay_seconds": 0.072,
+    "highpass_hz": 235,
+    "drive": 1.35,
+    "oversampling": 2,
+    "room_wet": 0.055,
+    "room_size": 0.37,
+    "air_wet": 0.17,
+    "air_room_size": 0.76,
+    "air_damping": 0.68,
+    "air_predelay_seconds": 0.032,
+    "return_lowcut_hz": 520,
+    "return_highcut_hz": 6400,
+    "delay_gain": 0.16,
+    "delay_lowcut_hz": 700,
+    "delay_highcut_hz": 4600,
+    "kick_duck_depth": 0.32,
+    "return_kick_duck_depth": 0.65,
+    "self_return_duck_db": 4.0,
+    "saw_mask_relief_db": 2.0,
+    "saw_mask_band_hz": [
+      850,
+      2400
+    ]
+  },
+  "mix": {
+    "mono_below_hz": 140
+  },
+  "prism": {
+    "gain": 0.7,
+    "oversampling": 4,
+    "attack_seconds": 0.0018,
+    "decay_seconds": 0.14,
+    "release_seconds": 0.047,
+    "fm_tail_index": 0.12,
+    "fm_index_min": 0.65,
+    "fm_index_range": 1.65,
+    "fm_decay_seconds": 0.046,
+    "detune_cents": 1.8,
+    "body_width": 0.25,
+    "edge_gain": 0.1,
+    "sub_body_gain": 0.14,
+    "drive": 1.08,
+    "highpass_hz": 165,
+    "lowpass_hz": 8200,
+    "saw_relief_db": 1.5,
+    "room_wet": 0.048,
+    "hall_wet": 0.095,
+    "predelay_seconds": 0.027,
+    "delay_gain": 0.13,
+    "phrase_end_seconds": [
+      59.996571,
+      143.996571,
+      212.568
+    ]
+  },
+  "chimes": {
+    "gain": 0.16,
+    "partial_ratios": [
+      1.0,
+      2.0,
+      3.011,
+      4.007,
+      5.43,
+      6.76,
+      8.03
+    ],
+    "partial_gains": [
+      0.62,
+      0.75,
+      0.17,
+      0.26,
+      0.065,
+      0.047,
+      0.055
+    ],
+    "partial_decays_seconds": [
+      1.0,
+      1.38,
+      0.65,
+      0.9,
+      0.4,
+      0.3,
+      0.22
+    ],
+    "partial_attacks_seconds": [
+      0.021,
+      0.013,
+      0.012,
+      0.01,
+      0.008,
+      0.008,
+      0.006
+    ],
+    "ring_seconds": 5.5,
+    "body_gain": 0.22,
+    "body_decay_seconds": 0.68,
+    "velocity_exponent": 1.7,
+    "soft_strike_threshold": 0.7086614173228346,
+    "soft_strike_gain": 0.55,
+    "pan_width": 0.42,
+    "upper_detune_cents": 1.6,
+    "highpass_hz": 185,
+    "lowpass_hz": 7900,
+    "room_wet": 0.06,
+    "hall_wet": 0.2,
+    "hall_size": 0.87,
+    "hall_damping": 0.53,
+    "hall_predelay_seconds": 0.038,
+    "cloud_wet": 0.075,
+    "delay_gain": 0.075,
+    "direct_entrance_seconds": 1.8,
+    "direct_exit_start": 4.5,
+    "direct_exit_end": 7.2,
+    "space_entrance_seconds": 1.8,
+    "space_exit_start": 5.3,
+    "space_exit_end": 9.4,
+    "presence_window_seconds": [
+      2.0,
+      4.5
+    ],
+    "target_presence_lufs": -17.0
+  },
+  "mastering": {
+    "target_lufs": -8.5,
+    "input_gain_db": 2.0,
+    "ceiling_dbtp": -1.0,
+    "lookahead_ms": 3.0,
+    "release_ms": 60.0,
+    "tolerance_lu": 0.3
+  }
+}
