@@ -1,8 +1,8 @@
 # Setloom
 
-> Setloom is an open-source, keyboard-first harness for producing club tracks and DJ sets with an AI agent. The human directs in plain language and judges by ear; the agent composes, renders, inspects, and revises each track's editable source. No DAW or plug-in is operated by the user. Made by App Automaton, licensed AGPL-3.0-only.
+> Setloom is an open-source, keyboard-first harness for producing club tracks and DJ sets with an agentic producer. The human directs in plain language and judges by ear; the agent composes, renders, inspects, and revises each track's editable source. No DAW or plug-in is operated by the user. Made by App Automaton, licensed AGPL-3.0-only.
 
-Setloom is not a one-click music generator. Composition is not solved. What works today is a disciplined loop: the agent turns listening notes into concrete source changes, renders and inspects reproducibly, and keeps the workspace clean enough that the next pass continues without forensics.
+Setloom is not a one-click music generator. It is a loop the user stays inside: the agent turns listening notes into concrete source changes, renders and inspects them reproducibly, and leaves the workspace clean enough that the next pass picks up where the last one stopped.
 
 ## Canonical links
 
@@ -27,7 +27,7 @@ producer thesis -> per-track source edit -> render audition -> play and inspect 
 - `assemble.py`: each track's editable code assembles the music; renders are reproducible from source.
 - `setloom play`: audition a render; nothing autoplays without the user's say.
 - `setloom inspect`: waveform, spectrum, spectrogram, stereo field, and A/B comparisons.
-- `setloom transcribe`: recover note candidates from reference audio with a native MLX Basic Pitch engine on Apple Silicon.
+- `setloom transcribe`: recover note candidates from reference audio with a native MLX Basic Pitch machine-learning engine on Apple Silicon.
 - `setloom anatomize`: dissect a reference by layers.
 - `setloom.midi`, `setloom.audio`, `setloom.conductor`: MIDI, DSP hygiene, and music-theory primitives for track code.
 - SuperCollider, Logic Pro, and Ableton Live can serve as agent-driven local production surfaces.
