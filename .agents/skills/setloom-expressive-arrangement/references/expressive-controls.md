@@ -1,44 +1,55 @@
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
-# Gesture and control
+# Sound, gesture and control
 
-## Ambiguities worth resolving
+## Choose the musical role
 
-- A spectral ridge may be a harmonic or modulation product. A pulse may be a
-  retrigger, amplitude articulation or filter movement within a continuing voice.
-  Compare temporal and partial evidence across repeats before choosing notes or
-  controls. Short hops do not undo long-window smearing.
-- Stable sub weight and moving upper texture can belong to one musical role
-  while requiring different envelopes or tuning. A shared control can erase the
-  very relationship that makes the sound expressive.
-- An apparently missing part may survive in another estimate or in the full mix.
-  Conversely, a shared contour is not evidence for another independently played
-  instrument. Separate for control where useful, not to sound every detection.
+A low-register sound may carry a lead or an atmospheric gesture; a high layer
+may supply propulsion or background texture. Identify what it contributes and
+how that contribution changes through the phrase.
 
-## Transfer behavior, not measurements
+Separate musical voices when their behavior warrants it, and render layers when
+independent control improves the sound. A continuing carrier, its moving texture
+and its returns need not be independent played parts. Split or combine them to
+preserve useful relationships, without duplicating their contribution in the mix.
+For uncertain source assignments, use [reference evidence](../../../../docs/reconstruction.md).
 
-Band envelopes can inform control curves; they do not identify original synthesis
-parameters. Mapping them to a new instrument is a design problem. Inspect the
-rendered response: range, smoothing and nonlinear behavior can flatten accents,
-fill pulse gaps or exaggerate quiet leakage. Absolute level and context matter.
-Measured curves, authored envelopes and LFOs are choices, not competing doctrines.
+## Design the whole gesture
 
-For new material, carry over relationships between accents, harmonic turns,
-brightness openings, responses and releases. Recompose their timing for the new
-phrase. For instrument changes, preserve the gesture through the target's means
-of articulation; identical note events may not preserve it.
+Choose excitation, harmonic structure, envelopes and modulation for the intended
+character. Articulation can distinguish an arrival, continuation or reply even
+when pitch and onset stay unchanged. Relate internal pulses and decay to the
+actual groove; deliberate repetition need not be randomized.
 
-Keep custom controller semantics and routing with the patch. The performance
-must remain playable from editable musical information and independent sound
-sources, without replaying source-song PCM.
+Consider the onset, sustained motion and release together. Changing one may alter
+the apparent rhythm or mask another part. Preserve weight separately from moving
+texture when that serves the sound; other instruments may need a different
+architecture. A supported score can need a new instrument response rather than
+new notes.
 
-## When the result fails
+## Compose the space
 
-Correct notes with a flat result call for inspection inside the sound. Mechanical
-activity calls for reconsidering accents and phrase development, not automatically
-more events or randomization. A rich solo that crowds the ensemble calls for
-revisiting roles, voicings, entrances and tails before adding processing.
+An effect can answer a line, prolong tension, change perceived distance or carry
+a transition. Its audible pitch content, rhythm and decay determine that role.
+Judge the dry gesture and its returns both separately and together, including
+what the next phrase does to their tails.
 
-Use auditory perception when available and visual evidence where it resolves the
-question. Neither rendered-file validity nor matching measurements establishes a
-successful musical result.
+Shape sends and returns where the musical development calls for it. Filtering,
+ducking and stereo motion can clarify a response or erase the content that made
+it recognizable. Check the rendered relationship in context: a send value or
+more processing does not establish depth or presence.
+
+## Translate and verify behavior
+
+Measured band envelopes describe activity, not original synthesis parameters.
+Map them to the new instrument's actual response. Check the combined path through
+velocity, expression, envelopes, gain and effects: multiplying plausible controls
+can suppress notes twice, amplify leakage or flatten accents. Smoothing and
+nonlinear mappings also change articulation.
+
+For new material, develop relationships between accents, harmonic turns, colour
+and responses in its own phrases. Measured curves, authored envelopes and LFOs
+are available means. Keep controller semantics, units and routing with the patch.
+Newly performed parts remain playable from editable musical information and
+independent sound sources. Any requested retained audio stays distinguishable
+from those performances.

@@ -22,8 +22,8 @@ studio operations back to the user.
 
 Read only the relevant detail:
 
-- [Expressive arrangement](../setloom-expressive-arrangement/SKILL.md): develop a
-  lead melody into complementary electronic layers, motion and space.
+- [Expressive arrangement](../setloom-expressive-arrangement/SKILL.md): shape
+  musical roles, instrument character, motion and space.
 - `references/workflows.md`: arrangement, performance, mix, and export decisions.
 - `references/core-concepts.md`: Live object identity, timing and control units.
 - `references/source-grounding.md`: integration provenance; not current capabilities.

@@ -7,9 +7,10 @@ Keeping context small is part of the work.
 
 | When you need to | Read |
 | --- | --- |
+| Understand how the project's musical reasoning evolved | [semantics.md](semantics.md) |
 | Revise, review, or promote working audio | [workflow.md](workflow.md) |
 | Recover editable musical parts from a reference recording | [reconstruction.md](reconstruction.md) |
-| Develop a melody into layered electronic music | [Expressive arrangement skill](../.agents/skills/setloom-expressive-arrangement/SKILL.md) |
+| Develop or revise electronic arrangement and instrument character | [Expressive arrangement skill](../.agents/skills/setloom-expressive-arrangement/SKILL.md) |
 | Check tool policy and local runtime boundaries | [tooling.md](tooling.md) |
 | Script Ableton or Logic and choose a UI fallback | [daw-control.md](daw-control.md) |
 | Use the reusable Python primitives | [../src/setloom/](../src/setloom/) |

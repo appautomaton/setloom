@@ -1,6 +1,6 @@
 interface:
   display_name: "Expressive Electronic Arrangement"
-  short_description: "Develop melodies into expressive electronic layers"
-  default_prompt: "Use $setloom-expressive-arrangement to develop this melody into a layered electronic arrangement with expressive harmony, sound movement and space."
+  short_description: "Shape musical roles, instrument character and expression"
+  default_prompt: "Use $setloom-expressive-arrangement to develop or revise this music's arrangement, instrument character and expression in context."
 policy:
   allow_implicit_invocation: true
