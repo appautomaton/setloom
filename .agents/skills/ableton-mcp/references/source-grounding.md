@@ -1,32 +1,20 @@
-# Source grounding
+# Runtime and upstream sources
 
-This Setloom skill is grounded in the local files and reference clones below. Re-check them before making claims.
+Establish available operations from the exposed MCP tools, current Live responses
+and installed implementation in `local/mcp/ableton-mcp/`.
 
-## Runtime source
+- Server: `MCP_Server/server.py`
+- Remote Script: `AbletonMCP_Remote_Script/__init__.py`
+- Installation provenance: `SOURCE.txt`
+- Local telemetry settings: `MCP_Server/config.py`
 
-- Local MCP server source: `local/mcp/ableton-mcp/`
-- Provenance file: `local/mcp/ableton-mcp/SOURCE.txt`
-- MCP entrypoint: `local/mcp/ableton-mcp/MCP_Server/server.py`
-- Ableton Remote Script: `local/mcp/ableton-mcp/AbletonMCP_Remote_Script/__init__.py`
-- Telemetry local config: `local/mcp/ableton-mcp/MCP_Server/config.py` with telemetry disabled by default
+Paths above are relative to the installed implementation. Inspect local changes
+before assuming upstream behavior applies.
 
-## Reference clones
+For implementation research:
 
-Reference clones live under `tmp/skill-mcp-ref/` and are scratch/reference material, not the active runtime unless copied into `local/mcp/`.
+- [Ableton MCP](https://github.com/ahujasid/ableton-mcp): upstream bridge.
+- [Live Object Model reference](https://github.com/mikecfisher/ableton-lom-skill): Live API research.
+- [Producer Pal](https://github.com/adamjmurray/producer-pal): alternative integration, not the installed backend.
 
-Known reference snapshots from setup:
-
-- `tmp/skill-mcp-ref/ableton-mcp`: ahujasid/ableton-mcp, commit `5e9ffbd`, MIT, provides the MCP server and Ableton Remote Script used for the local runtime copy.
-- `tmp/skill-mcp-ref/ableton-lom-skill`: Ableton LOM reference skill, commit `7c7d189`, useful when extending Remote Script code against Live's Python API.
-- `tmp/skill-mcp-ref/ableton-skills`: producer workflow reference skills, commit `c46ef14`, useful for music-production guidance but not an MCP backend.
-- `tmp/skill-mcp-ref/producer-pal`: Producer Pal reference, commit `21effbd`, useful as an alternative REST/Max-for-Live design reference. It is not the installed Setloom backend.
-
-## Truth hierarchy
-
-1. Current live MCP tools exposed to Codex.
-2. Current Setloom files under `local/mcp/`, `.codex/config.toml`, `pyproject.toml`, and `uv.lock`.
-3. Current Ableton UI state and MCP command responses.
-4. Reference clones under `tmp/skill-mcp-ref/`.
-5. Prior conversation memory.
-
-If these disagree, inspect and report the disagreement rather than smoothing it over.
+Upstream capabilities do not establish what the local bridge exposes.

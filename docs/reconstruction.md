@@ -79,4 +79,4 @@ bends, pedal, and release. Keep musical preferences scoped to the current brief;
 a request for fast piano in one track is not a rule for every performance.
 
 For reconstructing tone and modulation on either the original instrument type or
-a new one, read [Gesture and control](../.agents/skills/setloom-expressive-arrangement/references/expressive-controls.md).
+a new one, read [Sound, gesture and control](../.agents/skills/setloom-expressive-arrangement/references/expressive-controls.md).
