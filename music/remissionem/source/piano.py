@@ -49,5 +49,3 @@ def render(patch, n, sr, midi_path, repo, work):
                "engine_clipped": raw_peak >= 1,
                "sample_source": patch["soundfont"], "credit": patch["credit"],
                "license": patch["license"]}
-
-

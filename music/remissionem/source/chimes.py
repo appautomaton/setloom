@@ -80,5 +80,3 @@ def synthesize(part, n, sr, p, beat, kicks):
         b = min(n, a + round(.18 * sr))
         returns[a:b] *= np.interp(np.arange(b - a) / sr, [0, .015, .06, .18], [1, .76, .80, 1])[:, None]
     return (direct + returns).astype(np.float32), direct, returns, direct_envelope, space_envelope
-
-
