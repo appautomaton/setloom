@@ -1,0 +1,15 @@
+{
+  "status": "Promoted at user request after the user reported publishing on SoundCloud",
+  "retained_mix": "Mix 01",
+  "source_origin": "local/candidates/stridulation/baselines/mix-01/source",
+  "master_origin": "local/releases/stridulation/production/mastering-report.json",
+  "musical_changes_on_promotion": false,
+  "image_files_included": false,
+  "audio_recordings_included": false,
+  "parameter_archives": "Measured oscillator amplitudes, tuning and stereo controls; no sampled reference audio",
+  "compatibility_changes": [
+    "Standalone frozen DSP helper imports",
+    "Required external render destinations",
+    "Unified mix, master and encoding entry point"
+  ]
+}

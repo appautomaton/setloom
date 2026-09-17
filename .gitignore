@@ -41,6 +41,8 @@ build/
 *.aif
 *.flac
 *.mp3
+*.m4a
+*.aac
 
 # Raster working/export images stay local; retained artwork uses compact WebP.
 *.[pP][nN][gG]

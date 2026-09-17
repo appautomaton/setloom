@@ -1,0 +1,52 @@
+{
+  "publication": "Reported by user; no public URL supplied or independently verified",
+  "canonical_source": "music/stridulation",
+  "release_assets": "local/releases/stridulation",
+  "folder_policy": "Code, MIDI, control data and text prompts only; no audio or raster images",
+  "source_clones_removed": [
+    {
+      "path": "local/candidates/stridulation/source",
+      "bytes": 32469636,
+      "preserved_existing_archive": "local/candidates/stridulation/audition-01/source-snapshot.zip"
+    },
+    {
+      "path": "local/candidates/stridulation/baselines/revision-05/source",
+      "bytes": 18148461,
+      "preserved_existing_archive": "local/candidates/stridulation/baselines/revision-05/audition/source-snapshot.zip"
+    },
+    {
+      "path": "local/candidates/stridulation/baselines/mix-01/source",
+      "bytes": 18159838,
+      "preserved_existing_archive": "local/candidates/stridulation/baselines/mix-01/audition/source-snapshot.zip"
+    },
+    {
+      "path": "tmp/stridulation/revision-02/source",
+      "bytes": 18181023,
+      "preserved_existing_archive": "tmp/stridulation/revision-02/audition-02/source-snapshot.zip"
+    },
+    {
+      "path": "tmp/stridulation/revision-03/source",
+      "bytes": 18147050,
+      "preserved_existing_archive": "tmp/stridulation/revision-03/audition-03/source-snapshot.zip"
+    },
+    {
+      "path": "tmp/stridulation/revision-04/source",
+      "bytes": 18131415,
+      "preserved_existing_archive": "tmp/stridulation/revision-04/audition-04/source-snapshot.zip"
+    },
+    {
+      "path": "tmp/stridulation/revision-05/source",
+      "bytes": 18148402,
+      "preserved_existing_archive": "tmp/stridulation/revision-05/audition-05/source-snapshot.zip"
+    },
+    {
+      "path": "tmp/stridulation/mix-01/source",
+      "bytes": 18159652,
+      "preserved_existing_archive": "tmp/stridulation/mix-01/audition/source-snapshot.zip"
+    }
+  ],
+  "obsolete_cache_bytes_removed": 11324893376,
+  "historical_raw_audio_kept": "tmp/stridulation/revision-04/render/delivery/Voice solo.wav",
+  "new_zip_created": false,
+  "other_music_projects_modified": false
+}

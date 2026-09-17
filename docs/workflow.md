@@ -2,9 +2,8 @@
 
 # Workflow
 
-Work from the intended musical effect and the actual performance. The agent
-owns production details and judgment; the human directs the work and judges
-the result. Tools support that exchange:
+Production stages and continuity. Musical responsibilities are in
+[AGENTS.md](../AGENTS.md); task skills guide the production work.
 
 ```text
 musical intent → temporary audition → listening feedback → revision or promotion
@@ -46,16 +45,18 @@ active feedback or rebuilds. Clean it up when those dependencies are resolved.
 
 ## Listening and continuity
 
-Deliver audio the user can judge without operating a DAW or inspecting MIDI.
-Resolve mismatches demonstrable with available evidence internally; do not make
-the human confirm missing content, incorrect timing or other already-visible
-defects. Updates should convey consequential findings or changes of direction,
-not require approval of internal passes. Honor playback preferences and identify
-the artifact under discussion. Keep a concise current record: artifact, stage,
-scoped listening verdict, and next musical
-question. Distinguish user reports from agent observations. A later clarification
-governs current state; retain earlier feedback with the artifact it described.
-Technical reports must not reset that verdict.
+Deliver identifiable audio within playback preferences; for reconstruction use
+the [first-audition guidance](reconstruction.md#first-audition).
+
+Keep a concise current record in the track's existing README or working note:
+the commissioned scope, editable source, reviewed/rendered artifact, stage,
+scoped listening verdict, and next unresolved musical question with its relevant
+passage or evidence. Update this record instead of creating parallel status
+ledgers. Keep raw events and historical trials in supporting files.
+
+Distinguish user reports, direct observations and hypotheses. A later clarification
+governs current state; earlier feedback stays with its reviewed artifact.
+Technical reports must not reset the listening verdict.
 
 Feedback normally steers the commissioned work. Answer questions, incorporate
 corrections and continue independent work. Pause when the user explicitly asks,

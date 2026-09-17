@@ -1,0 +1,13 @@
+{
+  "title": "STRIDULATION (Setloom Mix)",
+  "artist": "App Automaton",
+  "genre": "Techno",
+  "comment": "Made with Setloom. https://github.com/appautomaton/setloom",
+  "aac_bitrate": "320k",
+  "mastering": {
+    "input_gain_db": 7,
+    "ceiling_dbtp": -2.1,
+    "lookahead_ms": 3,
+    "release_ms": 65
+  }
+}

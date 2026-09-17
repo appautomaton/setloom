@@ -1,42 +1,47 @@
 ---
 name: setloom-reference-reconstruction
-description: Recover a reference recording as editable musical parts and a new performance. Use for missing content, pitch or rhythm mismatches with the reference, or preserving a recovered gesture on another instrument.
+description: Reconstruct a recording as editable notes, expressive controls and a new performance. Use for missing voices or mismatched pitch, rhythm, articulation or timbral motion, including instrument reinterpretation.
 ---
 
 <!-- SPDX-License-Identifier: AGPL-3.0-only -->
 
 # Setloom Reference Reconstruction
 
-Recover a supported, editable interpretation of the recording within the brief;
-this does not establish the producer's original MIDI or session. Use
-[Workflow](../../../docs/workflow.md) for working stages and scoped listening feedback.
+Recover a supported musical interpretation within the brief. The original MIDI,
+preset and session architecture remain unknown unless supplied.
 
-## Musical decisions
+The primary agent performs the reconstruction directly. Do not delegate source
+comparison, note/voice inference, articulation or timbral interpretation, or
+fidelity review to subagents. Inspect the underlying passages and plots; another
+agent's summary is not sufficient evidence.
 
-- Identify the audible gesture and what the brief asks to preserve or change.
-  Distinguish pitch spans, fresh attacks, retriggers, modulation and effects.
-- Treat separated stems as overlapping evidence. Their labels do not determine
-  the instrument assignments. Distinguish inferred parts and authored additions.
-- Check meaningful content omitted by the performance and support for inferred
-  events. A completed transcription pass or review of implemented parts alone
-  cannot establish coverage.
-- Compare complete phrases and relevant repeats. When a feature remains wrong,
-  reconsider its musical explanation before adding models or thresholds.
-- For an instrument change, decide how melody, pulse and expression survive on
-  the target. Rendered phrasing matters beyond event preservation.
+- Account for the whole commissioned form; concentrate close inspection on
+  distinct phrases, ambiguous layers and transitions. Check meaningful changes
+  in repeats before reusing a recovered pattern.
+- Open and examine relevant time- and frequency-domain plots, comparing the
+  original and rebuilt passages. Model candidates and reports do not replace this
+  work; let the musical question determine its depth.
+- Distinguish independent voices, instrument layers, modulation and effect returns
+  from their behavior. Separated estimates can overlap or omit content.
+- Preserve articulation and timbral motion that carry identity, including bass
+  and percussion. Notes, controls and the instrument must realize the gesture.
+- Check what the original contains that the performance still fails to explain.
+  Correct demonstrated mismatches and retain uncertainty where evidence is
+  inconclusive. Detector thresholds and note counts do not establish fidelity.
 
-## Relevant detail
+Read only the detail needed:
 
-- [Sound, gesture and control](../setloom-expressive-arrangement/references/expressive-controls.md):
-  translate timbre and motion into an independently playable instrument.
-- [Expressive arrangement](../setloom-expressive-arrangement/SKILL.md): when the
-  brief calls for new composition or arrangement from the recovered material.
-- [Evidence and provenance](../../../docs/reconstruction.md): ambiguous parts,
-  residual sounds, timing interpretation and grounded comparisons.
+- [Evidence and provenance](../../../docs/reconstruction.md#representation-and-provenance):
+  voice grouping, competing explanations and source support.
+- [First audition](../../../docs/reconstruction.md#first-audition):
+  when a baseline is useful for listening feedback.
 - [Instrument reinterpretation](../../../docs/reconstruction.md#instrument-reinterpretation):
-  articulation, controllers and the boundary between a swap and new writing.
-- [Tooling](../../../docs/tooling.md): runtimes, analysis units and commands.
+  preserve a gesture on a different instrument.
+- [Sound, gesture and control](../setloom-expressive-arrangement/references/expressive-controls.md):
+  perform recovered tone, movement and space.
+- [Expressive arrangement](../setloom-expressive-arrangement/SKILL.md):
+  when the brief includes new composition.
+- [Tooling](../../../docs/tooling.md): analysis units, runtimes and decoder limits.
 
-Keep notes, controls, patches and supporting decisions editable in per-track
-source. Deliver audio for the user to judge; retain the identity and verdict of
-the reviewed artifact. Technical checks verify the implementation, not taste.
+Keep musical decisions, editable performance and current listening state with
+the track; use [Workflow](../../../docs/workflow.md) for retention or promotion.

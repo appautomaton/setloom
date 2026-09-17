@@ -1,0 +1,463 @@
+{
+  "brief": "Underground pressure with distinct attacks, controlled abrasion and deliberate depth.",
+  "parts": {
+    "01": {
+      "gain_db": 0,
+      "phase_scale": 0.9,
+      "pan": 0,
+      "room_send": 0.015
+    },
+    "02": {
+      "gain_db": -0.8,
+      "phase_scale": 0.85,
+      "pan": 0,
+      "room_send": 0.008
+    },
+    "03": {
+      "gain_db": 1.2,
+      "phase_scale": 0.9,
+      "pan": -0.04,
+      "room_send": 0.055
+    },
+    "04": {
+      "gain_db": -1,
+      "phase_scale": 0.9,
+      "pan": 0.06,
+      "room_send": 0.025
+    },
+    "05": {
+      "gain_db": 0,
+      "phase_scale": 0.95,
+      "pan": 0.06,
+      "room_send": 0.065
+    },
+    "06": {
+      "gain_db": -0.6,
+      "phase_scale": 1,
+      "pan": -0.06,
+      "room_send": 0.08
+    },
+    "07": {
+      "gain_db": 0.5,
+      "phase_scale": 0.9,
+      "pan": -0.04,
+      "room_send": 0.035
+    },
+    "08": {
+      "gain_db": 0.5,
+      "phase_scale": 0.9,
+      "pan": 0.06,
+      "room_send": 0.04
+    },
+    "09": {
+      "gain_db": 0.5,
+      "phase_scale": 0.9,
+      "pan": -0.05,
+      "room_send": 0.04
+    },
+    "10": {
+      "gain_db": 0,
+      "phase_scale": 1,
+      "pan": 0,
+      "room_send": 0.006
+    },
+    "11": {
+      "gain_db": -0.6,
+      "noise_correlation": 0.65,
+      "pan": -0.06,
+      "room_send": 0.045
+    },
+    "12": {
+      "gain_db": -1.5,
+      "noise_correlation": 0.4,
+      "pan": 0.08,
+      "room_send": 0.025
+    },
+    "13": {
+      "gain_db": -3.3,
+      "noise_correlation": 0.15,
+      "pan": 0,
+      "room_send": 0
+    }
+  },
+  "kick": {
+    "drive": 2.8,
+    "oversampling": 4,
+    "body_eq_hz": 225,
+    "body_eq_db": -3.2,
+    "body_eq_q": 0.8,
+    "strike_band_gains": [
+      1.1,
+      1.2,
+      1.05,
+      0.68
+    ],
+    "strike_noise_correlation": 0.92
+  },
+  "hats": {
+    "modal_frequencies_hz": [
+      6697,
+      8942,
+      10460
+    ],
+    "modal_share": 0.23,
+    "noise_share": 0.77
+  },
+  "texture": {
+    "foreground_duck_db": 2.5,
+    "foreground_duck_recovery_seconds": 0.07,
+    "tail_gain_db": 1.5
+  },
+  "room": {
+    "duration_seconds": 0.38,
+    "highpass_hz": 380,
+    "lowpass_hz": 7200
+  },
+  "delay": {
+    "source_parts": [
+      "03",
+      "05",
+      "09"
+    ],
+    "windows_seconds": [
+      [
+        22.8,
+        24.8
+      ],
+      [
+        36.8,
+        38.1
+      ],
+      [
+        62.5,
+        63.8
+      ],
+      [
+        66.25,
+        66.65
+      ],
+      [
+        68.9,
+        69.4
+      ],
+      [
+        75.8,
+        76.2
+      ],
+      [
+        116.5,
+        117.0
+      ],
+      [
+        129.35,
+        129.7
+      ],
+      [
+        148.5,
+        149.0
+      ],
+      [
+        173.8,
+        174.1
+      ],
+      [
+        186.5,
+        187.0
+      ],
+      [
+        6.06,
+        6.16
+      ],
+      [
+        7.12,
+        7.26
+      ],
+      [
+        14.94,
+        15.04
+      ],
+      [
+        23.8,
+        24.0
+      ]
+    ],
+    "taps_seconds_gain": [
+      [
+        0.3,
+        0.16
+      ],
+      [
+        0.6,
+        0.075
+      ],
+      [
+        0.9,
+        0.028
+      ]
+    ],
+    "highpass_hz": 600,
+    "lowpass_hz": 3900
+  },
+  "provenance": "Mix and effect choices are authored revision decisions. Stereo phase controls are measurements, not additional notes. No reference audio is used by the renderer.",
+  "target_lufs": -14.8,
+  "true_peak_ceiling_dbtp": -1.5,
+  "automation": {
+    "lead_space": [
+      [
+        0,
+        0
+      ],
+      [
+        75.8,
+        0
+      ],
+      [
+        76.5,
+        -10
+      ],
+      [
+        76.8,
+        -14
+      ],
+      [
+        86.1,
+        -14
+      ],
+      [
+        86.5,
+        0
+      ],
+      [
+        140.6,
+        0
+      ],
+      [
+        141,
+        -8
+      ],
+      [
+        146.9,
+        -8
+      ],
+      [
+        147.3,
+        0
+      ],
+      [
+        153.35,
+        -6
+      ],
+      [
+        153.6,
+        -18
+      ],
+      [
+        166.35,
+        -18
+      ],
+      [
+        166.4,
+        0
+      ],
+      [
+        191,
+        0
+      ],
+      [
+        192,
+        -12
+      ],
+      [
+        198.4,
+        -35
+      ],
+      [
+        200,
+        -80
+      ]
+    ],
+    "texture_space": [
+      [
+        0,
+        0
+      ],
+      [
+        76.2,
+        0
+      ],
+      [
+        76.8,
+        -3
+      ],
+      [
+        85.8,
+        -3
+      ],
+      [
+        86.4,
+        0
+      ],
+      [
+        140.8,
+        -2
+      ],
+      [
+        152.8,
+        -2
+      ],
+      [
+        153.6,
+        -4
+      ],
+      [
+        165.9,
+        -4
+      ],
+      [
+        166.4,
+        0
+      ],
+      [
+        191,
+        0
+      ],
+      [
+        192,
+        -3
+      ],
+      [
+        197.8,
+        -9
+      ],
+      [
+        198.4,
+        -18
+      ],
+      [
+        200,
+        -80
+      ]
+    ]
+  },
+  "export_gain_db": -7.2811998265592495,
+  "bass_response_windows": [
+    {
+      "start": 10.18,
+      "end": 10.48,
+      "dip_db": 1.4,
+      "attack": 0.02,
+      "release": 0.1
+    },
+    {
+      "start": 18.18,
+      "end": 18.48,
+      "dip_db": 1.4,
+      "attack": 0.02,
+      "release": 0.1
+    }
+  ],
+  "unchanged_event_sample_anchors": {
+    "event_00166": {
+      "midi_start": 36.72166666666667,
+      "sample_start": 1619425
+    }
+  },
+  "resonance_variation": {
+    "part": "02",
+    "partial_numbers": [
+      8,
+      16,
+      24,
+      32,
+      40,
+      48,
+      56,
+      64,
+      72,
+      80
+    ],
+    "units": "Absolute seconds, semitone offset, seconds of raised-cosine crossfade",
+    "method": "Crossfade only the B-related 8th-partial family into a transposed oscillator family during selected replies. Preserve measured pitch drift, amplitude motion, stereo, all other partials, and the original phase outside each window.",
+    "crossfade_seconds": 0.045,
+    "windows": [
+      {
+        "start": 5.6,
+        "end": 6.32,
+        "semitones": 4,
+        "reason": "Opening: lift the B family toward D-sharp over the held G-sharp lead"
+      },
+      {
+        "start": 7.02,
+        "end": 7.4,
+        "semitones": -3,
+        "reason": "Opening: answer the existing G-sharp reply"
+      },
+      {
+        "start": 14.8,
+        "end": 15.18,
+        "semitones": 4,
+        "reason": "Opening: follow the existing D-sharp upper response"
+      },
+      {
+        "start": 20.0,
+        "end": 20.68,
+        "semitones": 4,
+        "reason": "Repeated phrase: a brief brighter reply"
+      },
+      {
+        "start": 21.55,
+        "end": 22.24,
+        "semitones": -3,
+        "reason": "Repeated phrase: settle toward the G-sharp center"
+      },
+      {
+        "start": 37.2,
+        "end": 37.76,
+        "semitones": -3,
+        "reason": "First drop: a short resonance return, intact kick"
+      },
+      {
+        "start": 70.4,
+        "end": 71.08,
+        "semitones": 4,
+        "reason": "Break: a restrained third-related lift against the B call"
+      },
+      {
+        "start": 75.2,
+        "end": 75.66,
+        "semitones": -3,
+        "reason": "Break: close before the voice chamber"
+      },
+      {
+        "start": 90.8,
+        "end": 91.52,
+        "semitones": 4,
+        "reason": "Rebuild: recall the opening lift"
+      },
+      {
+        "start": 94.0,
+        "end": 94.56,
+        "semitones": -3,
+        "reason": "Rebuild: answer toward the center"
+      },
+      {
+        "start": 97.6,
+        "end": 98.24,
+        "semitones": -3,
+        "reason": "Rebuild: resolve before the drum return"
+      },
+      {
+        "start": 160.0,
+        "end": 160.72,
+        "semitones": 4,
+        "reason": "Withdrawal: recall the lift in space"
+      },
+      {
+        "start": 164.8,
+        "end": 165.44,
+        "semitones": -3,
+        "reason": "Withdrawal: settle before the final phrase"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "status": "Rebuilt from promoted source and compared with the user-reported published local release",
+  "duration_seconds": 200,
+  "outputs": {
+    "STRIDULATION (Setloom Mix).wav": {
+      "byte_identical": true
+    },
+    "STRIDULATION (Setloom Mix).m4a": {
+      "byte_identical": true
+    }
+  },
+  "contains_audio_files": false,
+  "external_baseline_audio_required": false,
+  "external_cover_optional": true,
+  "historical_preview_pages_checked": 14,
+  "missing_preview_assets": 0,
+  "internal_audio_output_guard_verified": true,
+  "project_package_size_bytes": 18199912
+}
