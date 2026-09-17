@@ -1,0 +1,829 @@
+{
+  "vowels_hz": {
+    "u": [
+      370,
+      960,
+      2350
+    ],
+    "a": [
+      730,
+      1210,
+      2580
+    ],
+    "e": [
+      490,
+      1800,
+      2550
+    ]
+  },
+  "delay_seconds_gain": [
+    [
+      0.3,
+      0.16
+    ],
+    [
+      0.6,
+      0.07
+    ],
+    [
+      0.9,
+      0.025
+    ]
+  ],
+  "description": "Synthetic vowels and breath. No recorded voice or TTS.",
+  "patches": {
+    "voice_14_000": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.048,
+      "pan": -0.048,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_001": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.043,
+      "pan": 0.048,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_002": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.032,
+      "pan": 0.048,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_003": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.047,
+      "pan": -0.048,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_004": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.038,
+      "pan": 0.048,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_005": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.115,
+      "pan": -0.03,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_006": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.085,
+      "pan": 0.036,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_007": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.1,
+      "pan": 0.036,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_008": {
+      "from": "u",
+      "to": "e",
+      "rms": 0.075,
+      "pan": -0.024,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_009": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.1,
+      "pan": -0.036,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_010": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.08,
+      "pan": 0.036,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_011": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.095,
+      "pan": -0.024,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_012": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.085,
+      "pan": -0.036,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_14_013": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.065,
+      "pan": 0.036,
+      "style": "short",
+      "role": "rhythmic",
+      "presence_db": 0.35,
+      "attack_seconds": 0.012,
+      "release_seconds": 0.035,
+      "settle_cents": 26,
+      "spectral_tilt": 1.08,
+      "mouth_open_at": 0.55,
+      "mouth_return": 0.05
+    },
+    "voice_15_000": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.055,
+      "pan": -0.035,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.26
+    },
+    "voice_15_001": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.045,
+      "pan": 0.035,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_002": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.058,
+      "pan": -0.015,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.26
+    },
+    "voice_15_003": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.041,
+      "pan": 0.025,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_004": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.05,
+      "pan": -0.03,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.1
+    },
+    "voice_15_005": {
+      "from": "e",
+      "to": "a",
+      "rms": 0.043,
+      "pan": 0.03,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.26
+    },
+    "voice_15_006": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.046,
+      "pan": -0.01,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.1
+    },
+    "voice_15_007": {
+      "from": "u",
+      "to": "e",
+      "rms": 0.062,
+      "pan": -0.015,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_008": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.092,
+      "pan": -0.02,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.26
+    },
+    "voice_15_009": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.075,
+      "pan": 0.03,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_010": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.082,
+      "pan": 0.01,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_011": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.052,
+      "pan": -0.02,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.26
+    },
+    "voice_15_012": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.047,
+      "pan": 0.03,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_013": {
+      "from": "u",
+      "to": "e",
+      "rms": 0.053,
+      "pan": 0.0,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.1
+    },
+    "voice_15_014": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.046,
+      "pan": 0.02,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_015": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.05,
+      "pan": -0.02,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.1
+    },
+    "voice_15_016": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.075,
+      "pan": -0.025,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.26
+    },
+    "voice_15_017": {
+      "from": "e",
+      "to": "u",
+      "rms": 0.06,
+      "pan": 0.02,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_018": {
+      "from": "a",
+      "to": "u",
+      "rms": 0.068,
+      "pan": -0.015,
+      "style": "long",
+      "role": "answer",
+      "presence_db": 0.7,
+      "attack_seconds": 0.018,
+      "release_seconds": 0.1,
+      "settle_cents": 19,
+      "spectral_tilt": 1.12,
+      "mouth_open_at": 0.36,
+      "mouth_return": 0.1
+    },
+    "voice_15_019": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.038,
+      "pan": 0.01,
+      "style": "long",
+      "role": "focal",
+      "presence_db": 1.8,
+      "attack_seconds": 0.028,
+      "release_seconds": 0.18,
+      "settle_cents": 12,
+      "spectral_tilt": 1.22,
+      "mouth_open_at": 0.48,
+      "mouth_return": 0.26
+    },
+    "breath_16_000": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.012,
+      "pan": -0.2,
+      "style": "short"
+    },
+    "breath_16_001": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.012,
+      "pan": -0.14,
+      "style": "short"
+    },
+    "breath_16_002": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.009,
+      "pan": 0.12,
+      "style": "short"
+    },
+    "breath_16_003": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.022,
+      "pan": 0.2,
+      "style": "short"
+    },
+    "breath_16_004": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.018,
+      "pan": -0.12,
+      "style": "short"
+    },
+    "breath_16_005": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.011,
+      "pan": -0.12,
+      "style": "short"
+    },
+    "breath_16_006": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.01,
+      "pan": 0.12,
+      "style": "short"
+    },
+    "friction_17_000": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.009,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2100,
+      "teeth_hz": 65
+    },
+    "friction_17_001": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.01,
+      "pan": 0.2,
+      "style": "short",
+      "center_hz": 2800,
+      "teeth_hz": 88
+    },
+    "friction_17_002": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.019,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2100,
+      "teeth_hz": 111
+    },
+    "friction_17_003": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.013,
+      "pan": 0.2,
+      "style": "short",
+      "center_hz": 2900,
+      "teeth_hz": 65
+    },
+    "friction_17_004": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.021,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2300,
+      "teeth_hz": 88
+    },
+    "friction_17_005": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.011,
+      "pan": 0.2,
+      "style": "short",
+      "center_hz": 1900,
+      "teeth_hz": 111
+    },
+    "friction_17_006": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.008,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2600,
+      "teeth_hz": 65
+    },
+    "friction_17_007": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.012,
+      "pan": 0.2,
+      "style": "short",
+      "center_hz": 2200,
+      "teeth_hz": 88
+    },
+    "friction_17_008": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.009,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2900,
+      "teeth_hz": 111
+    },
+    "friction_17_009": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.014,
+      "pan": 0.2,
+      "style": "short",
+      "center_hz": 2300,
+      "teeth_hz": 65
+    },
+    "friction_17_010": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.015,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2500,
+      "teeth_hz": 88
+    },
+    "friction_17_011": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.017,
+      "pan": 0.2,
+      "style": "short",
+      "center_hz": 2100,
+      "teeth_hz": 111
+    },
+    "friction_17_012": {
+      "from": "u",
+      "to": "a",
+      "rms": 0.014,
+      "pan": -0.2,
+      "style": "short",
+      "center_hz": 2700,
+      "teeth_hz": 65
+    }
+  },
+  "preserved_synth_space_windows": [
+    {
+      "start": 77.19999999999999,
+      "end": 77.71999999999998
+    },
+    {
+      "start": 78.09999999999998,
+      "end": 78.45999999999998
+    },
+    {
+      "start": 79.19999999999997,
+      "end": 80.11999999999998
+    },
+    {
+      "start": 80.69999999999997,
+      "end": 81.07999999999997
+    },
+    {
+      "start": 81.29999999999997,
+      "end": 81.84999999999997
+    },
+    {
+      "start": 82.99999999999997,
+      "end": 83.21999999999997
+    },
+    {
+      "start": 83.99999999999997,
+      "end": 84.47999999999998
+    },
+    {
+      "start": 131.2,
+      "end": 131.64
+    },
+    {
+      "start": 142.0,
+      "end": 142.48
+    },
+    {
+      "start": 142.6,
+      "end": 142.92
+    },
+    {
+      "start": 145.2,
+      "end": 145.79999999999998
+    },
+    {
+      "start": 154.6,
+      "end": 155.35
+    },
+    {
+      "start": 156.1,
+      "end": 156.54999999999998
+    },
+    {
+      "start": 157.99999999999997,
+      "end": 158.99999999999997
+    },
+    {
+      "start": 160.39999999999998,
+      "end": 160.87999999999997
+    },
+    {
+      "start": 162.19999999999996,
+      "end": 162.79999999999995
+    },
+    {
+      "start": 182.59999999999997,
+      "end": 183.04999999999995
+    },
+    {
+      "start": 183.19999999999996,
+      "end": 183.49999999999997
+    },
+    {
+      "start": 189.19999999999996,
+      "end": 189.74999999999997
+    },
+    {
+      "start": 193.99999999999997,
+      "end": 194.69999999999996
+    }
+  ],
+  "voice_design": {
+    "intent": "Synthetic vowels with less exaggerated pitch/formant motion, longer focal phrases and controlled foreground presence. No TTS or recorded voice.",
+    "formant_widths_hz": [
+      110,
+      160,
+      240
+    ],
+    "formant_gains": [
+      1,
+      0.68,
+      0.24
+    ],
+    "room_send": 0.045,
+    "delay_lowpass_hz": 2800,
+    "delay_highpass_hz": 480,
+    "delay_seconds_gain": [
+      [
+        0.3,
+        0.14
+      ],
+      [
+        0.6,
+        0.055
+      ],
+      [
+        0.9,
+        0.018
+      ]
+    ],
+    "echo_duck_db": 4.5,
+    "air_share": 0.008,
+    "vibrato_cents": 2.7,
+    "vibrato_hz": 4.8,
+    "outro_note": "Final reflection now captures the complete 194.0\u2013195.1 phrase and fades its edges, rather than truncating the old 0.7-second slice."
+  }
+}

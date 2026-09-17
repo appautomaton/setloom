@@ -188,6 +188,13 @@ cached MLX weights. Transcription cache validity depends on input, routing,
 timing, runtime/model identity and requested output formats; a cached result
 does not establish that its notes are musically correct.
 
+Basic Pitch exposes raw activations through Python. Its default 127.7 ms minimum
+note duration exceeds a 100 ms sixteenth at 150 BPM; inspect raw evidence when
+decoded MIDI appears incomplete and choose settings for the actual material.
+Fusion's duration, velocity, timing and octave heuristics can also remove valid
+events. Use local source evidence to resolve candidates; changing a threshold
+does not validate the resulting score.
+
 `pitch-probes`, `pianist`, `supercollider`, and `ableton-mcp` support specific
 local experiments or integrations. Enable them only when the corresponding
 source needs them. Basic Pitch's `transcription` group contains MLX and safetensors.

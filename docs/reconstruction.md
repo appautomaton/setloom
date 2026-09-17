@@ -18,9 +18,19 @@ extra separator stem or proof of an independent original instrument. Measurement
 of the full mix describe combined activity until a narrower interpretation is
 supported. Several estimates may share a voice; avoid sounding duplicates.
 
-A separated synth estimate can contain several pitched voices, articulations
-and effect returns. Choose their grouping from how they behave across the
-phrase; one estimate does not require one instrument or one MIDI track.
+A separated synth estimate can contain several voices and effects. Choose a
+representation from behavior across the phrase:
+
+| Source behavior | Editable representation |
+| --- | --- |
+| Independently moving melody, harmony or response | Notes and a distinct voice when supported. |
+| Oscillators, harmonics or detune within one gesture | Instrument layers sharing the performance. |
+| Continuing amplitude, filter or pitch movement | Controls, envelopes or modulation. |
+| Delayed responses and spatial decay | Effects and their automation. |
+
+Several model notes may describe one sound; one estimate may contain several
+parts. Harmonic spacing alone neither proves a separate voice nor justifies
+deleting an octave. Compare attacks, co-movement, envelopes and exposed repeats.
 
 Check coverage from the recording toward the performance, including meaningful
 content the current implementation does not explain. Shared evidence warrants
@@ -42,23 +52,47 @@ does not constitute a new performance.
 | Why does an unwanted sound remain? | Current rendered passage, contributing tracks, effects, and routing. | Muting one layer does not remove every source of a similar sound. |
 | Why does a new instrument feel different? | Notes, controllers, envelope behavior, and a complete rendered phrase. | Equal note counts or controller values do not preserve expression. |
 
-Use enough phrase context to compare explanations, including repeated motifs and
-their development. If a feature stays wrong, reconsider the musical explanation
-before adding another model or tuning more thresholds. Inspect the actual visual
-evidence when it can resolve the question; generating a plot or reading summary
-statistics does not perform that inspection. Correct demonstrated mismatches
-before an audition. Competing explanations call for further source comparison
-and internal trials, not routine confirmation from the human. Use auditory perception
-when available; plots and playback for the user do not mean the agent heard it.
+Automation locates passages, exposes evidence and executes understood operations.
+The primary agent must inspect the relevant time- and frequency-domain views,
+comparing the original, separated estimates and rebuilt passage. A plot saved to disk, a
+summary metric or decoded MIDI does not perform that comparison. Use auditory
+perception when available; viewing plots or playing audio does not establish hearing.
+
+Inspect complete phrases, their development and transitions. Focus close analysis
+on distinct gestures and ambiguities; check returns before reusing a recovered
+pattern. Zoom into individual attacks, durations, overlapping voices and partials
+where needed, then verify their relationships in the complete phrase. Another
+agent's summary does not replace this direct inspection. If a feature stays
+wrong, test another musical explanation against the source before adding models
+or tuning thresholds. Keep the supporting passage,
+interpretation and material uncertainty with the track so work can resume.
 
 [Tooling](tooling.md) defines analysis units and runtimes. Keep file seconds,
 excerpt offsets, frame times, and MIDI ticks distinct. A small spectrogram hop
 does not undo long-window smearing, and separately normalized excerpts can hide
 the relative levels that matter in the mix.
 
-Basic Pitch exposes raw activations through Python. Its generic 127.7 ms minimum
-note duration exceeds a 100 ms sixteenth at 150 BPM; inspect raw evidence when
-decoded MIDI appears incomplete and choose settings for the actual material.
+Basic Pitch and fusion produce candidates. Detection thresholds, cross-model
+agreement and event counts do not certify fidelity. Without ground-truth notes,
+do not report a note-recovery percentage. See [decoder limits](tooling.md#separation-and-transcription)
+when candidate notes appear incomplete or implausibly dense.
+
+## First audition
+
+Present a coherent performance of the commissioned scope once its defining
+phrases, principal voices, groove and entrances/exits have supported
+interpretations, and demonstrated material mismatches have been corrected.
+Check from the original toward the reconstruction for content no implemented
+part explains. Neither a fixed number of analysis passes nor a similarity score
+decides readiness.
+
+Include the timbral movement and articulation that carry musical identity:
+bass breathing, synth pulses, drum weight and spatial responses can matter as
+much as pitch. An exact preset or fine effect tail can remain approximate where
+it does not change the gesture. Disclose unresolved material uncertainty.
+Continue close investigation where it could change the performance; do not
+delay a useful audition solely to reproduce every synthesis detail. The human
+judges the result; the agent owns evidence-based corrections before delivery.
 
 ## Instrument reinterpretation
 

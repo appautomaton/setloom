@@ -1,0 +1,14 @@
+Use case: stylized-concept
+Asset type: square electronic-music cover, with image and finished typography generated together.
+
+Create a sophisticated, contemporary underground techno cover for STRIDULATION by APP AUTOMATON. The music has controlled abrasion, a forceful pulse, repeating melodic gestures, synthetic voice and moments of expansive darkness. Express friction becoming vibration: an abstract sculptural pair of finely ridged, graphite-dark membranes passing close to each other, with a narrow, luminous interference seam and delicate repeated contours suggesting sound in motion. The image should feel physically convincing, precise and tactile, with depth and generous negative space. No literal insect, speaker or musical instrument.
+
+Art direction: restrained experimental editorial design, sharply resolved sculptural material, near-black graphite, mineral ivory typography and a small acid-chartreuse light accent. Strong contrast with subtle shadow detail. One compelling spatial gesture, not a cluttered collage. The visual should feel forward-looking and durable rather than nostalgic rave artwork. Avoid chrome liquid blobs, generic neon tunnels, laser grids, stock waveforms, cyberpunk cityscapes and excessive lens flare.
+
+Typography is part of the generated cover, not a blank area for later text. Render exactly these two texts and no other words:
+"STRIDULATION"
+"APP AUTOMATON"
+
+Spell the title exactly: S T R I D U L A T I O N. Render it as one word, all capitals, in a distinctive contemporary neo-grotesk display treatment with carefully controlled proportions and spacing. Make the title large, immediately legible at thumbnail scale, and integrated with the composition without distorting or concealing the letters. The artist credit is smaller, precise and widely spaced. Build a deliberate hierarchy and balanced alignment between the two text elements and the sculpture. Use crisp, clean letterforms, not weathered, gothic, handwritten or imitation futuristic stencil lettering.
+
+Flat square cover image, edge-to-edge artwork, no physical sleeve mockup or border. Keep every letter safely inside the frame with at least 6 percent clearance from its edges. No subtitle, version label, BPM, date, logos, signatures or watermark. Generate both the artwork and the specified typography in the same image.
