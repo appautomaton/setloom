@@ -13,10 +13,13 @@ audible gesture. A drum strike, a same-pitch retrigger, and modulation inside a
 sustained note require different explanations.
 
 Distinguish separated estimates, inferred parts, re-performed instruments, and
-authored additions in source and review labels. An extra render layer is not an
-extra separator stem or proof of an independent original instrument. Measurements
-of the full mix describe combined activity until a narrower interpretation is
-supported. Several estimates may share a voice; avoid sounding duplicates.
+authored additions in source and review labels. Separator labels and levels do
+not establish independent players, prominence or original faders. Use estimates
+to locate and attribute evidence; judge timbre, weight and space in the original
+mix. A strong estimate may duplicate another; a weak one may omit an important
+gesture. Reconcile shared content before rendering it as another part, revisiting
+ownership as evidence changes. Full-mix measurements describe combined activity
+until a narrower interpretation is supported.
 
 A separated synth estimate can contain several voices and effects. Choose a
 representation from behavior across the phrase:
@@ -50,7 +53,8 @@ does not constitute a new performance.
 | Is this a fresh strike or a continuing pulse? | Short-window rhythm and onset evidence. | Energy peaks and grid points do not prove retriggers. |
 | Did a source part disappear? | Original mix and relevant separated estimates. | A separator may lose content or share it across outputs. |
 | Why does an unwanted sound remain? | Current rendered passage, contributing tracks, effects, and routing. | Muting one layer does not remove every source of a similar sound. |
-| Why does a new instrument feel different? | Notes, controllers, envelope behavior, and a complete rendered phrase. | Equal note counts or controller values do not preserve expression. |
+| Why does a new instrument feel different? | Notes, controller routing, excitation, partial relationships, envelopes and release. | Correct notes do not validate a sound model; the performer must realize the gesture. |
+| Why is the mix thin, muddy or crowded? | Original and rebuilt phrases in ensemble, then contributing parts, levels and returns. | Added layers or a matched average spectrum can conceal omitted, duplicated or misrepresented gestures. |
 
 Automation locates passages, exposes evidence and executes understood operations.
 The primary agent must inspect the relevant time- and frequency-domain views,
@@ -61,11 +65,15 @@ perception when available; viewing plots or playing audio does not establish hea
 Inspect complete phrases, their development and transitions. Focus close analysis
 on distinct gestures and ambiguities; check returns before reusing a recovered
 pattern. Zoom into individual attacks, durations, overlapping voices and partials
-where needed, then verify their relationships in the complete phrase. Another
-agent's summary does not replace this direct inspection. If a feature stays
-wrong, test another musical explanation against the source before adding models
-or tuning thresholds. Keep the supporting passage,
-interpretation and material uncertainty with the track so work can resume.
+where needed, then verify their relationships in the complete phrase. Use solos
+to diagnose; judge their contribution in ensemble.
+
+For a persistent mismatch, locate where source behavior diverges: separated
+evidence, musical interpretation, instrument response or mix interaction. Test
+that explanation against the source before changing parameters. If the model
+cannot express the gesture, revise its representation before compensating with
+gain, equalization or additional layers. Keep the supporting passage, cause and
+material uncertainty with the track so work can resume.
 
 [Tooling](tooling.md) defines analysis units and runtimes. Keep file seconds,
 excerpt offsets, frame times, and MIDI ticks distinct. A small spectrogram hop
@@ -88,8 +96,10 @@ decides readiness.
 
 Include the timbral movement and articulation that carry musical identity:
 bass breathing, synth pulses, drum weight and spatial responses can matter as
-much as pitch. An exact preset or fine effect tail can remain approximate where
-it does not change the gesture. Disclose unresolved material uncertainty.
+much as pitch. Prioritize differences that alter identity, groove or development;
+quiet supporting detail should retain its role in the source. Exact presets or
+fine effect tails can remain approximate where they do not change the gesture.
+Disclose unresolved material uncertainty.
 Continue close investigation where it could change the performance; do not
 delay a useful audition solely to reproduce every synthesis detail. The human
 judges the result; the agent owns evidence-based corrections before delivery.

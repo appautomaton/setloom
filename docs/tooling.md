@@ -167,8 +167,8 @@ interfaces, their current gaps, and the division between scripting and UI work.
 
 ## Separation and transcription
 
-ACE-Step and Magenta remain opt-in local generation experiments. The reference
-tools offer these separate paths in the shared `uv` environment:
+Magenta remains an opt-in local generation experiment. The reference tools
+offer these separate paths in the shared `uv` environment:
 
 | Path | Dependency groups | Output and limits |
 | --- | --- | --- |
@@ -247,13 +247,18 @@ For runtime or conversion changes, use
 [`validate_basic_pitch_mlx.py`](../scripts/validate_basic_pitch_mlx.py) and
 [`convert_basic_pitch_mlx.py`](../scripts/convert_basic_pitch_mlx.py).
 
-## Local vocal word timing
+## Vocal words and phrasing
 
-The optional `vocal-alignment` dependency group supplies `mlx-whisper` for local
-phrase and word timing. Keep its weights in `models/` and pass their local path
-to the [MLX Whisper API](https://github.com/ml-explore/mlx-examples/tree/main/whisper).
-Use this alongside vocal pitch, envelopes and the original recording when
-reviewing singing-to-instrument articulation. Singing timestamps can drift and
-speech-duration heuristics can shorten held vowels; they are context, not a
-musical note grid. For bounded passage work, crop the input explicitly and record
-the original-file offset.
+Use [mlx-speech](https://github.com/appautomaton/mlx-speech), maintained separately,
+when a study needs speech-to-text.
+Choose a model after identifying the language and checking its singing behavior;
+Setloom does not require a speech-recognition dependency or its model weights.
+Keep reviewed transcripts and available timing data with the study. Analyze vocal
+pitch, note duration and articulation against the recording separately: speech
+recognition does not produce a musical score. For passage work, retain the
+original-file offset. Existing historical word-timing files remain usable.
+
+The optional `vocoder` dependency group supplies `pyworld`, a binding for the
+WORLD vocoder. A study can measure a voice's spectral envelope and aperiodicity
+with it, then resynthesize from score-driven pitch. No macOS wheel is published,
+so installation compiles it and needs a C++ toolchain.

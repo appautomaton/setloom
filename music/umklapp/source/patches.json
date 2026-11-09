@@ -1,0 +1,942 @@
+{
+  "revision": "Study 08",
+  "seed": 1010134,
+  "sample_rate": 44100,
+  "performance_inputs": [
+    "source/Umklapp.mid",
+    "source/performance.json",
+    "source/patches.json",
+    "source/automation.npz",
+    "source/engineering.json",
+    "source/mix_dsp.py"
+  ],
+  "policies": {
+    "excitation": "Fresh deterministic oscillators and independent noise; no original or separated PCM.",
+    "midi": "Combined MIDI performs timing, pitch and velocity; text IDs connect editable physical articulation and gate-relative pitch curves.",
+    "stems": "Post-voice effects, melodic/kick ducking and faders, pre-master float contributions; solos share one preview gain.",
+    "harmony": "D/A pitch destinations and the suspension F persist. Expressive excursions and bounded inharmonic upper metal modes supply the requested rough motion.",
+    "groove": "Study 06 performed rhythm and physical strokes remain. The engineering stage makes small balance and frequency-selective changes around the existing clock.",
+    "tail": "The closing veil and residual field resolve into the six-second tail and two-second raised-cosine fade.",
+    "motion": "Develop motion from the whole arrangement: establish the low clock, open the first exchange, suspend it, make a compact physical return, transfer the foreground to metal, and resolve into harmonic memory.",
+    "engineering": "All 3429 notes, gates, velocities, pitch curves, shared vibration, form controls, source distortion and existing sidechain shapes remain. Refinement owns balance, broad body EQ, the engine's small frequency-selective kick pocket, high-hat peak restraint and existing stereo returns.",
+    "foreground_refinement": "All 3429 notes, MIDI, gates, velocities, pitch curves, shared vibration, original automation, source and return distortion, original ducking, EQ, stereo treatment, ten part faders and eight other performed voices remain. Only the two foreground voices dry/return balance follows the authored phrase map."
+  },
+  "voices": {
+    "kick": {
+      "gain_db": -2.7,
+      "amplitude": 0.58,
+      "tail_hz": 55.0,
+      "start_hz": 168.0,
+      "fall_seconds": 0.021,
+      "attack_seconds": 0.001,
+      "room": 0,
+      "duck": 0,
+      "mix_polish": {}
+    },
+    "engine": {
+      "gain_db": 3.1,
+      "amplitude": 0.24,
+      "carrier_ratio": 3.0,
+      "modulator_ratio": 2.0,
+      "secondary_modulator_ratio": 1.0,
+      "fm_index": [
+        0.35,
+        1.35
+      ],
+      "texture_amount": 0.4,
+      "modal_ratios": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "cutoff_hz": [
+        420,
+        1350
+      ],
+      "grain_amount": 0.018,
+      "room": 0.035,
+      "duck": 0.48,
+      "width": 0.045,
+      "distortion": {
+        "band_hz": [
+          170,
+          2000
+        ],
+        "drive": [
+          2.0,
+          3.5
+        ],
+        "blend": [
+          0.12,
+          0.28
+        ],
+        "bias": 0.11,
+        "reference_level": 0.32
+      },
+      "mix_polish": {
+        "eq": [
+          {
+            "type": "peak",
+            "frequency_hz": 150,
+            "q": 0.8,
+            "gain_db": 0.65
+          }
+        ],
+        "low_pocket": {
+          "band_hz": [
+            45,
+            125
+          ],
+          "maximum_cut_db": 0.6
+        }
+      }
+    },
+    "bend": {
+      "gain_db": 3.6,
+      "amplitude": 0.178,
+      "fm_ratio": 2.004,
+      "secondary_ratio": 3.0,
+      "side_ratio": 2.0,
+      "fm_index": [
+        0.52,
+        2.35
+      ],
+      "cutoff_hz": [
+        760,
+        4250
+      ],
+      "room": 0.12,
+      "duck": 0.2,
+      "width": 0.19,
+      "delay_beats": [
+        0.5,
+        1.0
+      ],
+      "delay_gains": [
+        0.65,
+        0.21
+      ],
+      "vibrato_cycles_per_beat": 2,
+      "vibrato_tail_seconds": 0.18,
+      "distortion": {
+        "band_hz": [
+          190,
+          5900
+        ],
+        "drive": [
+          2.4,
+          4.6
+        ],
+        "blend": [
+          0.27,
+          0.55
+        ],
+        "bias": 0.16,
+        "reference_level": 0.45
+      },
+      "return_distortion": {
+        "band_hz": [
+          240,
+          4200
+        ],
+        "drive": [
+          1.8,
+          3.3
+        ],
+        "blend": [
+          0.27,
+          0.46
+        ],
+        "bias": 0.1,
+        "reference_level": 0.025
+      },
+      "phrase_shear_beats": 8,
+      "mix_polish": {
+        "eq": [
+          {
+            "type": "peak",
+            "frequency_hz": 820,
+            "q": 0.9,
+            "gain_db": 0.55
+          }
+        ],
+        "upper_side_scale": 1.05,
+        "side_transition_hz": 260
+      },
+      "space_polish": {
+        "gain_bar_keyframes": [
+          [
+            0,
+            1
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            50,
+            1.06
+          ],
+          [
+            64,
+            1.05
+          ],
+          [
+            80,
+            1.12
+          ],
+          [
+            96,
+            1.16
+          ],
+          [
+            110,
+            1.16
+          ],
+          [
+            112,
+            1.02
+          ],
+          [
+            126,
+            1.02
+          ],
+          [
+            132,
+            1.12
+          ],
+          [
+            144,
+            1.07
+          ],
+          [
+            148,
+            1.12
+          ],
+          [
+            152,
+            1.04
+          ],
+          [
+            160,
+            1.05
+          ],
+          [
+            176,
+            1.11
+          ],
+          [
+            192,
+            1.12
+          ],
+          [
+            212,
+            1.12
+          ]
+        ],
+        "width_bar_keyframes": [
+          [
+            0,
+            1.15
+          ],
+          [
+            48,
+            1.2
+          ],
+          [
+            64,
+            1.25
+          ],
+          [
+            80,
+            1.4
+          ],
+          [
+            96,
+            1.45
+          ],
+          [
+            110,
+            1.45
+          ],
+          [
+            112,
+            1.18
+          ],
+          [
+            128,
+            1.35
+          ],
+          [
+            144,
+            1.28
+          ],
+          [
+            148,
+            1.4
+          ],
+          [
+            152,
+            1.22
+          ],
+          [
+            160,
+            1.25
+          ],
+          [
+            176,
+            1.35
+          ],
+          [
+            192,
+            1.4
+          ],
+          [
+            212,
+            1.4
+          ]
+        ],
+        "side_transition_hz": 260,
+        "dry_gain_db_bar_keyframes": [
+          [
+            0,
+            0
+          ],
+          [
+            104,
+            0
+          ],
+          [
+            108,
+            -0.75
+          ],
+          [
+            110,
+            -1.65
+          ],
+          [
+            111.5,
+            -1.65
+          ],
+          [
+            112,
+            0
+          ],
+          [
+            159.5,
+            0
+          ],
+          [
+            160,
+            -1.35
+          ],
+          [
+            172,
+            -1.35
+          ],
+          [
+            176,
+            0.3
+          ],
+          [
+            180,
+            0.3
+          ],
+          [
+            184,
+            0
+          ],
+          [
+            212,
+            0
+          ]
+        ],
+        "return_gain_db_bar_keyframes": [
+          [
+            0,
+            0
+          ],
+          [
+            104,
+            0
+          ],
+          [
+            108,
+            -0.25
+          ],
+          [
+            110,
+            -0.7
+          ],
+          [
+            111.75,
+            -1.8
+          ],
+          [
+            112,
+            -1.8
+          ],
+          [
+            114,
+            -1.05
+          ],
+          [
+            116,
+            -0.45
+          ],
+          [
+            120,
+            -0.45
+          ],
+          [
+            128,
+            0
+          ],
+          [
+            159.5,
+            0
+          ],
+          [
+            160,
+            -1.25
+          ],
+          [
+            172,
+            -1.25
+          ],
+          [
+            176,
+            0
+          ],
+          [
+            212,
+            0
+          ]
+        ]
+      }
+    },
+    "lattice": {
+      "gain_db": 1.6,
+      "amplitude": 0.16,
+      "modal_ratios": [
+        1,
+        2.004,
+        3,
+        4.01,
+        5.45,
+        7.23,
+        9.96
+      ],
+      "modal_weights": [
+        0.36,
+        0.34,
+        0.13,
+        0.09,
+        0.045,
+        0.026,
+        0.012
+      ],
+      "body_decay_scale": 0.88,
+      "metal_fm_ratio": 1.414,
+      "metal_fm_index": 0.34,
+      "metal_fm_decay_seconds": 0.06,
+      "room": 0.14,
+      "duck": 0.16,
+      "width": 0.36,
+      "delay_beats": [
+        0.5,
+        1.0
+      ],
+      "delay_gains": [
+        0.43,
+        0.14
+      ],
+      "vibrato_cycles_per_beat": 2,
+      "vibrato_tail_seconds": 0.32,
+      "distortion": {
+        "band_hz": [
+          230,
+          6800
+        ],
+        "drive": [
+          2.2,
+          4.0
+        ],
+        "blend": [
+          0.25,
+          0.48
+        ],
+        "bias": 0.12,
+        "reference_level": 0.45
+      },
+      "return_distortion": {
+        "band_hz": [
+          280,
+          4700
+        ],
+        "drive": [
+          1.8,
+          3.2
+        ],
+        "blend": [
+          0.25,
+          0.44
+        ],
+        "bias": 0.1,
+        "reference_level": 0.018
+      },
+      "phrase_shear_beats": 8,
+      "mix_polish": {
+        "eq": [
+          {
+            "type": "peak",
+            "frequency_hz": 1170,
+            "q": 0.9,
+            "gain_db": 0.45
+          }
+        ],
+        "upper_side_scale": 1.07,
+        "side_transition_hz": 260
+      },
+      "space_polish": {
+        "gain_bar_keyframes": [
+          [
+            0,
+            1
+          ],
+          [
+            48,
+            1.04
+          ],
+          [
+            64,
+            1.05
+          ],
+          [
+            80,
+            1.1
+          ],
+          [
+            96,
+            1.14
+          ],
+          [
+            110,
+            1.14
+          ],
+          [
+            112,
+            1.02
+          ],
+          [
+            128,
+            1.1
+          ],
+          [
+            144,
+            1.06
+          ],
+          [
+            148,
+            1.1
+          ],
+          [
+            152,
+            1.05
+          ],
+          [
+            160,
+            1.1
+          ],
+          [
+            176,
+            1.08
+          ],
+          [
+            192,
+            1.1
+          ],
+          [
+            212,
+            1.1
+          ]
+        ],
+        "width_bar_keyframes": [
+          [
+            0,
+            1.15
+          ],
+          [
+            48,
+            1.2
+          ],
+          [
+            64,
+            1.25
+          ],
+          [
+            80,
+            1.4
+          ],
+          [
+            96,
+            1.48
+          ],
+          [
+            110,
+            1.48
+          ],
+          [
+            112,
+            1.18
+          ],
+          [
+            128,
+            1.34
+          ],
+          [
+            144,
+            1.3
+          ],
+          [
+            148,
+            1.42
+          ],
+          [
+            152,
+            1.25
+          ],
+          [
+            160,
+            1.4
+          ],
+          [
+            176,
+            1.32
+          ],
+          [
+            192,
+            1.4
+          ],
+          [
+            212,
+            1.4
+          ]
+        ],
+        "side_transition_hz": 260,
+        "dry_gain_db_bar_keyframes": [
+          [
+            0,
+            0
+          ],
+          [
+            104,
+            0
+          ],
+          [
+            108,
+            -0.5
+          ],
+          [
+            110,
+            -1.15
+          ],
+          [
+            111.5,
+            -1.15
+          ],
+          [
+            112,
+            0
+          ],
+          [
+            159.5,
+            0
+          ],
+          [
+            160,
+            1.0
+          ],
+          [
+            172,
+            1.0
+          ],
+          [
+            176,
+            0.55
+          ],
+          [
+            180,
+            0
+          ],
+          [
+            212,
+            0
+          ]
+        ],
+        "return_gain_db_bar_keyframes": [
+          [
+            0,
+            0
+          ],
+          [
+            104,
+            0
+          ],
+          [
+            108,
+            -0.15
+          ],
+          [
+            110,
+            -0.55
+          ],
+          [
+            111.75,
+            -1.65
+          ],
+          [
+            112,
+            -1.65
+          ],
+          [
+            114,
+            -0.9
+          ],
+          [
+            116,
+            -0.35
+          ],
+          [
+            120,
+            -0.35
+          ],
+          [
+            128,
+            0
+          ],
+          [
+            159.5,
+            0
+          ],
+          [
+            160,
+            -1.65
+          ],
+          [
+            172,
+            -1.65
+          ],
+          [
+            176,
+            -0.75
+          ],
+          [
+            180,
+            0
+          ],
+          [
+            212,
+            0
+          ]
+        ]
+      }
+    },
+    "drums": {
+      "gain_db": 1.4,
+      "amplitude": 0.16,
+      "room": 0.1,
+      "duck": 0.13,
+      "width": 0.18,
+      "mix_polish": {
+        "eq": [
+          {
+            "type": "peak",
+            "frequency_hz": 1100,
+            "q": 0.65,
+            "gain_db": 0.4
+          }
+        ],
+        "upper_side_scale": 1.12,
+        "side_transition_hz": 260
+      }
+    },
+    "hats": {
+      "gain_db": 0.3,
+      "amplitude": 0.11,
+      "metal_amount": 0.075,
+      "maximum_band_hz": [
+        7500,
+        12000
+      ],
+      "room": 0.045,
+      "duck": 0.08,
+      "width": 0.24,
+      "modes_hz": [
+        4051,
+        6135,
+        8077,
+        10613,
+        13511
+      ],
+      "mix_polish": {
+        "eq": [
+          {
+            "type": "high_shelf",
+            "frequency_hz": 9500,
+            "q": 0.7,
+            "gain_db": -0.55
+          }
+        ],
+        "upper_side_scale": 1.1,
+        "side_transition_hz": 400,
+        "upper_guard": {
+          "band_hz": [
+            8500,
+            14500
+          ],
+          "threshold_dbfs": -39.0,
+          "ratio": 1.7,
+          "maximum_cut_db": 1.15,
+          "attack_ms": 3,
+          "release_ms": 55,
+          "control_rate_hz": 1000
+        }
+      }
+    },
+    "pressure": {
+      "gain_db": -1.7,
+      "amplitude": 0.08,
+      "room": 0.16,
+      "duck": 0.27,
+      "width": 0.4,
+      "mix_polish": {
+        "upper_side_scale": 1.1,
+        "side_transition_hz": 300
+      }
+    },
+    "field": {
+      "gain_db": 2.0,
+      "amplitude": 0.057,
+      "mode_ratios": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "mode_weights": [
+        0.54,
+        0.24,
+        0.11,
+        0.055
+      ],
+      "room": 0.58,
+      "duck": 0.18,
+      "width": 0.36,
+      "phase_motion_radians": 0.28,
+      "mix_polish": {
+        "upper_side_scale": 1.05,
+        "side_transition_hz": 260
+      }
+    },
+    "relay": {
+      "gain_db": 4.4,
+      "amplitude": 0.115,
+      "mode_ratios": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "mode_weights": [
+        0.56,
+        0.22,
+        0.11,
+        0.055,
+        0.025
+      ],
+      "cutoff_hz": [
+        760,
+        2100
+      ],
+      "fm_index": 0.2,
+      "body_decay_seconds": 0.11,
+      "room": 0.18,
+      "duck": 0.17,
+      "width": 0.13,
+      "delay_beats": [
+        0.75,
+        1.5
+      ],
+      "delay_gains": [
+        0.34,
+        0.12
+      ],
+      "predelay_ms": 17,
+      "mix_polish": {
+        "eq": [
+          {
+            "type": "peak",
+            "frequency_hz": 540,
+            "q": 0.8,
+            "gain_db": 0.45
+          }
+        ],
+        "upper_side_scale": 1.1,
+        "side_transition_hz": 260
+      }
+    },
+    "veil": {
+      "gain_db": 1.65,
+      "amplitude": 0.093,
+      "mode_ratios": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "mode_weights": [
+        0.32,
+        0.3,
+        0.18,
+        0.09,
+        0.045,
+        0.02
+      ],
+      "cutoff_hz": [
+        1050,
+        2450
+      ],
+      "highpass_hz": 210,
+      "room": 0.72,
+      "duck": 0.12,
+      "melodic_duck": 0.36,
+      "width": 0.32,
+      "predelay_ms": 37,
+      "phase_motion_radians": 0.26,
+      "mix_polish": {
+        "upper_side_scale": 1.2,
+        "side_transition_hz": 260
+      }
+    }
+  },
+  "space": {
+    "room_size": 0.55,
+    "damping": 0.73,
+    "echo_pan": 0.3
+  },
+  "master": {
+    "target_lufs": -12.5,
+    "ceiling_dbtp": -1.2,
+    "lookahead_ms": 2.5,
+    "release_ms": 95,
+    "highpass_hz": 23,
+    "input_gain_db": 6.354,
+    "saturation_drive": 0.7
+  }
+}

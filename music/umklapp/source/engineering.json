@@ -1,0 +1,290 @@
+{
+  "edition": "Study 08",
+  "intent": "Let the final suspended phrases recede before physical weight returns; let metal own a complete foreground block and hand the phrase back to signal.",
+  "input_artifact": "Study 07 · sound engineering",
+  "input_master_sha256": "1a717cb345961b09727c5def6b272228887937fe07daf5d6a448a3dd3bcbb5ad",
+  "inherited_engineering": "input-stage-07/engineering.json",
+  "foreground_refinement": {
+    "bend": {
+      "dry_gain_db_bar_keyframes": [
+        [
+          0,
+          0
+        ],
+        [
+          104,
+          0
+        ],
+        [
+          108,
+          -0.75
+        ],
+        [
+          110,
+          -1.65
+        ],
+        [
+          111.5,
+          -1.65
+        ],
+        [
+          112,
+          0
+        ],
+        [
+          159.5,
+          0
+        ],
+        [
+          160,
+          -1.35
+        ],
+        [
+          172,
+          -1.35
+        ],
+        [
+          176,
+          0.3
+        ],
+        [
+          180,
+          0.3
+        ],
+        [
+          184,
+          0
+        ],
+        [
+          212,
+          0
+        ]
+      ],
+      "return_gain_db_bar_keyframes": [
+        [
+          0,
+          0
+        ],
+        [
+          104,
+          0
+        ],
+        [
+          108,
+          -0.25
+        ],
+        [
+          110,
+          -0.7
+        ],
+        [
+          111.75,
+          -1.8
+        ],
+        [
+          112,
+          -1.8
+        ],
+        [
+          114,
+          -1.05
+        ],
+        [
+          116,
+          -0.45
+        ],
+        [
+          120,
+          -0.45
+        ],
+        [
+          128,
+          0
+        ],
+        [
+          159.5,
+          0
+        ],
+        [
+          160,
+          -1.25
+        ],
+        [
+          172,
+          -1.25
+        ],
+        [
+          176,
+          0
+        ],
+        [
+          212,
+          0
+        ]
+      ]
+    },
+    "lattice": {
+      "dry_gain_db_bar_keyframes": [
+        [
+          0,
+          0
+        ],
+        [
+          104,
+          0
+        ],
+        [
+          108,
+          -0.5
+        ],
+        [
+          110,
+          -1.15
+        ],
+        [
+          111.5,
+          -1.15
+        ],
+        [
+          112,
+          0
+        ],
+        [
+          159.5,
+          0
+        ],
+        [
+          160,
+          1.0
+        ],
+        [
+          172,
+          1.0
+        ],
+        [
+          176,
+          0.55
+        ],
+        [
+          180,
+          0
+        ],
+        [
+          212,
+          0
+        ]
+      ],
+      "return_gain_db_bar_keyframes": [
+        [
+          0,
+          0
+        ],
+        [
+          104,
+          0
+        ],
+        [
+          108,
+          -0.15
+        ],
+        [
+          110,
+          -0.55
+        ],
+        [
+          111.75,
+          -1.65
+        ],
+        [
+          112,
+          -1.65
+        ],
+        [
+          114,
+          -0.9
+        ],
+        [
+          116,
+          -0.35
+        ],
+        [
+          120,
+          -0.35
+        ],
+        [
+          128,
+          0
+        ],
+        [
+          159.5,
+          0
+        ],
+        [
+          160,
+          -1.65
+        ],
+        [
+          172,
+          -1.65
+        ],
+        [
+          176,
+          -0.75
+        ],
+        [
+          180,
+          0
+        ],
+        [
+          212,
+          0
+        ]
+      ]
+    }
+  },
+  "phrase_direction": [
+    {
+      "bars": [
+        104,
+        112
+      ],
+      "role": "Suspension withdrawal",
+      "action": "Recede through the final four long signal arches and two metal answers. Their pitch paths, destination notes and dirty source remain intact."
+    },
+    {
+      "bars": [
+        112,
+        128
+      ],
+      "role": "Physical return",
+      "action": "Restore the complete dry gestures at the return. Let their driven echoes recover gradually across the compact opening and into expansion."
+    },
+    {
+      "bars": [
+        160,
+        176
+      ],
+      "role": "Metal ownership",
+      "action": "Give metal complete opening/recovery/landing cells a closer body. Keep the sparse A signal behind them and reduce the existing driven returns by a bounded amount."
+    },
+    {
+      "bars": [
+        172,
+        184
+      ],
+      "role": "Foreground exchange",
+      "action": "Prepare the handover over four bars, bring the returning signal to the front, then restore the shared balance over its next complete phrases."
+    }
+  ],
+  "preservation": "All 3429 notes, MIDI, gates, velocities, pitch curves, shared vibration, original automation, source and return distortion, original ducking, EQ, stereo treatment, ten part faders and eight other performed voices remain. Only the two foreground voices dry/return balance follows the authored phrase map.",
+  "master": {
+    "target_lufs": -12.5,
+    "ceiling_dbtp": -1.2,
+    "lookahead_ms": 2.5,
+    "release_ms": 95,
+    "highpass_hz": 23,
+    "input_gain_db": null,
+    "saturation_drive": 0.7
+  },
+  "units": "Positions are zero-based source bars. Gains are dB relative to the Study 07 dry gesture or already-treated return, with cosine interpolation. Both controls act after the original source, send, distortion, delay, room and foreground ducking, before inherited voice EQ and mastering. Dry attenuation does not reduce the feed to the returns. Master input gain is recalibrated for delivery; comparisons are matched separately."
+}

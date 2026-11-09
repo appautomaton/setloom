@@ -1,3 +1,12 @@
 [features]
 hooks = true
 multi_agent = true
+
+[mcp_servers.ableton]
+enabled = true
+required = false
+command = "/Users/ac/dev/media/setloom/local/mcp/run-ableton-mcp.sh"
+args = []
+startup_timeout_sec = 60
+tool_timeout_sec = 60
+default_tools_approval_mode = "prompt"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Setloom Vocal Reconstruction"
+  short_description: "Recover vocal phrasing, articulation and tone"
+  default_prompt: "Use $setloom-vocal-reconstruction to reconstruct this vocal performance as editable phrasing, articulation and sound."

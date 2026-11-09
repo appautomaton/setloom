@@ -1,0 +1,33 @@
+{
+  "edition": "Study 06",
+  "intent": "Develop motion from the whole arrangement: establish the low clock, open the first exchange, suspend it, make a compact physical return, transfer the foreground to metal, and resolve into harmonic memory.",
+  "rhythmic_grammar": {
+    "opening": "The familiar .75-beat call falls toward D; its depth belongs to the current block.",
+    "recovery": "The 1.5-beat response recoils toward D rather than introducing an unrelated turn.",
+    "ground": "The cell's last D/A destination holds its pitch. It gives the bass, relay and next call a clear landing.",
+    "reply": "Upper metal replies bend in the same field as the call and recover before the next cell.",
+    "suspension": "Long arches replace short calls while the fixed D/A/F field carries the harmonic reference.",
+    "metal_foreground": "Metal inherits opening/recovery/ground syntax for a complete 16-bar block; the sparse A signal becomes the anchor.",
+    "memory": "The foreshadow and closing blocks keep stable pitches; roughness and spatial decay supply their movement."
+  },
+  "control_order": ["signal_flex", "metal_flex", "signal_vibration_cents", "metal_vibration_cents", "surface_flutter_cents", "phrase_shear_cents", "signal_send_scale", "metal_send_scale", "return_duck", "metal_body_scale"],
+  "blocks": [
+    {"id":"induction","start_bar":0,"end_bar":32,"name":"Physical clock","context":"Kick, engine and drums establish the pulse. Neither melodic voice is present.","controls":[0,0,4,6,6,0,1,1,0.26,1]},
+    {"id":"foreshadow","start_bar":32,"end_bar":48,"name":"Fixed outline","context":"Sparse D arrivals sit beside held field and veil. Keep the tonal outline still before developing it.","controls":[0,0,4,6,6,0,0.92,0.92,0.26,1]},
+    {"id":"transfer","start_bar":48,"end_bar":64,"name":"First elasticity","context":"The existing kick withdrawal gives the engine space. Call and recovery move as one repeating cell; the closing note holds.","controls":[0.72,0.64,12,17,9,0,1.02,1.02,0.28,1]},
+    {"id":"coupling","start_bar":64,"end_bar":80,"name":"Interlocked exchange","context":"The full drum clock returns. Signal calls and metal replies retain their rhythmic relationship above lower relay entries.","controls":[0.98,0.96,16,23,12,3,1,1,0.3,1]},
+    {"id":"deep-coupling","start_bar":80,"end_bar":96,"name":"Opening the field","context":"The recurring cell becomes more elastic for the complete block. The held field and veil approach the suspension while its final D/A notes remain grounded.","controls":[1.28,1.2,24,30,17,10,1.2,1.2,0.3,1.08]},
+    {"id":"suspension","start_bar":96,"end_bar":112,"name":"Suspended orbit","context":"Kick, engine and relay withdraw. Long signal and metal arches move against the stable D/A/F field; returns breathe between foreground attacks.","controls":[1.5,1.48,31,36,19,14,1.2,1.2,0.36,1.1]},
+    {"id":"return","start_bar":112,"end_bar":128,"name":"Physical return","context":"The preferred low clock lands. Compact elastic calls and stable cell endings let its weight lead before the next expansion.","controls":[0.64,0.72,12,18,9,0,0.88,0.88,0.34,0.96]},
+    {"id":"main-expansion","start_bar":128,"end_bar":144,"name":"Second expansion","context":"With the low clock established, consecutive cells deepen together. Repeated landings keep the expansion tied to the groove.","controls":[1.3,1.22,25,31,18,10,1.18,1.18,0.32,1.07]},
+    {"id":"release","start_bar":144,"end_bar":148,"name":"Making room","context":"The signal clears space for the coming kick withdrawal and the relay's exposed replies.","controls":[0.62,0.76,12,20,11,0,1,1,0.32,1]},
+    {"id":"negative-space","start_bar":148,"end_bar":152,"name":"Metal approaches","context":"The unchanged engine carries the short kick loss. Metal replies gain elasticity as the relay remains audible.","controls":[0.7,1.04,15,26,15,6,1.15,1.15,0.3,1.06]},
+    {"id":"handover","start_bar":152,"end_bar":160,"name":"Passing the current","context":"Returning drums close the space. Metal keeps the developing gesture while the signal stops competing for the foreground.","controls":[0.62,1.18,12,29,18,8,0.95,1.04,0.32,1.06]},
+    {"id":"metal-current","start_bar":160,"end_bar":176,"name":"Metal current","context":"Metal owns the full cell for 16 bars. Its opening and recovery bend; its ending and the sparse A signal hold. Lower relay and veil support the takeover.","controls":[0,1.36,5,33,21,12,1,1.16,0.34,1.1]},
+    {"id":"rejoining","start_bar":176,"end_bar":184,"name":"Signal rejoins","context":"The signal returns to the opening/recovery syntax. Metal steps back into replies; shared vibration and return rhythm connect their identities.","controls":[1.16,1.18,23,29,17,8,1.12,1.08,0.32,1.04]},
+    {"id":"withdrawal","start_bar":184,"end_bar":192,"name":"Releasing the foreground","context":"The score already thins the signal. Reduce excursion and let fixed endings prepare the held closing field.","controls":[0.82,0.9,15,22,11,3,1,1,0.3,1]},
+    {"id":"memory","start_bar":192,"end_bar":208,"name":"Residual memory","context":"The machine withdraws in its accepted order. Remaining D arrivals and upper metal hold their destinations while field and veil carry the ending.","controls":[0,0,4,6,6,0,1,1,0.24,1]}
+  ],
+  "transition_bars": 2,
+  "provenance": "Authored from Study 04 notes, physical voices, full-form activity and the user's listening correction. STRIDULATION informs foreground/support relationships and receding returns. No source recording, measured control curve or reference MIDI enters the performance."
+}

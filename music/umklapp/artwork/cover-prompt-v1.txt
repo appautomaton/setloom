@@ -1,0 +1,18 @@
+Generate one complete, high-resolution square cover for an original underground progressive-techno track. Design the artwork, bespoke title lettering and credits together in one finished image.
+
+Concept: UMKLAPP — rhythmic order under pressure, a coherent bend, then a return to structure. The feeling is physical, hypnotic and controlled, with a raw tactile surface and a strong graphic identity.
+
+Artwork: a field of short aluminium-silver strokes forms a precise, densely repeating lattice on matte carbon-black paper. One broad oblique compression band bends the pattern into a sweeping return; the spacing tightens through this zone and becomes regular again beyond it. Treat it as metallic ink and shallow embossing photographed close, with fibrous paper, slight ink drag, delicate relief shadows and worn silver edges. The pressure band should form one unmistakable large gesture that survives reduction to a music thumbnail. A tiny trace of dull oxide-orange ink marks the turning point. Preserve rich blacks and subtle shadow detail. Keep the material restrained and physically convincing.
+
+Composition: flat, full-bleed square artwork. An asymmetric lattice fragment occupies the middle and lower field, with quiet dark space above for the title and a calm footer for the two credits. Balance dense texture with generous breathing room. The image and typography should feel composed as one record cover.
+
+Typography: make UMKLAPP a large, single-line custom wordmark in warm mineral-white. A bold contemporary industrial grotesk with a low, wide stance, squared counters and subtly sheared terminals echoing the pressure band. Give the lettering a recognizable personality through proportions, spacing and consistent details. Preserve clean, complete letterforms; keep the title immediately readable at thumbnail scale. Render appautomaton and setloom in a smaller compatible lowercase grotesk, with equal typographic weight, balanced spacing and a shared footer baseline. Both credits must remain clearly readable. Keep all text within comfortable margins of at least 6% of the image width and height, away from the densest lattice detail.
+
+Visible text, exactly these three strings, each once:
+"UMKLAPP"
+"appautomaton"
+"setloom"
+
+Preserve this capitalization. UMKLAPP has seven letters: U-M-K-L-A-P-P. appautomaton is one unbroken word. setloom contains a double o. The spelling guides are instructions, not additional visible text.
+
+Deliver one finished square cover with all lettering generated directly in the image. No remix or study labels, extra words, numbers, decorative emblems, borders, packaging mockups or watermarks. Avoid glowing wireframe grids, generic waveform graphics, neon tunnels, liquid-chrome blobs and digital glitch effects. Let the pressure in the printed lattice, the material texture and the typography carry the underground character.
