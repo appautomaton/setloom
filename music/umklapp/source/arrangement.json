@@ -1,0 +1,88 @@
+{
+  "title": "Umklapp",
+  "edition": "Study 08",
+  "bpm": 134,
+  "meter": "4/4",
+  "bars": 208,
+  "duration_seconds": 378.53731343283584,
+  "sample_rate": 44100,
+  "beat_zero_seconds": 0,
+  "tonal_field": "D/A destinations and the suspension F remain. Audible gate-relative excursions and shared vibration make moving pitch part of the character.",
+  "shared_swing_seconds": 0.011,
+  "sections": [
+    {
+      "start_bar": 0,
+      "end_bar": 16,
+      "start_seconds": 0.0,
+      "end_seconds": 28.65671641791045,
+      "name": "Induction",
+      "intent": "The centered pulse and offbeat engine establish one physical clock."
+    },
+    {
+      "start_bar": 16,
+      "end_bar": 48,
+      "start_seconds": 28.65671641791045,
+      "end_seconds": 85.97014925373135,
+      "name": "Closed circuit",
+      "intent": "The low clock forms beneath a fixed, distant outline of the melodic pair."
+    },
+    {
+      "start_bar": 48,
+      "end_bar": 64,
+      "start_seconds": 85.97014925373135,
+      "end_seconds": 114.6268656716418,
+      "name": "Signal transfer",
+      "intent": "The engine carries the accepted kick withdrawal. Signal elasticity develops through the repeating cell."
+    },
+    {
+      "start_bar": 64,
+      "end_bar": 96,
+      "start_seconds": 114.6268656716418,
+      "end_seconds": 171.9402985074627,
+      "name": "Coupling",
+      "intent": "The first interlocked exchange opens into a complete block of deeper, connected flex."
+    },
+    {
+      "start_bar": 96,
+      "end_bar": 112,
+      "start_seconds": 171.9402985074627,
+      "end_seconds": 200.59701492537314,
+      "name": "Field reversal",
+      "intent": "Physical anchors withdraw. Long coordinated arches move against the fixed D/A/F field."
+    },
+    {
+      "start_bar": 112,
+      "end_bar": 144,
+      "start_seconds": 200.59701492537314,
+      "end_seconds": 257.91044776119406,
+      "name": "Mutual induction",
+      "intent": "A compact low-clock return establishes weight before a second complete expansion."
+    },
+    {
+      "start_bar": 144,
+      "end_bar": 160,
+      "start_seconds": 257.91044776119406,
+      "end_seconds": 286.5671641791045,
+      "name": "Negative space",
+      "intent": "The signal clears space; the kick withdrawal and returning drums prepare metal's takeover."
+    },
+    {
+      "start_bar": 160,
+      "end_bar": 192,
+      "start_seconds": 286.5671641791045,
+      "end_seconds": 343.8805970149254,
+      "name": "Current",
+      "intent": "Metal owns opening, recovery and stable landing; the A signal anchors it before rejoining."
+    },
+    {
+      "start_bar": 192,
+      "end_bar": 208,
+      "start_seconds": 343.8805970149254,
+      "end_seconds": 372.53731343283584,
+      "name": "Residual magnetism",
+      "intent": "Remaining melodic destinations hold while the engine, field and veil complete their accepted withdrawal."
+    }
+  ],
+  "authorship": "Phrase-led foreground and return refinement of Study 07. Its complete musical performance and engineering character are preserved.",
+  "listening_state": "Study 07 has positive feedback on quality. Study 08 awaits listening review; Study 04 remains the selected baseline."
+}
