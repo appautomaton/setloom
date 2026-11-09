@@ -15,6 +15,7 @@ the song's current source and listening record.
 | Check tool policy and local runtime boundaries | [tooling.md](tooling.md) |
 | Script Ableton or Logic and choose a UI fallback | [daw-control.md](daw-control.md) |
 | Use the reusable Python primitives | [../src/setloom/](../src/setloom/) |
+| Build and deliver a directly openable local HTML audition | [audition.md](audition.md) |
 | Study a full MIDI-driven production | [Pulsus Noctis](../music/pulsus-noctis/) |
 | Study a MIDI-driven reconstruction and reinterpretation | [../music/anti-gravitational-wave/](../music/anti-gravitational-wave/) |
 | Understand the reasoning behind past decisions | [semantics.md](semantics.md) |
