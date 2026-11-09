@@ -167,8 +167,8 @@ interfaces, their current gaps, and the division between scripting and UI work.
 
 ## Separation and transcription
 
-ACE-Step and Magenta remain opt-in local generation experiments. The reference
-tools offer these separate paths in the shared `uv` environment:
+Magenta remains an opt-in local generation experiment. The reference tools
+offer these separate paths in the shared `uv` environment:
 
 | Path | Dependency groups | Output and limits |
 | --- | --- | --- |
