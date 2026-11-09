@@ -1,0 +1,24 @@
+Create a finished square music cover for "Palimpsest", integrating the artwork, title, and branding into one coherent composition.
+
+The music is textured, hypnotic techno: a steady foundation, interlocking repetitions, subtle harmonic movement, and layers that gradually emerge and recede. Translate these qualities into visual rhythm, depth, and restraint.
+
+Build the artwork around a material palimpsest: a surface repeatedly marked, partially erased, and written over, retaining traces of earlier states. Use fine graphite lines, rubbed pigment, translucent veils, and delicate surface impressions. One recurring linear gesture connects the composition, with subtle variations in spacing, depth, and visibility. Older marks remain visible beneath newer layers.
+
+Create a clear hierarchy between intricate passages and generous quiet space. The overall composition should be recognizable at thumbnail size, with finer relationships revealed on closer inspection. Use deep graphite, charcoal, and warm off-white, with convincing material texture and soft light. Keep the atmosphere intimate, spacious, and quietly persistent.
+
+Generate all three of these exact text elements within the image, each appearing exactly once:
+
+"Palimpsest"
+"AppAutomaton"
+"Setloom"
+
+Typography hierarchy:
+- "Palimpsest" is the main title and the most prominent text.
+- "AppAutomaton" appears as a smaller supporting line beneath the title.
+- "Setloom" appears as a discreet signature near the lower edge, clearly readable and visually balanced with the other text.
+
+Preserve the spelling and capitalization exactly as written. Use refined editorial typography, carefully considered letter spacing, generous margins, and strong legibility. Compose the text and artwork together from the beginning. Keep the lettering crisp and intact while the surrounding material carries the erosion and layering.
+
+These three text elements are the only readable words. All other surface marks remain abstract.
+
+Deliver the complete flat cover image, edge to edge. No additional text, invented credits, watermark, border, or packaging mockup. Avoid literal musical equipment, stock waveforms, neon effects, generic science-fiction imagery, and uniformly noisy distressing.

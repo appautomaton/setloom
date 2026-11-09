@@ -1,0 +1,13 @@
+{
+  "edition": "Master 02",
+  "revision": "02",
+  "source_revision": "08",
+  "target_lufs": -11.0,
+  "input_gain_db": 7.25,
+  "ceiling_dbtp": -1.2,
+  "lookahead_ms": 3.0,
+  "release_ms": 65.0,
+  "tolerance_lu": 0.3,
+  "preview_peak_ceiling_dbtp": -1.0,
+  "rationale": "Use the verified Production 08 float mixes. Texture 40.1 measures -11.12 integrated LUFS and Onirica -10.31 with 12.1 and 12.3 LU loudness ranges; select -11 LUFS as a reference-based production target, not an objectively optimal number. Preserve the reviewed balance and section contrasts. Keep the -1.2 dBTP ceiling and stereo-linked 3 ms lookahead / 65 ms release without additional EQ, saturation, widening or bus compression. Assess the actual rendered waveform, loudness, stereo and timing; listening acceptance remains separate from these checks."
+}

@@ -78,6 +78,7 @@ See [working stages](docs/workflow.md#working-stages).
 - [T7](music/T7-piano-solos/): completed piano work with captured timing and pedal.
 - [Stridulation](music/stridulation/): reproducible source for a released mix, with measured synthesis controls.
 - [Umklapp](music/umklapp/): an original techno piece, synthesized entirely from its own source.
+- [Palimpsest](music/palimpsest/): an original piece composed as one score file and rendered in two stages.
 
 These are examples, not recipes for the next track. Follow the current brief
 and the user's scoped listening feedback.
